@@ -120,7 +120,7 @@ const wrapClass = clsx(
               lightSrc={logoLightSrc}
               solid={solid}
               ariaLabel={logoAriaLabel}
-              className="block h-5 w-auto"
+              className="block h-4 w-auto"
             />
 
             {/* BURGER MENU */}

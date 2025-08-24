@@ -17,7 +17,7 @@ export default function Logo({
   darkSrc,
   lightSrc,
   solid,
-  className = "block h-5 w-auto xl:h-6",
+  className = "block h-4 w-auto xl:h-4",
 }: LogoProps) {
   const [logoError, setLogoError] = useState(false);
   const logoSrc = solid ? darkSrc : lightSrc;
