@@ -7,6 +7,7 @@ import { NAV_LINKS } from "@/lib/nav";
 import Logo from "@/components/Logo";
 import NavLinks from "@/components/NavLinks";
 import MobileMenu from "./MobileMenu";
+import Container from "./Container";
 
 // ======================================================
 // PROPS
@@ -63,9 +64,6 @@ export default function Header({
   const navGap = "gap-x-8 lg:gap-x-10 xl:gap-x-16";
 
 
-
-  
-
 const wrapClass = clsx(
   "fixed inset-x-0 top-0 z-40 transition-all duration-500 ease-in-out",
   solid
@@ -86,7 +84,8 @@ const wrapClass = clsx(
     <>
       {/* HEADER CONTAINER */}
       <header className={wrapClass}>
-        <div className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${textClass}`}>
+        
+        <Container className={textClass}>
           {/* DESKTOP HEADER (iPad + desktop) */}
           <div
             className={`hidden md:grid grid-cols-3 items-center ${headerPaddingDesktop} ${transitionSmooth}`}
@@ -146,7 +145,7 @@ const wrapClass = clsx(
               <span className="block h-0.5 w-6 bg-current" />
             </button>
           </div>
-        </div>
+        </Container>
       </header>
 
       {/* MOBILE MENU */}
