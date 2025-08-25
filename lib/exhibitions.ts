@@ -1,9 +1,14 @@
 // lib/exhibitions.ts
+import "server-only";
 import { shopifyFetch } from "@/lib/shopify";
+export { formatDates } from "@/lib/formatDates";
 
 // ---------------- Types ----------------
 export type FieldRef =
-  | { __typename: "MediaImage"; image: { url: string; width: number; height: number; altText: string | null } }
+  | {
+      __typename: "MediaImage";
+      image: { url: string; width: number; height: number; altText: string | null };
+    }
   | { __typename: "GenericFile"; url?: string; previewImage?: { url: string } }
   | { __typename: string };
 
@@ -18,6 +23,7 @@ export type ExhibitionCard = {
   start?: Date;
   end?: Date;
   hero?: { url: string; width?: number; height?: number; alt?: string };
+  summary?: string; // short-text / teaser
 };
 
 type HomeQuery = {
@@ -59,7 +65,12 @@ function img(fields: Field[], ...keys: string[]) {
     if (!f) continue;
     const ref: any = f.reference;
     if (ref?.image?.url)
-      return { url: ref.image.url, width: ref.image.width, height: ref.image.height, alt: ref.image.altText ?? undefined };
+      return {
+        url: ref.image.url,
+        width: ref.image.width,
+        height: ref.image.height,
+        alt: ref.image.altText ?? undefined,
+      };
     if (ref?.url) return { url: ref.url };
     if (ref?.previewImage?.url) return { url: ref.previewImage.url };
     if (typeof f.value === "string" && f.value.startsWith("http")) return { url: f.value };
@@ -73,14 +84,6 @@ function asDate(v?: string) {
   return Number.isNaN(+d) ? undefined : d;
 }
 
-export function formatDates(start?: Date, end?: Date) {
-  if (!start && !end) return undefined;
-  const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short", year: "numeric" };
-  if (start && end) return `${start.toLocaleDateString(undefined, opts)} – ${end.toLocaleDateString(undefined, opts)}`;
-  if (start) return start.toLocaleDateString(undefined, opts);
-  return end!.toLocaleDateString(undefined, opts);
-}
-
 function mapNode(n: Node): ExhibitionCard {
   return {
     handle: n.handle,
@@ -89,6 +92,7 @@ function mapNode(n: Node): ExhibitionCard {
     location: text(n.fields, "location", "subtitle"),
     start: asDate(text(n.fields, "startDate", "startdate", "start")),
     end: asDate(text(n.fields, "endDate", "enddate", "end")),
+    summary: text(n.fields, "shortText", "summary", "teaser", "description"),
     hero:
       img(n.fields, "heroImage") ??
       img(n.fields, "heroimage") ??
@@ -122,8 +126,10 @@ export function classifyExhibitions(nodes: Node[]) {
     return s !== undefined && s < today && !isCurrent(e);
   };
 
-  // pick a single current (if multiple, prefer the one with the latest start)
-  const currentList = ex.filter(isCurrent).sort((a, b) => (a.start?.getTime() ?? 0) - (b.start?.getTime() ?? 0));
+  // Pick a single current (prefer the most recently started)
+  const currentList = ex
+    .filter(isCurrent)
+    .sort((a, b) => (b.start?.getTime() ?? 0) - (a.start?.getTime() ?? 0));
   const current = currentList[0] ?? null;
 
   const upcoming = ex
