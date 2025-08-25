@@ -54,6 +54,16 @@ export default function Header({
 
   const transitionSmooth = "transition-all duration-500 ease-in-out";
 
+  // Nav text sizes
+  const NAV_TEXT_COMPACT = "text-[13px] md:text-[13px] lg:text-[15px]"; // after scroll
+  const NAV_TEXT_LARGE   = "text-sm md:text-[14px] lg:text-base";       // pre-scroll (smaller on md)
+  const navLinkSize = scrolled ? NAV_TEXT_COMPACT : NAV_TEXT_LARGE;
+
+// Nav gaps (tighter on md so it sits farther from the logo)
+  const navGap = "gap-x-8 lg:gap-x-10 xl:gap-x-16";
+
+
+
   
 
 const wrapClass = clsx(
@@ -66,7 +76,7 @@ const wrapClass = clsx(
 
   const textClass = solid ? "text-neutral-900" : "text-white";
 
-  const headerPaddingDesktop = scrolled ? "py-2" : "py-5";
+  const headerPaddingDesktop = scrolled ? "py-2" : "py-10";
   const headerPaddingMobile = scrolled ? "py-2" : "py-4";
 
   // ======================================================
@@ -85,8 +95,8 @@ const wrapClass = clsx(
             <nav aria-label="Primary" className="justify-self-start">
               <NavLinks
                 items={nav.slice(0, 2)}
-                className="flex items-center gap-x-10 xl:gap-x-16"
-                linkClassName="text-[12px] md:text-[13px] lg:text-sm"
+                className={`flex items-center ${navGap}`}
+                linkClassName={navLinkSize}
               />
             </nav>
 
@@ -104,8 +114,8 @@ const wrapClass = clsx(
             <nav aria-label="Secondary" className="justify-self-end">
               <NavLinks
                 items={nav.slice(2)}
-                className="flex items-center gap-x-10 xl:gap-x-16"
-                linkClassName="text-[12px] md:text-[13px] lg:text-sm"
+                className={`flex items-center ${navGap}`}
+                linkClassName={navLinkSize}
               />
             </nav>
           </div>

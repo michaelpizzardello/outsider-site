@@ -13,7 +13,7 @@ export type Node = { handle: string; fields: Field[] };
 export type ExhibitionCard = {
   handle: string;
   title: string;
-  artist?: string; // 👈 added
+  artist?: string;
   location?: string;
   start?: Date;
   end?: Date;
@@ -48,17 +48,18 @@ const HOME_QUERY = /* GraphQL */ `
 // ------------- Helpers -----------------
 function text(fields: Field[], ...keys: string[]) {
   for (const k of keys) {
-    const f = fields.find(x => x.key === k);
+    const f = fields.find((x) => x.key === k);
     if (f?.value) return f.value;
   }
 }
 
 function img(fields: Field[], ...keys: string[]) {
   for (const k of keys) {
-    const f = fields.find(x => x.key === k);
+    const f = fields.find((x) => x.key === k);
     if (!f) continue;
     const ref: any = f.reference;
-    if (ref?.image?.url) return { url: ref.image.url, width: ref.image.width, height: ref.image.height, alt: ref.image.altText ?? undefined };
+    if (ref?.image?.url)
+      return { url: ref.image.url, width: ref.image.width, height: ref.image.height, alt: ref.image.altText ?? undefined };
     if (ref?.url) return { url: ref.url };
     if (ref?.previewImage?.url) return { url: ref.previewImage.url };
     if (typeof f.value === "string" && f.value.startsWith("http")) return { url: f.value };
@@ -84,7 +85,7 @@ function mapNode(n: Node): ExhibitionCard {
   return {
     handle: n.handle,
     title: text(n.fields, "title", "name") ?? n.handle,
-    artist: text(n.fields, "artist", "artists", "artistName"), // 👈 mapped artist
+    artist: text(n.fields, "artist", "artists", "artistName"),
     location: text(n.fields, "location", "subtitle"),
     start: asDate(text(n.fields, "startDate", "startdate", "start")),
     end: asDate(text(n.fields, "endDate", "enddate", "end")),
@@ -96,29 +97,51 @@ function mapNode(n: Node): ExhibitionCard {
   };
 }
 
+// -------- Classification (current / upcoming / past) --------
 export function classifyExhibitions(nodes: Node[]) {
-  const today = new Date();
+  const today = Date.now();
   const ex = nodes.map(mapNode);
 
-  const current =
-    ex.find(e => {
-      const s = e.start ?? new Date(0);
-      const ee = e.end ?? new Date(8640000000000000);
-      return s <= today && today <= ee;
-    }) ?? ex[0] ?? null;
+  const isCurrent = (e: ExhibitionCard) => {
+    const s = e.start?.getTime();
+    const ee = e.end?.getTime();
+    // Current if started and (no end or not ended yet)
+    return s !== undefined && s <= today && (ee === undefined || ee >= today);
+  };
+
+  const isUpcoming = (e: ExhibitionCard) => {
+    const s = e.start?.getTime();
+    return s !== undefined && s > today;
+  };
+
+  const isPast = (e: ExhibitionCard) => {
+    const ee = e.end?.getTime();
+    if (ee !== undefined) return ee < today;
+    // If no end but has a start before today and isn't current, treat as past
+    const s = e.start?.getTime();
+    return s !== undefined && s < today && !isCurrent(e);
+  };
+
+  // pick a single current (if multiple, prefer the one with the latest start)
+  const currentList = ex.filter(isCurrent).sort((a, b) => (a.start?.getTime() ?? 0) - (b.start?.getTime() ?? 0));
+  const current = currentList[0] ?? null;
 
   const upcoming = ex
-    .filter(e => e !== current)
-    .filter(e => (e.start ? e.start > today : true))
+    .filter((e) => e !== current && isUpcoming(e))
+    .sort((a, b) => (a.start?.getTime() ?? Infinity) - (b.start?.getTime() ?? Infinity)); // soonest first
+
+  const past = ex
+    .filter((e) => e !== current && isPast(e))
     .sort((a, b) => {
-      const as = a.start ? +a.start : Infinity;
-      const bs = b.start ? +b.start : Infinity;
-      return as - bs;
+      const at = a.end?.getTime() ?? a.start?.getTime() ?? 0;
+      const bt = b.end?.getTime() ?? b.start?.getTime() ?? 0;
+      return bt - at; // most recent first
     });
 
-  return { current, upcoming };
+  return { current, upcoming, past };
 }
 
+// --------------- Fetch -----------------
 export async function fetchHomeExhibitions() {
   const data = await shopifyFetch<HomeQuery>(HOME_QUERY);
   return data.exhibitions?.nodes ?? [];

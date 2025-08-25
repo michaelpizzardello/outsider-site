@@ -7,8 +7,12 @@ import { HERO_LABELS } from "@/lib/labels";
 
 export default function CurrentExhibitionHero({
   ex,
+  topLabel = HERO_LABELS.top,
+  buttonLabel = HERO_LABELS.button,
 }: {
   ex: ExhibitionCard | null;
+  topLabel?: string;
+  buttonLabel?: string;
 }) {
   const imgSrc = ex?.hero?.url ?? "";
   const title = ex?.title ?? "";
@@ -20,11 +24,6 @@ export default function CurrentExhibitionHero({
       .join(" · ") || "Details to be announced";
 
   // Order + italics rules:
-  // - Title is ALWAYS italic.
-  // - Artist text is NEVER italic.
-  // - If artist is present and you consider it a "solo", show: H1 = artist (not italic), secondary = title (italic)
-  // - Otherwise (group/empty/etc): H1 = title (italic), secondary = artist (not italic)
-  // With only a free-text artist field, we treat "solo" as: artist present and NOT obviously group-y.
   const looksGroupy = /\b(group|duo|trio|various|multiple)\b/i.test(artist);
   const isSolo = !!artist && !looksGroupy;
 
@@ -56,7 +55,7 @@ export default function CurrentExhibitionHero({
       <div className="absolute inset-0 grid place-items-center px-4 text-center">
         <div className="z-10 max-w-[80ch] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
           <p className="mb-3 text-[11px] md:text-[12px] tracking-[.28em] uppercase opacity-80">
-            {HERO_LABELS.top}
+            {topLabel}
           </p>
 
           <h1
@@ -85,7 +84,7 @@ export default function CurrentExhibitionHero({
             href={ex ? `/exhibitions/${ex.handle}` : "/exhibitions"}
             className="mt-7 inline-flex items-center justify-center text-[15px] md:text-[16px] font-medium underline decoration-1 underline-offset-[6px] hover:opacity-85"
           >
-            {HERO_LABELS.button}
+            {buttonLabel}
           </Link>
         </div>
       </div>
