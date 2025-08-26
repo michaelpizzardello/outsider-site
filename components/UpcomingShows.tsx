@@ -61,12 +61,16 @@ export default function UpcomingShows({
 
                   {/* Text below on mobile/tablet; left on desktop */}
                   <div className="order-2 lg:order-1 lg:col-span-5 2xl:col-span-5 mt-5 lg:mt-0">
-                    <p className="text-[10px] md:text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-700">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-700">
                       {labels[labelKey]}
                     </p>
 
                     <div className="mt-2">
-                      <h2 className={`text-xl md:text-3xl xl:text-4xl leading-tight ${isGroup ? "italic" : ""}`}>
+                      <h2
+                        className={`text-2xl md:text-3xl xl:text-4xl leading-tight ${
+                          isGroup ? "italic" : ""
+                        }`}
+                      >
                         <Link
                           href={`/exhibitions/${ex.handle}`}
                           className="underline-offset-[6px] hover:underline focus:underline"
@@ -76,13 +80,18 @@ export default function UpcomingShows({
                       </h2>
 
                       {secondary ? (
-                        <div className={`mt-0.5 text-base md:text-xl xl:text-2xl ${!isGroup ? "italic" : ""}`}>
+                        <div
+                          className={`mt-0.5 text-lg md:text-xl xl:text-2xl ${
+                            !isGroup ? "italic" : ""
+                          }`}
+                        >
                           {secondary}
                         </div>
                       ) : null}
                     </div>
 
-                    <div className="mt-2 space-y-[2px] text-[13px] md:text-[14px] text-neutral-700">
+                    {/* Dates + location */}
+                    <div className="mt-3 space-y-[2px] text-[14px] md:text-[16px] xl:text-[17px] text-neutral-700">
                       <div>{ex.start || ex.end ? formatDates(ex.start, ex.end) : null}</div>
                       {ex.location ? <div className="font-medium">{ex.location}</div> : null}
                     </div>
@@ -94,9 +103,10 @@ export default function UpcomingShows({
                       </p>
                     ) : null}
 
+                    {/* CTA */}
                     <Link
                       href={`/exhibitions/${ex.handle}`}
-                      className="mt-7 md:mt-8 inline-flex items-center gap-3 text-[14px] md:text-[14px] font-medium underline-offset-[6px] hover:underline focus:underline"
+                      className="mt-7 md:mt-8 inline-flex items-center gap-3 text-[15px] md:text-[16px] xl:text-[18px] font-medium underline-offset-[6px] hover:underline focus:underline"
                       aria-label={`${ctaText}: ${ex.artist ? `${ex.artist} — ` : ""}${ex.title}`}
                     >
                       <span aria-hidden>→</span>
