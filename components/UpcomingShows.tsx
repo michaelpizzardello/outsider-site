@@ -1,73 +1,114 @@
-// components/UpcomingExhibitions.tsx
+// components/UpcomingShows.tsx
+import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
-import { type ExhibitionCard, formatDates } from "@/lib/exhibitions";
+import labels, { type LabelKey } from "@/lib/labels";
+import { type ExhibitionCard, formatDates, headingParts } from "@/lib/exhibitions";
 
-export default function UpcomingExhibitions({ items }: { items: ExhibitionCard[] }) {
+type Props = {
+  items: ExhibitionCard[];
+  labelKey?: LabelKey;
+  ctaText?: string;
+  className?: string;
+};
+
+export default function UpcomingShows({
+  items,
+  labelKey = "galleryExhibition",
+  ctaText = "Visit exhibition",
+  className = "",
+}: Props) {
   if (!items?.length) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-      <h2 className="sr-only">Upcoming exhibitions</h2>
+    <section className={className}>
+      <Container>
+        <div className="flex flex-col divide-y divide-neutral-200">
+          {items.map((ex) => {
+            const { primary, secondary, isGroup } = headingParts({
+              title: ex.title,
+              artist: ex.artist,
+              isGroup: ex.isGroup,
+            });
 
-      <div className="flex flex-col divide-y divide-neutral-200">
-        {items.map((ex) => (
-          <Article key={ex.handle} ex={ex} />
-        ))}
-      </div>
+            return (
+              <div key={ex.handle} className="py-10 md:py-16">
+                <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-12 xl:gap-14 2xl:gap-16 items-start">
+                  {/* Image first on mobile/tablet; right on desktop */}
+                  <div className="order-1 lg:order-2 lg:col-span-7 2xl:col-span-7">
+                    <Link
+                      href={`/exhibitions/${ex.handle}`}
+                      className="group block relative w-full overflow-hidden bg-neutral-100"
+                      aria-label={ex.title}
+                      title={ex.title}
+                    >
+                      <div className="aspect-[16/9]" />
+                      {ex.hero?.url ? (
+                        <Image
+                          src={ex.hero.url}
+                          alt={ex.title}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 66vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 grid place-items-center text-neutral-400 text-sm">
+                          No image
+                        </div>
+                      )}
+                    </Link>
+                  </div>
+
+                  {/* Text below on mobile/tablet; left on desktop */}
+                  <div className="order-2 lg:order-1 lg:col-span-5 2xl:col-span-5 mt-5 lg:mt-0">
+                    <p className="text-[10px] md:text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-700">
+                      {labels[labelKey]}
+                    </p>
+
+                    <div className="mt-2">
+                      <h2 className={`text-xl md:text-3xl xl:text-4xl leading-tight ${isGroup ? "italic" : ""}`}>
+                        <Link
+                          href={`/exhibitions/${ex.handle}`}
+                          className="underline-offset-[6px] hover:underline focus:underline"
+                        >
+                          {primary}
+                        </Link>
+                      </h2>
+
+                      {secondary ? (
+                        <div className={`mt-0.5 text-base md:text-xl xl:text-2xl ${!isGroup ? "italic" : ""}`}>
+                          {secondary}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-2 space-y-[2px] text-[13px] md:text-[14px] text-neutral-700">
+                      <div>{ex.start || ex.end ? formatDates(ex.start, ex.end) : null}</div>
+                      {ex.location ? <div className="font-medium">{ex.location}</div> : null}
+                    </div>
+
+                    {/* Summary: hidden on mobile; full-width on iPad; measured again on desktop */}
+                    {ex.summary ? (
+                      <p className="hidden md:block md:mt-5 md:text-[15px] md:leading-7 md:max-w-none lg:max-w-prose text-neutral-800">
+                        {ex.summary}
+                      </p>
+                    ) : null}
+
+                    <Link
+                      href={`/exhibitions/${ex.handle}`}
+                      className="mt-7 md:mt-8 inline-flex items-center gap-3 text-[14px] md:text-[14px] font-medium underline-offset-[6px] hover:underline focus:underline"
+                      aria-label={`${ctaText}: ${ex.artist ? `${ex.artist} — ` : ""}${ex.title}`}
+                    >
+                      <span aria-hidden>→</span>
+                      {ctaText}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Container>
     </section>
-  );
-}
-
-function Article({ ex }: { ex: ExhibitionCard }) {
-  const href = `/exhibitions/${ex.handle}`;
-
-  return (
-    <article className="py-10 md:py-14 first:pt-0">
-      <Link
-        href={href}
-        className="group grid grid-cols-1 lg:grid-cols-12 gap-y-6 md:gap-y-8 lg:gap-x-12"
-      >
-        {/* Image: full width on mobile/tablet; left column on desktop */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-neutral-100 lg:col-span-7">
-          {ex.hero?.url && (
-            <Image
-              src={ex.hero.url}
-              alt={ex.hero?.alt ?? ex.title}
-              fill
-              sizes="(max-width: 1024px) 100vw, 58vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            />
-          )}
-        </div>
-
-        {/* Text block */}
-        <div className="lg:col-span-5 flex flex-col">
-          <p className="text-[11px] md:text-xs font-medium uppercase tracking-[.22em] text-neutral-500">
-            {ex.location ? "GALLERY EXHIBITION" : "EXHIBITION"}
-          </p>
-
-          <h3 className="mt-3 md:mt-4 text-3xl md:text-5xl font-medium leading-tight">
-            {ex.title}
-          </h3>
-
-          {ex.summary && (
-            <p className="mt-1 md:mt-2 italic text-xl md:text-2xl text-neutral-800">
-              {ex.summary}
-            </p>
-          )}
-
-          <div className="mt-6 md:mt-8 space-y-1 text-base md:text-xl">
-            <p>{formatDates(ex.start, ex.end)}</p>
-            {ex.location && <p className="font-medium">{ex.location}</p>}
-          </div>
-
-          <span className="mt-8 inline-flex items-center gap-3 text-base md:text-xl font-medium">
-            <span aria-hidden>→</span>
-            <span>Visit exhibition</span>
-          </span>
-        </div>
-      </Link>
-    </article>
   );
 }
