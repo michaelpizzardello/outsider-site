@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { formatDates } from "@/lib/formatDates";
-import { ExhibitionCard } from "@/lib/exhibitions";
+import { ExhibitionCard, headingParts } from "@/lib/exhibitions";
 import { HERO_LABELS } from "@/lib/labels";
 
 export default function CurrentExhibitionHero({
@@ -23,14 +23,11 @@ export default function CurrentExhibitionHero({
       .filter(Boolean)
       .join(" · ") || "Details to be announced";
 
-  // Order + italics rules:
-  const looksGroupy = /\b(group|duo|trio|various|multiple)\b/i.test(artist);
-  const isSolo = !!artist && !looksGroupy;
-
-  const h1Text = isSolo ? artist : title;
-  const h1Italic = !isSolo; // italic when title is on top
-  const secondaryText = isSolo ? title : artist; // empty -> not rendered
-  const secondaryItalic = isSolo; // italic only when it’s the title on second line
+  const { primary, secondary, isGroup } = headingParts({
+    title,
+    artist,
+    isGroup: ex?.isGroup,
+  });
 
   return (
     <section className="relative isolate min-h-[100svh] w-full overflow-hidden">
@@ -60,19 +57,19 @@ export default function CurrentExhibitionHero({
 
           <h1
             className={`text-[40px] leading-[1.08] md:text-7xl md:leading-[1.06] font-medium ${
-              h1Italic ? "italic" : ""
+              isGroup ? "italic" : ""
             }`}
           >
-            {h1Text}
+            {primary}
           </h1>
 
-          {secondaryText ? (
+          {secondary ? (
             <p
               className={`mt-3 text-[20px] md:text-[24px] opacity-95 ${
-                secondaryItalic ? "italic" : ""
+                !isGroup ? "italic" : ""
               }`}
             >
-              {secondaryText}
+              {secondary}
             </p>
           ) : null}
 
