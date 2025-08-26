@@ -92,7 +92,7 @@ function mapNode(n: Node): ExhibitionCard {
     location: text(n.fields, "location", "subtitle"),
     start: asDate(text(n.fields, "startDate", "startdate", "start")),
     end: asDate(text(n.fields, "endDate", "enddate", "end")),
-    summary: text(n.fields, "shortText", "summary", "teaser", "description"),
+    summary: text(n.fields, "short_text"),
     hero:
       img(n.fields, "heroImage") ??
       img(n.fields, "heroimage") ??
