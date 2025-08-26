@@ -1,13 +1,18 @@
 // lib/exhibitions.ts
+import "server-only";
 import { shopifyFetch } from "@/lib/shopify";
+export { formatDates } from "@/lib/formatDates";
 
 // ---------------- Types ----------------
 export type FieldRef =
-  | { __typename: "MediaImage"; image: { url: string; width: number; height: number; altText: string | null } }
+  | {
+      __typename: "MediaImage";
+      image: { url: string; width: number; height: number; altText: string | null };
+    }
   | { __typename: "GenericFile"; url?: string; previewImage?: { url: string } }
   | { __typename: string };
 
-export type Field = { key: string; type: string; value: string; reference: FieldRef | null };
+export type Field = { key: string; type: string; value: unknown; reference: FieldRef | null };
 export type Node = { handle: string; fields: Field[] };
 
 export type ExhibitionCard = {
@@ -18,6 +23,8 @@ export type ExhibitionCard = {
   start?: Date;
   end?: Date;
   hero?: { url: string; width?: number; height?: number; alt?: string };
+  summary?: string; // normalised from short_text / short-text / etc.
+  isGroup?: boolean; // optional future flag from Shopify if you add one
 };
 
 type HomeQuery = {
@@ -46,10 +53,22 @@ const HOME_QUERY = /* GraphQL */ `
 `;
 
 // ------------- Helpers -----------------
+function coerceToString(v: unknown): string | undefined {
+  if (typeof v === "string") return v;
+  if (v && typeof v === "object") {
+    const anyv: any = v;
+    if (typeof anyv.text === "string") return anyv.text;
+    if (typeof anyv.value === "string") return anyv.value;
+  }
+  return undefined;
+}
+
 function text(fields: Field[], ...keys: string[]) {
   for (const k of keys) {
     const f = fields.find((x) => x.key === k);
-    if (f?.value) return f.value;
+    if (!f) continue;
+    const s = coerceToString(f.value)?.trim();
+    if (s) return s;
   }
 }
 
@@ -59,10 +78,16 @@ function img(fields: Field[], ...keys: string[]) {
     if (!f) continue;
     const ref: any = f.reference;
     if (ref?.image?.url)
-      return { url: ref.image.url, width: ref.image.width, height: ref.image.height, alt: ref.image.altText ?? undefined };
+      return {
+        url: ref.image.url,
+        width: ref.image.width,
+        height: ref.image.height,
+        alt: ref.image.altText ?? undefined,
+      };
     if (ref?.url) return { url: ref.url };
     if (ref?.previewImage?.url) return { url: ref.previewImage.url };
-    if (typeof f.value === "string" && f.value.startsWith("http")) return { url: f.value };
+    const s = coerceToString(f.value);
+    if (s && s.startsWith("http")) return { url: s };
   }
   return undefined;
 }
@@ -73,12 +98,20 @@ function asDate(v?: string) {
   return Number.isNaN(+d) ? undefined : d;
 }
 
-export function formatDates(start?: Date, end?: Date) {
-  if (!start && !end) return undefined;
-  const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short", year: "numeric" };
-  if (start && end) return `${start.toLocaleDateString(undefined, opts)} – ${end.toLocaleDateString(undefined, opts)}`;
-  if (start) return start.toLocaleDateString(undefined, opts);
-  return end!.toLocaleDateString(undefined, opts);
+// ----- Title logic centralised -----
+export function isGroupShow(ex: Pick<ExhibitionCard, "artist" | "isGroup">): boolean {
+  if (ex?.isGroup === true) return true;
+  const a = (ex?.artist ?? "").trim().toLowerCase();
+  return a === "group exhibition" || a === "group show" || a === "group";
+}
+
+export function headingParts(
+  ex: Pick<ExhibitionCard, "title" | "artist" | "isGroup">
+): { primary: string; secondary?: string; isGroup: boolean } {
+  const group = isGroupShow(ex);
+  const primary = group ? (ex.title || ex.artist || "") : (ex.artist || ex.title || "");
+  const secondary = group ? ex.artist : ex.title;
+  return { primary, secondary, isGroup: group };
 }
 
 function mapNode(n: Node): ExhibitionCard {
@@ -89,11 +122,15 @@ function mapNode(n: Node): ExhibitionCard {
     location: text(n.fields, "location", "subtitle"),
     start: asDate(text(n.fields, "startDate", "startdate", "start")),
     end: asDate(text(n.fields, "endDate", "enddate", "end")),
+    // normalise short text variants into one field
+    summary: text(n.fields, "short_text", "short-text", "shortText", "summary", "teaser", "description"),
     hero:
       img(n.fields, "heroImage") ??
       img(n.fields, "heroimage") ??
       img(n.fields, "coverimage") ??
       img(n.fields, "coverImage"),
+    // if you later add a boolean field, map it here:
+    // isGroup: text(n.fields, "is_group", "isGroup") === "true",
   };
 }
 
@@ -105,7 +142,6 @@ export function classifyExhibitions(nodes: Node[]) {
   const isCurrent = (e: ExhibitionCard) => {
     const s = e.start?.getTime();
     const ee = e.end?.getTime();
-    // Current if started and (no end or not ended yet)
     return s !== undefined && s <= today && (ee === undefined || ee >= today);
   };
 
@@ -117,25 +153,25 @@ export function classifyExhibitions(nodes: Node[]) {
   const isPast = (e: ExhibitionCard) => {
     const ee = e.end?.getTime();
     if (ee !== undefined) return ee < today;
-    // If no end but has a start before today and isn't current, treat as past
     const s = e.start?.getTime();
     return s !== undefined && s < today && !isCurrent(e);
   };
 
-  // pick a single current (if multiple, prefer the one with the latest start)
-  const currentList = ex.filter(isCurrent).sort((a, b) => (a.start?.getTime() ?? 0) - (b.start?.getTime() ?? 0));
+  const currentList = ex
+    .filter(isCurrent)
+    .sort((a, b) => (b.start?.getTime() ?? 0) - (a.start?.getTime() ?? 0));
   const current = currentList[0] ?? null;
 
   const upcoming = ex
     .filter((e) => e !== current && isUpcoming(e))
-    .sort((a, b) => (a.start?.getTime() ?? Infinity) - (b.start?.getTime() ?? Infinity)); // soonest first
+    .sort((a, b) => (a.start?.getTime() ?? Infinity) - (b.start?.getTime() ?? Infinity));
 
   const past = ex
     .filter((e) => e !== current && isPast(e))
     .sort((a, b) => {
       const at = a.end?.getTime() ?? a.start?.getTime() ?? 0;
       const bt = b.end?.getTime() ?? b.start?.getTime() ?? 0;
-      return bt - at; // most recent first
+      return bt - at;
     });
 
   return { current, upcoming, past };

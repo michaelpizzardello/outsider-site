@@ -11,7 +11,7 @@ export default function Container({
     <div
       className={clsx(
         // same nice gutters as mid viewport
-        "mx-auto px-4 sm:px-6 lg:px-8",
+        "mx-auto px-4 sm:px-6 lg:px-20",
         // stop capping on very large screens so desktop isn’t pulled in
         "max-w-7xl 2xl:max-w-none",
         className
