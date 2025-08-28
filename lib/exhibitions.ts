@@ -182,3 +182,66 @@ export async function fetchHomeExhibitions() {
   const data = await shopifyFetch<HomeQuery>(HOME_QUERY);
   return data.exhibitions?.nodes ?? [];
 }
+
+// ---- Index data for /exhibitions ----
+export async function listExhibitions({
+  status,
+  year,
+  page = 1,
+  pageSize = 12,
+}: {
+  status: "current" | "upcoming" | "past";
+  year?: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<{ items: ExhibitionCard[]; total: number; pageSize: number }> {
+  // Reuse your existing fetch + mapping
+  const nodes = await fetchHomeExhibitions();   // uses HOME_QUERY you already have
+  const all = nodes.map(mapNode);
+
+  const now = Date.now();
+
+  const isCurrent = (e: ExhibitionCard) => {
+    const s = e.start?.getTime();
+    const ee = e.end?.getTime();
+    return s !== undefined && s <= now && (ee === undefined || ee >= now);
+  };
+  const isUpcoming = (e: ExhibitionCard) => {
+    const s = e.start?.getTime();
+    return s !== undefined && s > now;
+  };
+  const isPast = (e: ExhibitionCard) => {
+    const ee = e.end?.getTime();
+    if (ee !== undefined) return ee < now;
+    const s = e.start?.getTime();
+    return s !== undefined && s < now && !isCurrent(e);
+  };
+
+  const statusOk = (e: ExhibitionCard) =>
+    status === "current" ? isCurrent(e) : status === "upcoming" ? isUpcoming(e) : isPast(e);
+
+  const yearOk = (e: ExhibitionCard) =>
+    year
+      ? e.start?.getFullYear() === Number(year) || e.end?.getFullYear() === Number(year)
+      : true;
+
+  const filtered = all.filter((e) => statusOk(e) && yearOk(e));
+
+  // Sort: upcoming = start asc; past = end/then start desc; current = start asc
+  filtered.sort((a, b) => {
+    const as = a.start?.getTime() ?? 0;
+    const bs = b.start?.getTime() ?? 0;
+    const ae = a.end?.getTime() ?? as;
+    const be = b.end?.getTime() ?? bs;
+
+    if (status === "upcoming") return as - bs;
+    if (status === "past") return be - ae;
+    return as - bs; // current
+  });
+
+  const total = filtered.length;
+  const startIdx = (page - 1) * pageSize;
+  const items = filtered.slice(startIdx, startIdx + pageSize);
+
+  return { items, total, pageSize };
+}
