@@ -1,10 +1,8 @@
 // app/page.tsx
 import "server-only";
 
-import Header from "@/components/Header";
 import CurrentExhibitionHero from "@/components/CurrentExhibitionHero";
 import UpcomingShows from "@/components/UpcomingShows";
-import SiteFooter from "@/components/SiteFooter";
 // import HolidayBanner from "@/components/HolidayBanner";
 
 import {
@@ -39,11 +37,13 @@ export default async function HomePage() {
     past,
   });
 
-  // 4) Hero copy from central labels helper
-  const { top, button } = heroLabels(heroLabel);
+  // 4) Hero copy from central labels helper (only if we have a hero)
+  const { top, button } = hero
+    ? heroLabels(heroLabel)
+    : { top: "", button: "" };
 
   return (
-    <main className="bg-white text-neutral-900">
+    <main>
       {/* Optional site-wide banner
       <HolidayBanner
         show={process.env.NEXT_PUBLIC_BANNER_ENABLED === "true"}
@@ -54,22 +54,14 @@ export default async function HomePage() {
       />
       */}
 
-      <div className="relative">
-        <Header />
-
-        {/* Hero (Current → Upcoming → Past) */}
-        {hero ? (
-          <CurrentExhibitionHero
-            ex={hero}
-            topLabel={top}
-            buttonLabel={button}
-          />
-        ) : (
-          <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 text-center text-neutral-500">
-            No exhibitions to display. Please check back soon.
-          </section>
-        )}
-      </div>
+      {/* FIRST BLOCK — no extra top padding; Header uses overlay in app/layout.tsx */}
+      {hero ? (
+        <CurrentExhibitionHero ex={hero} topLabel={top} buttonLabel={button} />
+      ) : (
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 text-center text-neutral-500">
+          No exhibitions to display. Please check back soon.
+        </section>
+      )}
 
       {/* After hero: show ONE list only */}
       {upcomingAfterHero.length > 0 ? (
@@ -80,8 +72,6 @@ export default async function HomePage() {
       ) : pastAfterHero.length > 0 ? (
         <UpcomingShows items={pastAfterHero} labelKey="pastExhibition" />
       ) : null}
-
-      <SiteFooter />
     </main>
   );
 }

@@ -11,8 +11,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${sofiaPro.className} antialiased bg-white text-black`}>
-        <Header />
+      <body className={`${sofiaPro.className} antialiased`}>
+        <Header overlay /> {/* overlay keeps hero flush to top */}
         {children}
         <SiteFooter />
       </body>
