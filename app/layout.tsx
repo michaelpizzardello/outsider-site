@@ -1,12 +1,21 @@
 // app/layout.tsx
 import "./globals.css";
 import { sofiaPro } from "./fonts";
+import Header from "@/components/Header";
+import SiteFooter from "@/components/SiteFooter";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      {/* This line makes the whole site use Sofia Pro */}
-      <body className={`${sofiaPro.className} antialiased`}>{children}</body>
+      <body className={`${sofiaPro.className} antialiased bg-white text-black`}>
+        <Header />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }

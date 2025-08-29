@@ -8,6 +8,7 @@ import Logo from "@/components/Logo";
 import NavLinks from "@/components/NavLinks";
 import MobileMenu from "./MobileMenu";
 import Container from "./Container";
+import { usePathname } from "next/navigation";
 
 // ======================================================
 // PROPS
@@ -38,6 +39,11 @@ export default function Header({
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const pathname = usePathname();
+  const isTransparentRoute =
+    pathname === "/" || pathname?.startsWith("/exhibitions/"); // detail pages only
+  const overlayFinal = isTransparentRoute; // ignore the prop; default solid everywhere else
+
   // ======================================================
   // EFFECTS
   // ======================================================
@@ -51,26 +57,24 @@ export default function Header({
   // ======================================================
   // DERIVED VALUES
   // ======================================================
-  const solid = open || !overlay || scrolled;
+  const solid = open || !overlayFinal || scrolled;
 
   const transitionSmooth = "transition-all duration-500 ease-in-out";
 
   // Nav text sizes
   const NAV_TEXT_COMPACT = "text-[13px] md:text-[13px] lg:text-[15px]"; // after scroll
-  const NAV_TEXT_LARGE   = "text-sm md:text-[14px] lg:text-base";       // pre-scroll (smaller on md)
+  const NAV_TEXT_LARGE = "text-sm md:text-[14px] lg:text-base"; // pre-scroll (smaller on md)
   const navLinkSize = scrolled ? NAV_TEXT_COMPACT : NAV_TEXT_LARGE;
 
-// Nav gaps (tighter on md so it sits farther from the logo)
+  // Nav gaps (tighter on md so it sits farther from the logo)
   const navGap = "gap-x-8 lg:gap-x-10 xl:gap-x-16";
 
-
-const wrapClass = clsx(
-  "fixed inset-x-0 top-0 z-40 transition-all duration-500 ease-in-out",
-  solid
-    ? "bg-white/95 backdrop-blur shadow-[0_6px_20px_rgba(0,0,0,.06)]"
-    : "bg-transparent"
-);
-
+  const wrapClass = clsx(
+    "fixed inset-x-0 top-0 z-40 transition-all duration-500 ease-in-out",
+    solid
+      ? "bg-white/95 backdrop-blur shadow-[0_6px_20px_rgba(0,0,0,.06)]"
+      : "bg-transparent"
+  );
 
   const textClass = solid ? "text-neutral-900" : "text-white";
 
@@ -84,7 +88,6 @@ const wrapClass = clsx(
     <>
       {/* HEADER CONTAINER */}
       <header className={wrapClass}>
-        
         <Container className={textClass}>
           {/* DESKTOP HEADER (iPad + desktop) */}
           <div

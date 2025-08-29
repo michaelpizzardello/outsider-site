@@ -9,6 +9,8 @@ import {
   type ExhibitionCard,
 } from "@/lib/exhibitions";
 
+import labels from "@/lib/labels";
+
 export const revalidate = 60;
 export const dynamic = "force-static";
 
@@ -40,7 +42,10 @@ export default async function ExhibitionsPage() {
   }
 
   return (
-    <main className="py-10 sm:py-12">
+    <main
+      className="pt-16 lg:pt-[76px] py-10 sm:py-12
+    "
+    >
       {/* Container (inline so we keep this page server-only) */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top title + anchor tabs */}
@@ -69,10 +74,10 @@ export default async function ExhibitionsPage() {
           <section
             key={s.key}
             id={s.key}
-            className={idx > 0 ? "mt-12 sm:mt-16" : ""}
+            className={idx > 0 ? "scroll-mt-24 mt-12 sm:mt-16" : ""}
           >
             {/* Anchor offset so headings don’t hide under your header */}
-            <h2 className="scroll-mt-24 text-xl font-medium">{s.label}</h2>
+            <h2 className=" text-xl font-medium">{s.label}</h2>
             <div className="mt-6 border-t border-neutral-200" />
 
             {/* Two per row like White Cube: 1→2 responsive */}
