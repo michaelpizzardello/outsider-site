@@ -11,15 +11,16 @@ export default function Section({
   children,
 }: {
   id?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "title-block";
   anchorOffsetVar?: boolean; // adds scroll-margin-top using --header-h
   className?: string;
   children: React.ReactNode;
 }) {
   const pad = {
     sm: "py-8 md:py-10",
-    md: "py-12 md:py-16 lg:py-20",
+    md: "py-12 md:py-16 lg:py-5",
     lg: "py-16 md:py-20 lg:py-28",
+    "title-block": "pt-16 md:pt-20 lg:pt-28",
   }[size];
   return (
     <section

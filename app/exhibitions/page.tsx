@@ -38,13 +38,15 @@ export default async function ExhibitionsPage() {
 
   return (
     <main>
-      <Section size="lg">
+      {/* TOP SECTION */}
+      <Section size="title-block">
         <Container>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
             Exhibitions
           </h1>
           {sections.length > 0 && (
             <div className="mt-4">
+              {/* EXHIBITIONS PAGE PILLS - CURRENT< PAST< UPCOMING*/}
               <ExhibitionsNav
                 sections={sections.map(({ key, label }) => ({ key, label }))}
               />
@@ -60,6 +62,7 @@ export default async function ExhibitionsPage() {
           id={s.key}
           anchorOffsetVar
         >
+          {/* EXHIBITIONS SECTION -- See blocks/ExhibitionsSection.tsx */}
           <Container>
             <ExhibitionSection label={s.label} items={s.items} kind={s.key} />
           </Container>
