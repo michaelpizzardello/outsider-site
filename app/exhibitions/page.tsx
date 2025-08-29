@@ -8,8 +8,7 @@ import {
   formatDates,
   type ExhibitionCard,
 } from "@/lib/exhibitions";
-
-import labels from "@/lib/labels";
+import { heroLabels, type PickHeroLabel } from "@/lib/labels";
 
 export const revalidate = 60;
 export const dynamic = "force-static";
@@ -19,6 +18,8 @@ export const metadata = {
   description: "Current, upcoming, and past exhibitions at Outsider Gallery.",
 };
 
+type SectionKey = "current" | "upcoming" | "past";
+
 export default async function ExhibitionsPage() {
   // 1) Fetch and bucket using your existing helpers
   const nodes = await fetchHomeExhibitions();
@@ -26,7 +27,7 @@ export default async function ExhibitionsPage() {
 
   // 2) Build sections in desired order; only include if they have content
   const sections: Array<{
-    key: "current" | "upcoming" | "past";
+    key: SectionKey;
     label: string;
     items: ExhibitionCard[];
   }> = [];
@@ -42,14 +43,15 @@ export default async function ExhibitionsPage() {
   }
 
   return (
+    // Top padding uses measured header height from Header.tsx: --header-h
     <main
-      className="pt-16 lg:pt-[76px] py-10 sm:py-12
-    "
+      className="pb-10 sm:pb-12"
+      style={{ paddingTop: "var(--header-h, 76px)" }}
     >
       {/* Container (inline so we keep this page server-only) */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top title + anchor tabs */}
-        <header className="mb-8 sm:mb-10">
+        <header className=" lg:mt-20 mb-8 sm:mb-10">
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
             Exhibitions
           </h1>
@@ -70,43 +72,54 @@ export default async function ExhibitionsPage() {
         </header>
 
         {/* Sections */}
-        {sections.map((s, idx) => (
-          <section
-            key={s.key}
-            id={s.key}
-            className={idx > 0 ? "scroll-mt-24 mt-12 sm:mt-16" : ""}
-          >
-            {/* Anchor offset so headings don’t hide under your header */}
-            <h2 className=" text-xl font-medium">{s.label}</h2>
-            <div className="mt-6 border-t border-neutral-200" />
+        {sections.map((s, idx) => {
+          const labelKey = (
+            s.key === "current"
+              ? "CURRENT EXHIBITION"
+              : s.key === "upcoming"
+              ? "UPCOMING EXHIBITION"
+              : "PAST EXHIBITION"
+          ) as PickHeroLabel;
+          const { top, button } = heroLabels(labelKey);
 
-            {/* Two per row like White Cube: 1→2 responsive */}
-            <div className="mt-8 grid grid-cols-1 gap-10 md:grid-cols-2">
-              {s.items.map((ex) => (
-                <article key={ex.handle} className="group">
-                  <Link href={`/exhibitions/${ex.handle}`} className="block">
-                    {/* Image */}
-                    {ex.hero?.url && (
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <Image
-                          src={ex.hero.url}
-                          alt={ex.hero.alt ?? ex.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 50vw"
-                          className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                          priority={false}
-                        />
-                      </div>
-                    )}
+          return (
+            <section
+              key={s.key}
+              id={s.key}
+              className={idx > 0 ? "mt-12 sm:mt-16" : ""}
+              style={{ scrollMarginTop: "var(--header-h, 76px)" }}
+            >
+              <h2 className="text-xl font-medium">{s.label}</h2>
+              <div className="mt-6 border-t border-neutral-200" />
 
-                    {/* Text block */}
-                    <CardText ex={ex} />
-                  </Link>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
+              {/* Two per row like White Cube: 1→2 responsive */}
+              <div className="mt-8 grid grid-cols-1 gap-10 md:grid-cols-2">
+                {s.items.map((ex) => (
+                  <article key={ex.handle} className="group">
+                    <Link href={`/exhibitions/${ex.handle}`} className="block">
+                      {/* Image */}
+                      {ex.hero?.url && (
+                        <div className="relative aspect-[4/3] overflow-hidden">
+                          <Image
+                            src={ex.hero.url}
+                            alt={ex.hero.alt ?? ex.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 50vw"
+                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            priority={false}
+                          />
+                        </div>
+                      )}
+
+                      {/* Text block */}
+                      <CardText ex={ex} topLabel={top} buttonLabel={button} />
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        })}
 
         {/* If absolutely nothing, show a friendly empty state */}
         {sections.length === 0 && (
@@ -120,7 +133,15 @@ export default async function ExhibitionsPage() {
 }
 
 /** Server-only text block (kept here to avoid client/server import issues) */
-function CardText({ ex }: { ex: ExhibitionCard }) {
+function CardText({
+  ex,
+  topLabel,
+  buttonLabel,
+}: {
+  ex: ExhibitionCard;
+  topLabel: string;
+  buttonLabel: string;
+}) {
   const { primary, secondary } = headingParts({
     title: ex.title,
     artist: ex.artist,
@@ -129,9 +150,9 @@ function CardText({ ex }: { ex: ExhibitionCard }) {
 
   return (
     <div className="mt-4">
-      {/* Small label like WC uses (optional) */}
+      {/* Top label from hero copy */}
       <p className="text-[11px] uppercase tracking-widest text-neutral-500">
-        Gallery exhibition
+        {topLabel}
       </p>
 
       <h3 className="mt-2 text-base font-medium leading-snug">
@@ -147,10 +168,12 @@ function CardText({ ex }: { ex: ExhibitionCard }) {
       </p>
       {ex.location && <p className="text-sm text-neutral-500">{ex.location}</p>}
 
-      {/* CTA (subtle) */}
+      {/* CTA from hero copy (underline only on hover) */}
       <p className="mt-4 inline-flex items-center text-sm">
-        <span className="mr-2">→</span>{" "}
-        <span className="underline">Visit exhibition</span>
+        <span className="mr-2">→</span>
+        <span className="underline-offset-4 hover:underline">
+          {buttonLabel}
+        </span>
       </p>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import clsx from "clsx";
 
 import { NAV_LINKS } from "@/lib/nav";
@@ -42,7 +42,7 @@ export default function Header({
   const pathname = usePathname();
   const isTransparentRoute =
     pathname === "/" || pathname?.startsWith("/exhibitions/"); // detail pages only
-  const overlayFinal = isTransparentRoute; // ignore the prop; default solid everywhere else
+  const overlayFinal = isTransparentRoute; // default solid elsewhere
 
   // ======================================================
   // EFFECTS
@@ -57,37 +57,73 @@ export default function Header({
   // ======================================================
   // DERIVED VALUES
   // ======================================================
+  // Solid = flat white (most pages) or after scroll / menu open
   const solid = open || !overlayFinal || scrolled;
 
   const transitionSmooth = "transition-all duration-500 ease-in-out";
 
-  // Nav text sizes
-  const NAV_TEXT_COMPACT = "text-[13px] md:text-[13px] lg:text-[15px]"; // after scroll
-  const NAV_TEXT_LARGE = "text-sm md:text-[14px] lg:text-base"; // pre-scroll (smaller on md)
+  // Nav text sizes (tall before scroll, compact after scroll)
+  const NAV_TEXT_COMPACT = "text-[13px] md:text-[13px] lg:text-[15px]";
+  const NAV_TEXT_LARGE = "text-sm md:text-[14px] lg:text-base";
   const navLinkSize = scrolled ? NAV_TEXT_COMPACT : NAV_TEXT_LARGE;
 
   // Nav gaps (tighter on md so it sits farther from the logo)
   const navGap = "gap-x-8 lg:gap-x-10 xl:gap-x-16";
 
+  const bgClass = solid ? "bg-white/95 backdrop-blur" : "bg-transparent";
+  const shadowClass = scrolled
+    ? "shadow-[0_6px_20px_rgba(0,0,0,.06)]"
+    : "shadow-none";
+
   const wrapClass = clsx(
-    "fixed inset-x-0 top-0 z-40 transition-all duration-500 ease-in-out",
-    solid
-      ? "bg-white/95 backdrop-blur shadow-[0_6px_20px_rgba(0,0,0,.06)]"
-      : "bg-transparent"
+    "fixed inset-x-0 top-0 z-40 transition-shadow duration-300 ease-in-out",
+    bgClass,
+    shadowClass
   );
 
   const textClass = solid ? "text-neutral-900" : "text-white";
 
+  // Tall before scroll, compact after scroll (even on solid pages)
   const headerPaddingDesktop = scrolled ? "py-2" : "py-10";
   const headerPaddingMobile = scrolled ? "py-2" : "py-4";
+
+  // ======================================================
+  // MEASURE HEADER HEIGHT -> CSS var (--header-h)
+  // ======================================================
+  const headerRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof window === "undefined") return;
+
+    const setVar = () => {
+      document.documentElement.style.setProperty(
+        "--header-h",
+        `${el.offsetHeight}px`
+      );
+    };
+
+    // Initial + on resize
+    const raf = requestAnimationFrame(setVar);
+    const ro =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(setVar) : null;
+    ro?.observe(el);
+    window.addEventListener("resize", setVar);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro?.disconnect();
+      window.removeEventListener("resize", setVar);
+    };
+    // Update when these change, as they affect height
+  }, [scrolled, open, solid]);
 
   // ======================================================
   // RENDER
   // ======================================================
   return (
     <>
-      {/* HEADER CONTAINER */}
-      <header className={wrapClass}>
+      {/* FIXED HEADER */}
+      <header ref={headerRef} className={wrapClass}>
         <Container className={textClass}>
           {/* DESKTOP HEADER (iPad + desktop) */}
           <div
@@ -151,13 +187,13 @@ export default function Header({
         </Container>
       </header>
 
-      {/* MOBILE MENU */}
-      <MobileMenu open={open} onClose={() => setOpen(false)} nav={nav} />
-
-      {/* OPTIONAL SPACER */}
+      {/* OPTIONAL SPACER (leave off by default; pages use --header-h instead) */}
       {withSpacer ? (
         <div className="h-[64px] lg:h-[76px]" aria-hidden="true" />
       ) : null}
+
+      {/* MOBILE MENU */}
+      <MobileMenu open={open} onClose={() => setOpen(false)} nav={nav} />
     </>
   );
 }

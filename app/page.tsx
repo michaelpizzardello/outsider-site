@@ -73,7 +73,10 @@ export default async function HomePage() {
 
       {/* After hero: show ONE list only */}
       {upcomingAfterHero.length > 0 ? (
-        <UpcomingShows items={upcomingAfterHero} labelKey="upcomingExhibition" />
+        <UpcomingShows
+          items={upcomingAfterHero}
+          labelKey="upcomingExhibition"
+        />
       ) : pastAfterHero.length > 0 ? (
         <UpcomingShows items={pastAfterHero} labelKey="pastExhibition" />
       ) : null}

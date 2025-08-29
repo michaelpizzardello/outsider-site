@@ -29,7 +29,7 @@ export function heroLabels(label: PickHeroLabel) {
     case "CURRENT EXHIBITION":
       return { top: "Current exhibition", button: "View Exhibition" };
     case "UPCOMING EXHIBITION":
-      return { top: "Upcoming exhibition", button: "View details" };
+      return { top: "Upcoming exhibition", button: "View Exhibition" };
     case "PAST EXHIBITION":
       return { top: "Past exhibition", button: "View Exhibition" };
     default:
