@@ -74,11 +74,13 @@ export default function Header({
   const shadowClass = scrolled
     ? "shadow-[0_6px_20px_rgba(0,0,0,.06)]"
     : "shadow-none";
+  const borderClass = solid ? "border-b border-neutral-200" : "border-b-0";
 
   const wrapClass = clsx(
     "fixed inset-x-0 top-0 z-40 transition-shadow duration-300 ease-in-out",
     bgClass,
-    shadowClass
+    shadowClass,
+    borderClass
   );
 
   const textClass = solid ? "text-neutral-900" : "text-white";
