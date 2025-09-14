@@ -1,18 +1,41 @@
 // app/exhibitions/[handle]/page.tsx
+// -----------------------------------------------------------------------------
+// Exhibition detail route: /exhibitions/[handle]
+//
+// What this file does:
+// 1) Fetch one Shopify Metaobject (type: "exhibitions") by handle
+// 2) Build the same `ExhibitionCard` shape the home hero already uses (toCard)
+// 3) Compute the phase label from dates (CURRENT / UPCOMING / PAST)
+// 4) Render:
+//      - <Header overlay />
+//      - <CurrentExhibitionHero />
+//      - <Details />  ← Dates / Location / Share + Read-more text
+//      - <SiteFooter />
+//
+// Notes:
+// • Long copy (main text) is selected via `extractLongCopy(...)` by FIELD TYPE,
+//   so you don’t need to hard-code field keys. If you later standardise on a
+//   single key (e.g. `essay`), you can swap the helper with a direct read.
+// • This file stays a SERVER component. `Details` contains client children.
+// -----------------------------------------------------------------------------
+
 import "server-only";
 import { notFound } from "next/navigation";
+
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import CurrentExhibitionHero from "@/components/CurrentExhibitionHero";
+import Details from "@/components/exhibition/Details";
+
 import { shopifyFetch } from "@/lib/shopify";
 import type { ExhibitionCard } from "@/lib/exhibitions";
 import { heroLabels, type PickHeroLabel } from "@/lib/labels";
-import Details from "@/components/exhibition/Details";
+import { extractLongCopy } from "@/lib/extractLongCopy"; // ← helper that picks/normalises long text
 
 export const revalidate = 60;
 export const dynamic = "force-static";
 
-// SAME field shape your home hero relies on
+// Query only what we actually need (keeps response small and fast).
 const QUERY = /* GraphQL */ `
   query ExhibitionForHero($handle: MetaobjectHandleInput!) {
     metaobject(handle: $handle) {
@@ -43,6 +66,7 @@ const QUERY = /* GraphQL */ `
   }
 `;
 
+// --------------------------- Types matching the query --------------------------
 type FieldRef =
   | {
       __typename: "MediaImage";
@@ -68,6 +92,8 @@ type Field = {
 };
 type Node = { handle: string; fields: Field[] };
 
+// ---------------------- Safe readers for metaobject fields --------------------
+/** Returns the first non-empty string value among the provided keys. */
 function text(fields: Field[], ...keys: string[]) {
   for (const k of keys) {
     const f = fields.find((x) => x.key === k);
@@ -83,28 +109,35 @@ function text(fields: Field[], ...keys: string[]) {
   }
 }
 
+/** Parse ISO/date-ish string → Date (or undefined if invalid). */
 function asDate(s?: string) {
   if (!s) return undefined;
   const d = new Date(s);
-  return isNaN(d.getTime()) ? undefined : d;
+  return Number.isNaN(d.getTime()) ? undefined : d;
 }
 
+/** Resolve an image from either MediaImage.image or GenericFile.previewImage. */
 function img(fields: Field[], key: string) {
   const f = fields.find((x) => x.key === key);
   if (!f) return undefined;
-  const m = (f.reference as any)?.image?.url;
-  if (m) {
+
+  // Metaobject field referencing a MediaImage
+  const mediaUrl = (f.reference as any)?.image?.url;
+  if (mediaUrl) {
     return {
-      url: m as string,
+      url: mediaUrl as string,
       width: (f.reference as any)?.image?.width,
       height: (f.reference as any)?.image?.height,
       alt: (f.reference as any)?.image?.altText || "",
     };
   }
-  const g = (f.reference as any)?.previewImage?.url;
-  if (g) return { url: g as string, alt: "" };
+
+  // GenericFile with a preview image
+  const previewUrl = (f.reference as any)?.previewImage?.url;
+  if (previewUrl) return { url: previewUrl as string, alt: "" };
 }
 
+/** Build the card shape your hero already expects (keeps things consistent). */
 function toCard(n: Node): ExhibitionCard {
   const f = n.fields;
   return {
@@ -123,7 +156,7 @@ function toCard(n: Node): ExhibitionCard {
       "teaser",
       "description"
     ),
-    // EXACT same fallback order as on home:
+    // Same fallback chain as home so the hero stays in sync.
     hero:
       img(f, "heroImage") ??
       img(f, "heroimage") ??
@@ -132,53 +165,72 @@ function toCard(n: Node): ExhibitionCard {
   };
 }
 
+/** Inclusive end-of-day phase label derived ONLY from dates. */
 function labelFromDates(start?: Date, end?: Date): PickHeroLabel {
-  const now = new Date();
-  // Treat end as inclusive through end-of-day
-  const startDay = start
-    ? new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime()
-    : undefined;
-  const endDay = end
-    ? new Date(
-        end.getFullYear(),
-        end.getMonth(),
-        end.getDate(),
-        23,
-        59,
-        59,
-        999
-      ).getTime()
-    : undefined;
-  const nowMs = now.getTime();
+  const nowMs = Date.now();
+
+  const startDay =
+    start !== undefined
+      ? new Date(
+          start.getFullYear(),
+          start.getMonth(),
+          start.getDate()
+        ).getTime()
+      : undefined;
+
+  const endDay =
+    end !== undefined
+      ? new Date(
+          end.getFullYear(),
+          end.getMonth(),
+          end.getDate(),
+          23,
+          59,
+          59,
+          999
+        ).getTime()
+      : undefined;
 
   if (startDay !== undefined && nowMs < startDay) return "UPCOMING EXHIBITION";
   if (endDay !== undefined && nowMs > endDay) return "PAST EXHIBITION";
   return "CURRENT EXHIBITION";
 }
 
+// ----------------------------------- Page ------------------------------------
 export default async function ExhibitionPage({
   params,
 }: {
   params: { handle: string };
 }) {
+  // 1) Fetch metaobject for this handle
   const data = await shopifyFetch<{ metaobject: Node | null }>(QUERY, {
     handle: { type: "exhibitions", handle: params.handle },
   });
   const node = data?.metaobject;
   if (!node) return notFound();
 
+  // 2) Build the hero card + phase labels
   const ex = toCard(node);
   const { top, button } = heroLabels(labelFromDates(ex.start, ex.end));
 
+  // 3) Pick/normalise the long copy (main text) from fields by TYPE (not name)
+  //    - Prefers `rich_text` (converted to HTML)
+  //    - Else any HTML-like value
+  //    - Else the longest multi-line field as paragraphs
+  const longTextHtml = extractLongCopy(node.fields as any);
+
+  // 4) Render page blocks
   return (
     <>
       <Header overlay />
+
       <CurrentExhibitionHero ex={ex} topLabel={top} buttonLabel={button} />
+
       <Details
         startDate={ex.start}
         endDate={ex.end}
         location={ex.location}
-        longTextHtml={ex.longTextHtml}
+        longTextHtml={longTextHtml}
       />
 
       <SiteFooter />

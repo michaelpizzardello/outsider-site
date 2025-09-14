@@ -1,101 +1,95 @@
-// components/exhibition/ExpandableText.tsx
-// Purpose: Clamp rich text to N lines with a subtle fade and a Read more / less toggle.
-// Implementation detail:
-// - Uses CSS -webkit-line-clamp (no Tailwind plugin required).
-// - Renders a hidden, unclamped clone to detect if toggling is needed.
+import { formatDates } from "@/lib/formatDates";
+import ShareButton from "./ShareButton";
+import ExpandableText from "./ExpandableText";
 
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+type Dateish = Date | string | null | undefined;
 
 type Props = {
-  html: string;
-  clampLines?: number; // default 10–12 looks like White Cube; we pass 12 from Details
+  startDate?: Dateish;
+  endDate?: Dateish;
+  location?: string | null;
+  longTextHtml?: string | null; // HTML string
+  shareUrl?: string;
 };
 
-export default function ExpandableText({ html, clampLines = 10 }: Props) {
-  const clampedRef = useRef<HTMLDivElement | null>(null);
-  const fullRef = useRef<HTMLDivElement | null>(null);
-  const [expanded, setExpanded] = useState(false);
-  const [showToggle, setShowToggle] = useState(false);
-
-  useEffect(() => {
-    // Compare heights between clamped and full blocks to decide if toggle is needed
-    const clamped = clampedRef.current;
-    const full = fullRef.current;
-    if (!clamped || !full) return;
-    // Small buffer accounts for rounding/layout differences
-    const needsToggle = full.scrollHeight - clamped.clientHeight > 8;
-    setShowToggle(needsToggle);
-  }, [html, clampLines]);
+export default function Details({
+  startDate,
+  endDate,
+  location,
+  longTextHtml,
+  shareUrl,
+}: Props) {
+  const dateRange = formatDates(startDate, endDate);
+  const hasMeta = Boolean(
+    startDate || endDate || (location && location.trim())
+  );
+  const hasText = Boolean(longTextHtml && longTextHtml.trim());
+  if (!hasMeta && !hasText) return null;
 
   return (
-    <div className="text-base leading-relaxed">
-      {/* Visible (clamped / expanded) */}
+    <section className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 py-12 md:py-16">
+      {/* 1 col → 12 col at md (fix) → 24 col at xl */}
       <div
-        ref={clampedRef}
-        className="relative"
-        style={
-          expanded
-            ? undefined
-            : {
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical" as any,
-                WebkitLineClamp: clampLines as any,
-                overflow: "hidden",
-              }
-        }
+        className="
+          grid grid-cols-1 gap-y-10
+          md:[grid-template-columns:repeat(12,minmax(0,1fr))] md:gap-x-14
+          xl:[grid-template-columns:repeat(24,minmax(0,1fr))] xl:gap-x-8
+        "
       >
-        {/* Fade overlay when clamped */}
-        {!expanded && showToggle ? (
+        {/* LEFT RAIL */}
+        <aside
+          className="
+            col-span-full
+            md:[grid-column:1/span_3]
+            xl:[grid-column:1/span_5]
+            space-y-6 text-sm
+          "
+        >
+          {(startDate || endDate) && (
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
+                Dates
+              </div>
+              <div className="mt-1">{dateRange}</div>
+            </div>
+          )}
+
+          {location && location.trim() && (
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
+                Location
+              </div>
+              <div className="mt-1 whitespace-pre-wrap">{location}</div>
+            </div>
+          )}
+
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
+              Share
+            </div>
+            <div className="mt-1">
+              <ShareButton url={shareUrl} />
+            </div>
+          </div>
+        </aside>
+
+        {/* BODY */}
+        {hasText && (
           <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
-            style={{
-              background:
-                "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))",
-            }}
-          />
-        ) : null}
-
-        <div
-          className="prose max-w-none prose-p:mb-4 prose-ul:my-4 prose-ol:my-4"
-          // Your site styles already normalise typography; keep it minimal.
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      </div>
-
-      {/* Toggle */}
-      {showToggle && (
-        <div className="mt-4">
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            aria-expanded={expanded}
-            className="inline-flex items-center gap-2 rounded-full border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-50"
+            className="
+              col-span-full
+              md:[grid-column:4/span_5]   /* two-column starts at md now */
+              xl:[grid-column:8/span_10]  /* 24-col placement like White Cube */
+              3xl:[grid-column:9/span_9]
+            "
           >
-            {/* Simple caret glyph (no extra deps) */}
-            <span
-              className="inline-block transition-transform"
-              style={{
-                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-              }}
-              aria-hidden
-            >
-              ▼
-            </span>
-            {expanded ? "Read less" : "Read more"}
-          </button>
-        </div>
-      )}
-
-      {/* Hidden full content for measurement (unclamped) */}
-      <div
-        ref={fullRef}
-        className="absolute left-[-9999px] top-[-9999px] w-[600px]" // width approximates measure
-        aria-hidden
-      >
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+            {/* slightly wider measure on mid screens; xl lets span define width */}
+            <div className="max-w-[60ch] md:max-w-[59ch] xl:max-w-none">
+              <ExpandableText html={longTextHtml!} clampLines={12} />
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 }
