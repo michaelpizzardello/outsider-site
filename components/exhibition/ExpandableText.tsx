@@ -1,95 +1,95 @@
-import { formatDates } from "@/lib/formatDates";
-import ShareButton from "./ShareButton";
-import ExpandableText from "./ExpandableText";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 
 type Dateish = Date | string | null | undefined;
 
-type Props = {
-  startDate?: Dateish;
-  endDate?: Dateish;
-  location?: string | null;
-  longTextHtml?: string | null; // HTML string
-  shareUrl?: string;
-};
+type Props = { html: string; clampLines?: number };
 
-export default function Details({
-  startDate,
-  endDate,
-  location,
-  longTextHtml,
-  shareUrl,
-}: Props) {
-  const dateRange = formatDates(startDate, endDate);
-  const hasMeta = Boolean(
-    startDate || endDate || (location && location.trim())
-  );
-  const hasText = Boolean(longTextHtml && longTextHtml.trim());
-  if (!hasMeta && !hasText) return null;
+export default function ExpandableText({ html, clampLines = 10 }: Props) {
+  const clampedRef = useRef<HTMLDivElement | null>(null);
+  const fullRef = useRef<HTMLDivElement | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [showToggle, setShowToggle] = useState(false);
+
+  useEffect(() => {
+    const c = clampedRef.current,
+      f = fullRef.current;
+    if (!c || !f) return;
+    setShowToggle(f.scrollHeight - c.clientHeight > 8);
+  }, [html, clampLines]);
 
   return (
-    <section className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 py-12 md:py-16">
-      {/* 1 col → 12 col at md (fix) → 24 col at xl */}
+    <div className="text-base leading-relaxed">
       <div
-        className="
-          grid grid-cols-1 gap-y-10
-          md:[grid-template-columns:repeat(12,minmax(0,1fr))] md:gap-x-14
-          xl:[grid-template-columns:repeat(24,minmax(0,1fr))] xl:gap-x-8
-        "
+        ref={clampedRef}
+        className="relative"
+        style={
+          expanded
+            ? undefined
+            : {
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical" as any,
+                WebkitLineClamp: clampLines as any,
+                overflow: "hidden",
+              }
+        }
       >
-        {/* LEFT RAIL */}
-        <aside
-          className="
-            col-span-full
-            md:[grid-column:1/span_3]
-            xl:[grid-column:1/span_5]
-            space-y-6 text-sm
-          "
-        >
-          {(startDate || endDate) && (
-            <div>
-              <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
-                Dates
-              </div>
-              <div className="mt-1">{dateRange}</div>
-            </div>
-          )}
-
-          {location && location.trim() && (
-            <div>
-              <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
-                Location
-              </div>
-              <div className="mt-1 whitespace-pre-wrap">{location}</div>
-            </div>
-          )}
-
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
-              Share
-            </div>
-            <div className="mt-1">
-              <ShareButton url={shareUrl} />
-            </div>
-          </div>
-        </aside>
-
-        {/* BODY */}
-        {hasText && (
+        {!expanded && showToggle && (
           <div
-            className="
-              col-span-full
-              md:[grid-column:4/span_5]   /* two-column starts at md now */
-              xl:[grid-column:8/span_10]  /* 24-col placement like White Cube */
-              3xl:[grid-column:9/span_9]
-            "
-          >
-            {/* slightly wider measure on mid screens; xl lets span define width */}
-            <div className="max-w-[60ch] md:max-w-[59ch] xl:max-w-none">
-              <ExpandableText html={longTextHtml!} clampLines={12} />
-            </div>
-          </div>
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-14"
+            style={{
+              background:
+                "linear-gradient(to bottom, rgba(255,255,255,0), #fff)",
+            }}
+          />
         )}
+
+        {/* Slightly smaller text only on ~900–1279px */}
+        <div
+          className="prose max-w-none prose-p:mb-4 prose-ul:my-4 prose-ol:my-4
+                     text-[1rem] min-[900px]:text-[0.96rem] xl:text-[1rem]"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
       </div>
-    </section>
+
+      {showToggle && (
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+            className="appearance-none bg-transparent border-none p-0
+                       inline-flex items-center gap-2 text-sm underline decoration-neutral-400/70
+                       hover:decoration-current focus-visible:outline-none
+                       focus-visible:ring-2 focus-visible:ring-neutral-400/40 rounded-[2px]"
+          >
+            <svg
+              className="h-4 w-4 translate-y-[1px] transition-transform"
+              style={{
+                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              aria-hidden
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+            <span>{expanded ? "Read less" : "Read more"}</span>
+          </button>
+        </div>
+      )}
+
+      {/* off-screen for measurement */}
+      <div
+        ref={fullRef}
+        className="absolute left-[-9999px] top-[-9999px] w-[600px]"
+        aria-hidden
+      >
+        <div dangerouslySetInnerHTML={{ __html: html }} />
+      </div>
+    </div>
   );
 }

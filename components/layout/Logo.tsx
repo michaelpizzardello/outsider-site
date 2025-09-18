@@ -7,8 +7,8 @@ type LogoProps = {
   ariaLabel?: string;
   darkSrc: string;
   lightSrc: string;
-  solid: boolean; // determines whether to use dark or light logo
-  className?: string; // lets parent control sizing (h-5, xl:h-6, etc.)
+  solid: boolean;
+  className?: string;
 };
 
 export default function Logo({
@@ -46,3 +46,4 @@ export default function Logo({
     </Link>
   );
 }
+

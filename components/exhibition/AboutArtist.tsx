@@ -1,0 +1,69 @@
+import Link from "next/link";
+import ExpandableText from "@/components/exhibition/ExpandableText";
+
+export default function AboutArtist({
+  name,
+  bioHtml,
+  handle,
+  title = "About the artist",
+}: {
+  name?: string | null;
+  bioHtml?: string | null;
+  handle?: string | null;
+  title?: string;
+}) {
+  if (!bioHtml && !handle) return null;
+
+  return (
+    <section className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 py-10 md:py-14">
+      <div
+        className="
+          grid grid-cols-1 gap-y-6
+          md:[grid-template-columns:repeat(12,minmax(0,1fr))] md:gap-x-14
+          xl:[grid-template-columns:repeat(24,minmax(0,1fr))] xl:gap-x-8
+        "
+      >
+        {/* LEFT RAIL */}
+        <div
+          className="
+            col-span-full
+            md:[grid-column:1/span_3]
+            xl:[grid-column:1/span_5]
+            text-[11px] uppercase tracking-[0.18em] opacity-60
+          "
+        >
+          {title}
+        </div>
+
+        {/* BODY */}
+        <div
+          className="
+            col-span-full
+            md:[grid-column:4/span_5]
+            xl:[grid-column:8/span_10]
+            3xl:[grid-column:9/span_9]
+          "
+        >
+          {bioHtml ? (
+            <div className="max-w-[60ch] md:max-w-[59ch] xl:max-w-none">
+              <ExpandableText html={bioHtml} clampLines={12} />
+            </div>
+          ) : null}
+
+          {handle ? (
+            <div className="mt-4">
+              <Link
+                href={`/artists/${handle}`}
+                className="inline-flex items-center gap-2 text-sm underline underline-offset-4"
+              >
+                <span aria-hidden>→</span>
+                View {name || "artist"} profile
+              </Link>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}
+

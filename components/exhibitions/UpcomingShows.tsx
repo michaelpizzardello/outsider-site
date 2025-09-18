@@ -1,5 +1,5 @@
-// components/UpcomingShows.tsx
-import Container from "@/components/Container";
+// components/exhibitions/UpcomingShows.tsx
+import Container from "@/components/layout/Container";
 import Image from "next/image";
 import Link from "next/link";
 import labels, { type LabelKey } from "@/lib/labels";
@@ -122,3 +122,4 @@ export default function UpcomingShows({
     </section>
   );
 }
+

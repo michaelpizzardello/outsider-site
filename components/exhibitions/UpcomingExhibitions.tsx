@@ -1,7 +1,7 @@
-// components/UpcomingExhibitions.tsx
+// components/exhibitions/UpcomingExhibitions.tsx
 import Image from "next/image";
 import Link from "next/link";
-import Container from "@/components/Container";
+import Container from "@/components/layout/Container";
 import { type ExhibitionCard, formatDates } from "@/lib/exhibitions";
 
 type Props = {
@@ -91,3 +91,4 @@ export default function UpcomingExhibitions({
     </section>
   );
 }
+

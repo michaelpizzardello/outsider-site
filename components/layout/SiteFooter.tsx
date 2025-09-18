@@ -1,8 +1,8 @@
-// components/SiteFooter.tsx
+// components/layout/SiteFooter.tsx
 "use client";
 
 import { useState } from "react";
-import Container from "@/components/Container";
+import Container from "@/components/layout/Container";
 import Link from "next/link";
 
 const defaultLinks = [
@@ -200,3 +200,4 @@ export default function SiteFooter({
     </footer>
   );
 }
+

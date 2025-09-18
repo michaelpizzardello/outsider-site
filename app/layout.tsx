@@ -1,8 +1,8 @@
 // app/layout.tsx
 import "./globals.css";
 import { sofiaPro } from "./fonts";
-import Header from "@/components/Header";
-import SiteFooter from "@/components/SiteFooter";
+import Header from "@/components/layout/Header";
+import SiteFooter from "@/components/layout/SiteFooter";
 
 export default function RootLayout({
   children,

@@ -1,4 +1,4 @@
-import NavLinks from "@/components/NavLinks";
+import NavLinks from "@/components/layout/NavLinks";
 
 export default function MobileMenu({
   open,
@@ -55,3 +55,4 @@ export default function MobileMenu({
     </div>
   );
 }
+

@@ -1,10 +1,8 @@
 // app/page.tsx
 import "server-only";
 
-import Header from "@/components/Header";
-import CurrentExhibitionHero from "@/components/CurrentExhibitionHero";
-import UpcomingShows from "@/components/UpcomingShows";
-import SiteFooter from "@/components/SiteFooter";
+import CurrentExhibitionHero from "@/components/exhibitions/CurrentExhibitionHero";
+import UpcomingShows from "@/components/exhibitions/UpcomingShows";
 // import HolidayBanner from "@/components/HolidayBanner";
 
 import {
@@ -55,8 +53,6 @@ export default async function HomePage() {
       */}
 
       <div className="relative">
-        <Header />
-
         {/* Hero (Current → Upcoming → Past) */}
         {hero ? (
           <CurrentExhibitionHero
@@ -80,8 +76,6 @@ export default async function HomePage() {
       ) : pastAfterHero.length > 0 ? (
         <UpcomingShows items={pastAfterHero} labelKey="pastExhibition" />
       ) : null}
-
-      <SiteFooter />
     </main>
   );
 }

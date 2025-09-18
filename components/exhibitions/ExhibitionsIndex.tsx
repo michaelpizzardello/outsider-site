@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { ExhibitionCard } from "@/lib/exhibitions"; // type-only (erased at build)
 import { formatDates } from "@/lib/formatDates"; // safe utility
-import Container from "@/components/Container";
+import Container from "@/components/layout/Container";
 import clsx from "clsx";
 
 // Local helper to avoid importing runtime from server-only lib

@@ -1,4 +1,4 @@
-// components/CurrentExhibitionHero.tsx
+// components/exhibitions/CurrentExhibitionHero.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { formatDates } from "@/lib/formatDates";
@@ -31,7 +31,6 @@ export default function CurrentExhibitionHero({
 
   return (
     <section className="relative isolate min-h-[100svh] w-full overflow-hidden">
-      {/* Background image */}
       {imgSrc ? (
         <Image
           src={imgSrc}
@@ -45,10 +44,8 @@ export default function CurrentExhibitionHero({
         <div className="absolute inset-0 bg-neutral-100" />
       )}
 
-      {/* Legibility scrim */}
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
-      {/* Content */}
       <div className="absolute inset-0 grid place-items-center px-4 text-center">
         <div className="z-10 max-w-[80ch] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
           <p className="mb-3 text-[11px] md:text-[12px] tracking-[.28em] uppercase opacity-80">
@@ -88,3 +85,4 @@ export default function CurrentExhibitionHero({
     </section>
   );
 }
+

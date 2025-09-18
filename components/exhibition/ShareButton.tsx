@@ -1,93 +1,62 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
-type Props = { html: string; clampLines?: number };
+type Props = { url?: string };
 
-export default function ExpandableText({ html, clampLines = 10 }: Props) {
-  const clampedRef = useRef<HTMLDivElement | null>(null);
-  const fullRef = useRef<HTMLDivElement | null>(null);
-  const [expanded, setExpanded] = useState(false);
-  const [showToggle, setShowToggle] = useState(false);
+export default function ShareButton({ url }: Props) {
+  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
 
-  useEffect(() => {
-    const c = clampedRef.current,
-      f = fullRef.current;
-    if (!c || !f) return;
-    setShowToggle(f.scrollHeight - c.clientHeight > 8);
-  }, [html, clampLines]);
+  async function copyToClipboard(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus("copied");
+      setTimeout(() => setStatus("idle"), 1500);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 1500);
+    }
+  }
+
+  async function onClick() {
+    const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "");
+    const title = document?.title || "Share";
+    const text = "Check this out";
+
+    if (typeof navigator !== "undefined" && (navigator as any).share) {
+      try {
+        await (navigator as any).share({ title, text, url: shareUrl });
+        return;
+      } catch {
+        // fall through to copy
+      }
+    }
+    if (shareUrl) await copyToClipboard(shareUrl);
+  }
 
   return (
-    <div className="text-base leading-relaxed">
-      <div
-        ref={clampedRef}
-        className="relative"
-        style={
-          expanded
-            ? undefined
-            : {
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical" as any,
-                WebkitLineClamp: clampLines as any,
-                overflow: "hidden",
-              }
-        }
-      >
-        {!expanded && showToggle && (
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-14"
-            style={{
-              background:
-                "linear-gradient(to bottom, rgba(255,255,255,0), #fff)",
-            }}
-          />
-        )}
-
-        {/* Slightly smaller text only on ~900–1279px */}
-        <div
-          className="prose max-w-none prose-p:mb-4 prose-ul:my-4 prose-ol:my-4
-                     text-[1rem] min-[900px]:text-[0.96rem] xl:text-[1rem]"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      </div>
-
-      {showToggle && (
-        <div className="mt-3">
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            aria-expanded={expanded}
-            className="appearance-none bg-transparent border-none p-0
-                       inline-flex items-center gap-2 text-sm underline decoration-neutral-400/70
-                       hover:decoration-current focus-visible:outline-none
-                       focus-visible:ring-2 focus-visible:ring-neutral-400/40 rounded-[2px]"
-          >
-            <svg
-              className="h-4 w-4 translate-y-[1px] transition-transform"
-              style={{
-                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-              }}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              aria-hidden
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-            <span>{expanded ? "Read less" : "Read more"}</span>
-          </button>
-        </div>
-      )}
-
-      {/* off-screen for measurement */}
-      <div
-        ref={fullRef}
-        className="absolute left-[-9999px] top-[-9999px] w-[600px]"
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex items-center gap-2 text-sm underline underline-offset-2 decoration-neutral-400/70 hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 rounded-[2px]"
+      aria-label="Share link"
+    >
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
         aria-hidden
       >
-        <div dangerouslySetInnerHTML={{ __html: html }} />
-      </div>
-    </div>
+        <path d="M15 8a3 3 0 100-6 3 3 0 000 6zM21 22a3 3 0 10-6 0 3 3 0 006 0zM9 15a3 3 0 10-6 0 3 3 0 006 0z" />
+        <path d="M8.59 13.51l6.83-3.02M8.59 16.49l6.83 3.02" />
+      </svg>
+      <span>
+        {status === "idle" && "Copy link"}
+        {status === "copied" && "Copied!"}
+        {status === "error" && "Error"}
+      </span>
+    </button>
   );
 }
