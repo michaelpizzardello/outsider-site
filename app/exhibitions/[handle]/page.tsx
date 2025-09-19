@@ -25,12 +25,13 @@ import { notFound } from "next/navigation";
 import CurrentExhibitionHero from "@/components/exhibitions/CurrentExhibitionHero";
 import Details from "@/components/exhibition/Details";
 import InstallationViews from "@/components/exhibition/InstallationViews";
-import FeaturedWorks, { type WorkItem } from "@/components/exhibition/FeaturedWorks";
-import AboutArtist from "@/components/exhibition/AboutArtist";
+import FeaturedWorks from "@/components/exhibition/FeaturedWorks";
+import AboutArtistWithPortrait from "@/components/exhibition/AboutArtistWithPortrait";
 
 import { shopifyFetch } from "@/lib/shopify";
 import type { ExhibitionCard } from "@/lib/exhibitions";
 import { heroLabels, type PickHeroLabel } from "@/lib/labels";
+import { isGroupShow } from "@/lib/exhibitions";
 import { extractLongCopy } from "@/lib/extractLongCopy"; // ← helper that picks/normalises long text
 
 export const revalidate = 60;
@@ -66,6 +67,27 @@ const QUERY = /* GraphQL */ `
               url
             }
           }
+          ... on Metaobject {
+            handle
+            type
+            fields {
+              key
+              type
+              value
+              reference {
+                __typename
+                ... on MediaImage { image { url width height altText } }
+                ... on GenericFile { url previewImage { url } }
+              }
+              references(first: 50) {
+                nodes {
+                  __typename
+                  ... on MediaImage { image { url width height altText } }
+                  ... on GenericFile { url previewImage { url } }
+                }
+              }
+            }
+          }
         }
         references(first: 50) {
           nodes {
@@ -77,6 +99,7 @@ const QUERY = /* GraphQL */ `
               url
               previewImage { url }
             }
+            ... on Metaobject { handle type }
           }
         }
       }
@@ -87,6 +110,7 @@ const QUERY = /* GraphQL */ `
         id
         handle
         title
+        vendor
         availableForSale
         featuredImage { url width height altText }
         metafield(namespace: $mfNamespace, key: $mfKey) {
@@ -100,6 +124,9 @@ const QUERY = /* GraphQL */ `
         year: metafield(namespace: "custom", key: "year") { value }
         medium: metafield(namespace: "custom", key: "medium") { value }
         dimensions: metafield(namespace: "custom", key: "dimensions") { value }
+        artistName: metafield(namespace: "custom", key: "artist") { value }
+        sold: metafield(namespace: "custom", key: "sold") { value }
+        priceRange { minVariantPrice { amount currencyCode } }
       }
     }
   }
@@ -121,6 +148,12 @@ type FieldRef =
       url?: string;
       previewImage?: { url: string | null } | null;
     }
+  | {
+      __typename: "Metaobject";
+      handle?: string;
+      type?: string;
+      fields?: Field[];
+    }
   | { __typename: string };
 
 type Field = {
@@ -135,6 +168,7 @@ type Product = {
   id: string;
   handle: string;
   title: string;
+  vendor?: string | null;
   availableForSale: boolean;
   featuredImage?: { url: string; width?: number; height?: number; altText?: string | null } | null;
   metafield?: {
@@ -143,6 +177,9 @@ type Product = {
   year?: { value?: string | null } | null;
   medium?: { value?: string | null } | null;
   dimensions?: { value?: string | null } | null;
+  artistName?: { value?: string | null } | null;
+  sold?: { value?: string | null } | null;
+  priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } | null } | null;
 };
 
 // ---------------------- Safe readers for metaobject fields --------------------
@@ -278,6 +315,12 @@ function imageFromRefNode(ref: any) {
   }
   if (ref?.previewImage?.url) return { url: ref.previewImage.url as string };
   if (ref?.url && typeof ref.url === "string") return { url: ref.url as string };
+  // If a Metaobject has an image-like field, try to derive the first image
+  if (ref?.__typename === "Metaobject" && Array.isArray(ref.fields)) {
+    // Only accept the explicit key used in your schema
+    const imgField = (ref.fields as any[]).find((f: any) => f?.key === "portrait");
+    if (imgField) return imageFromField(imgField as any);
+  }
 }
 
 function collectInstallationImages(fields: Field[]) {
@@ -352,7 +395,11 @@ function collectFeaturedWorks(fields: Field[]): WorkItem[] {
     .filter((w) => Boolean(w.image));
 }
 
-function collectFeaturedWorksFromProducts(products: Product[] | undefined, exhibitionHandle: string) {
+function collectFeaturedWorksFromProducts(
+  products: Product[] | undefined,
+  exhibitionHandle: string,
+  fallbackArtist?: string | null
+) {
   if (!products?.length) return [] as WorkItem[];
 
   const items: WorkItem[] = [];
@@ -366,12 +413,21 @@ function collectFeaturedWorksFromProducts(products: Product[] | undefined, exhib
     // You can remove this check if you want to display all regardless of inventory
     // if (!p.availableForSale) continue;
 
+    const soldFlag = String(p.sold?.value ?? "").toLowerCase().trim();
+    const isSold = soldFlag === "true" || soldFlag === "1" || soldFlag === "yes" || p.availableForSale === false;
+    const price = p.priceRange?.minVariantPrice
+      ? { amount: p.priceRange.minVariantPrice.amount, currencyCode: p.priceRange.minVariantPrice.currencyCode }
+      : undefined;
+
     items.push({
       image: p.featuredImage ? { url: p.featuredImage.url, width: p.featuredImage.width, height: p.featuredImage.height, alt: p.featuredImage.altText ?? undefined } : undefined,
       title: p.title,
       year: p.year?.value ?? undefined,
       medium: p.medium?.value ?? undefined,
       dimensions: p.dimensions?.value ?? undefined,
+      artist: p.artistName?.value ?? p.vendor ?? fallbackArtist ?? undefined,
+      sold: isSold,
+      price,
       // Link: if you add a product route later, use `/products/${p.handle}`
       // link: `/products/${p.handle}`,
     });
@@ -379,21 +435,80 @@ function collectFeaturedWorksFromProducts(products: Product[] | undefined, exhib
   return items;
 }
 
-function extractAboutArtist(fields: Field[]) {
-  // Try explicit handle field for linking, and bio text fields
-  const handle =
-    toString(fields.find((f) => /artist[_-]?handle/i.test(f.key))?.value) ??
-    toString(fields.find((f) => /artist[_-]?slug/i.test(f.key))?.value) ??
-    undefined;
-
-  // Subset to possible artist bio fields and run existing extractor
-  const artistFields = fields.filter((f) =>
-    /artist.*bio|artist.*about|bio.*artist|about.*artist/i.test(f.key)
-  );
-  const bioHtml = artistFields.length ? extractLongCopy(artistFields as any) : null;
-
-  return { handle: handle ?? null, bioHtml };
+function extractArtistRef(fields: Field[]) {
+  const norm = (s: string) => s.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  const f = fields.find((x) => norm(x.key) === "artistref");
+  if (!f) return null;
+  const ref: any = f.reference;
+  if (ref && ref.__typename === "Metaobject") return ref as { handle?: string; fields?: Field[] };
+  const nodes: any[] = (f as any)?.references?.nodes ?? [];
+  const first = nodes.find((n) => n && n.__typename === "Metaobject");
+  return first || null;
 }
+
+function firstPortraitFromFields(fields: Field[]) {
+  const f = fields.find((x) => x.key === "portrait");
+  return f ? imageFromField(f) : undefined;
+}
+
+function extractBioHtmlFromArtistFields(fields: Field[]) {
+  const bio = fields.find((x) => x.key === "bio");
+  return bio ? extractLongCopy([bio] as any) : null;
+}
+
+// Fetch artist metaobject by handle (exact type: "artist")
+const ARTIST_QUERY = /* GraphQL */ `
+  query ArtistByHandle($handle: String!) {
+    metaobject(handle: { type: "artist", handle: $handle }) {
+      handle
+      fields {
+        key
+        type
+        value
+        reference {
+          __typename
+          ... on MediaImage { image { url width height altText } }
+          ... on GenericFile { url previewImage { url } }
+        }
+        references(first: 50) {
+          nodes {
+            __typename
+            ... on MediaImage { image { url width height altText } }
+            ... on GenericFile { url previewImage { url } }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const ARTIST_BY_ID_QUERY = /* GraphQL */ `
+  query ArtistById($id: ID!) {
+    node(id: $id) {
+      __typename
+      ... on Metaobject {
+        handle
+        fields {
+          key
+          type
+          value
+          reference {
+            __typename
+            ... on MediaImage { image { url width height altText } }
+            ... on GenericFile { url previewImage { url } }
+          }
+          references(first: 50) {
+            nodes {
+              __typename
+              ... on MediaImage { image { url width height altText } }
+              ... on GenericFile { url previewImage { url } }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 // ----------------------------------- Page ------------------------------------
 export default async function ExhibitionPage({
@@ -401,6 +516,7 @@ export default async function ExhibitionPage({
 }: {
   params: { handle: string };
 }) {
+  console.log("[exhibitions/[handle]] params.handle=", params.handle);
   // 1) Fetch metaobject for this handle
   const data = await shopifyFetch<{
     metaobject: Node | null;
@@ -413,25 +529,106 @@ export default async function ExhibitionPage({
   });
   const node = data?.metaobject;
   if (!node) return notFound();
+  console.log(
+    "[exhibitions/[handle]] loaded metaobject",
+    node.handle,
+    "fields:",
+    node.fields?.length ?? 0
+  );
+  try {
+    console.log(
+      "[exhibitions/[handle]] exhibition field keys:",
+      (node.fields || []).map((f:any) => ({
+        key: f.key,
+        type: f.type,
+        ref: (f.reference as any)?.__typename || null,
+        refs: Array.isArray((f.references as any)?.nodes)
+          ? (f.references as any).nodes.map((n:any)=>n?.__typename)
+          : null,
+      }))
+    );
+    const arf = (node.fields || []).find((f:any)=>f.key === "artistRef");
+    if (arf) {
+      console.log("[exhibitions/[handle]] artistRef field present. singleRef=", Boolean((arf.reference as any)?.__typename), 
+                  "listRefs=", Array.isArray((arf.references as any)?.nodes) ? (arf.references as any).nodes.length : 0);
+    } else {
+      console.log("[exhibitions/[handle]] artistRef field NOT present on exhibition");
+    }
+  } catch {}
 
   // 2) Build the hero card + phase labels
   const ex = toCard(node);
   const { top, button } = heroLabels(labelFromDates(ex.start, ex.end));
+  console.log("[exhibitions/[handle]] ex.title=", ex.title, 
+              "artist=", ex.artist, 
+              "isGroup=", isGroupShow(ex),
+              "dates=", ex.start, ex.end);
 
   // 3) Pick/normalise the long copy (main text) from fields by TYPE (not name)
   //    - Prefers `rich_text` (converted to HTML)
   //    - Else any HTML-like value
   //    - Else the longest multi-line field as paragraphs
   const longTextHtml = extractLongCopy(node.fields as any);
+  console.log("[exhibitions/[handle]] longTextHtml?", Boolean(longTextHtml), longTextHtml ? (longTextHtml.length + " chars") : "");
 
   // 3b) Additional sections
   const installationImages = collectInstallationImages(node.fields);
-  let featuredWorks = collectFeaturedWorksFromProducts(data?.products?.nodes ?? [], node.handle);
-  if (!featuredWorks.length) {
-    // fallback to indexed field groups if no products reference the exhibition
-    featuredWorks = collectFeaturedWorks(node.fields);
+  console.log("[exhibitions/[handle]] install images:", installationImages.length);
+  const artistRef = extractArtistRef(node.fields);
+  console.log(
+    "[exhibitions/[handle]] artistRef found:", Boolean(artistRef),
+    artistRef ? { handle: (artistRef as any).handle } : null
+  );
+
+  let artistFields = (artistRef?.fields as Field[]) ?? [];
+  let artistHandle: string | null = (artistRef as any)?.handle ?? null;
+  // Try to derive handle from list refs or raw value if missing
+  const arfField: any = (node.fields || []).find((f: any) => (f?.key || "").replace(/[^a-z0-9]/gi, "").toLowerCase() === "artistref");
+  if (!artistHandle && arfField && Array.isArray(arfField?.references?.nodes)) {
+    const firstNode = arfField.references.nodes.find((n: any) => n?.__typename === "Metaobject");
+    artistHandle = firstNode?.handle ?? artistHandle;
   }
-  const about = extractAboutArtist(node.fields);
+  if (!artistHandle && typeof arfField?.value === "string" && arfField.value.trim()) {
+    artistHandle = arfField.value.trim();
+  }
+
+  if (artistFields?.length) {
+    try {
+      console.log("[exhibitions/[handle]] artist fields keys:", artistFields.map((f:any)=>f.key));
+    } catch {}
+  } else if (artistHandle) {
+    try {
+      if (/^gid:\/\//.test(artistHandle)) {
+        const dataById = await shopifyFetch<{ node: Node | null }>(ARTIST_BY_ID_QUERY, { id: artistHandle });
+        const mo = (dataById as any)?.node ?? null;
+        if (mo && (mo as any).fields) {
+          artistFields = (mo as any).fields as any;
+          artistHandle = (mo as any).handle ?? artistHandle;
+          console.log("[exhibitions/[handle]] fetched artist by id:", artistHandle, "fields:", artistFields.length);
+        } else {
+          console.log("[exhibitions/[handle]] artist id fetch returned null for:", artistHandle);
+        }
+      } else {
+        const dataArtist = await shopifyFetch<{ metaobject: Node | null }>(ARTIST_QUERY, { handle: artistHandle });
+        if (dataArtist?.metaobject) {
+          artistFields = dataArtist.metaobject.fields;
+          artistHandle = dataArtist.metaobject.handle;
+          console.log("[exhibitions/[handle]] fetched artist by handle:", artistHandle, "fields:", artistFields.length);
+        } else {
+          console.log("[exhibitions/[handle]] artist handle resolved but fetch returned null:", artistHandle);
+        }
+      }
+    } catch (e) {
+      console.log("[exhibitions/[handle]] fetch artist by handle failed:", artistHandle, e);
+    }
+  }
+  const artistName = text(artistFields as any, "name", "title") ?? ex.artist ?? undefined;
+  const portrait = artistFields.length ? firstPortraitFromFields(artistFields as any) : undefined;
+  const artistBioHtml = artistFields.length ? extractBioHtmlFromArtistFields(artistFields as any) : null;
+  console.log(
+    "[exhibitions/[handle]] artist",
+    { artistHandle, artistName, hasPortrait: Boolean(portrait), hasBio: Boolean(artistBioHtml), bioLen: artistBioHtml?.length }
+  );
 
   // 4) Render page blocks
   return (
@@ -451,11 +648,16 @@ export default async function ExhibitionPage({
       )}
 
       {/* Featured Works */}
-      {featuredWorks.length > 0 && <FeaturedWorks items={featuredWorks} />}
+      <FeaturedWorks exhibitionHandle={node.handle} fallbackArtist={ex.artist ?? null} />
 
-      {/* About the Artist */}
-      {(about.bioHtml || about.handle) && (
-        <AboutArtist name={ex.artist} bioHtml={about.bioHtml} handle={about.handle} />
+      {/* About the Artist (suppressed for group shows) */}
+      {!isGroupShow(ex) && (artistBioHtml || portrait) && (
+        <AboutArtistWithPortrait
+          name={artistName}
+          bioHtml={artistBioHtml}
+          handle={artistHandle}
+          portrait={portrait ?? null}
+        />
       )}
     </>
   );

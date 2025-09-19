@@ -48,7 +48,7 @@ export default function ExpandableText({ html, clampLines = 10 }: Props) {
         {/* Slightly smaller text only on ~900–1279px */}
         <div
           className="prose max-w-none prose-p:mb-4 prose-ul:my-4 prose-ol:my-4
-                     text-[1rem] min-[900px]:text-[0.96rem] xl:text-[1rem]"
+                     text-[0.9375rem] min-[900px]:text-[0.92rem] xl:text-[0.9375rem]"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       </div>

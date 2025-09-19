@@ -28,20 +28,27 @@ export default function Details({
 
   return (
     <section className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 py-12 md:py-16">
-      {/* 1 col → 12 col at md (fix) → 24 col at xl */}
+      {/* Section header to match Featured Works positioning */}
+      {hasText && (
+        <div className="grid grid-cols-1 md:[grid-template-columns:repeat(12,minmax(0,1fr))] xl:[grid-template-columns:repeat(24,minmax(0,1fr))] md:gap-x-14 xl:gap-x-8">
+          <div className="col-span-full md:[grid-column:1/span_3] xl:[grid-column:1/span_5] text-[11px] uppercase tracking-[0.18em] opacity-60">
+            About the exhibition
+          </div>
+        </div>
+      )}
+      {/* 1 col on mobile → fixed left rail + fluid body at md+ */}
       <div
         className="
           grid grid-cols-1 gap-y-10
-          md:[grid-template-columns:repeat(12,minmax(0,1fr))] md:gap-x-14
-          xl:[grid-template-columns:repeat(24,minmax(0,1fr))] xl:gap-x-8
+          md:[grid-template-columns:minmax(220px,max-content)_minmax(0,0.85fr)]
+          md:gap-x-[clamp(15px,2vw,20px)]
         "
       >
         {/* LEFT RAIL */}
         <aside
           className="
             col-span-full
-            md:[grid-column:1/span_3]
-            xl:[grid-column:1/span_5]
+            md:col-span-1 md:col-start-1
             space-y-6 text-sm
           "
         >
@@ -78,13 +85,11 @@ export default function Details({
           <div
             className="
               col-span-full
-              md:[grid-column:4/span_5]   /* two-column starts at md now */
-              xl:[grid-column:8/span_10]  /* 24-col placement like White Cube */
-              3xl:[grid-column:9/span_9]
+              md:col-span-1 md:col-start-2 md:justify-self-center
             "
           >
-            {/* slightly wider measure on mid screens; xl lets span define width */}
-            <div className="max-w-[60ch] md:max-w-[59ch] xl:max-w-none">
+            {/* Keep a steady reading measure; only shrink when forced by viewport */}
+            <div className="max-w-[60ch] w-full md:mx-auto">
               <ExpandableText html={longTextHtml!} clampLines={12} />
             </div>
           </div>

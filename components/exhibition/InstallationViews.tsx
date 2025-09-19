@@ -61,21 +61,17 @@ export default function InstallationViews({
         </div>
       </div>
 
-      {/* Full-bleed carousel wrapper (break out of content container) */}
-      <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+      {/* Full-bleed carousel wrapper without causing page overflow */}
+      <div className="relative w-full overflow-x-hidden mt-6">
         {/* Embla viewport with side padding to reveal prev/next slides */}
-        <div
-          ref={viewportRef}
-          className="overflow-visible"
-        >
+        <div ref={viewportRef} className="overflow-hidden">
           {/* Track */}
           <div
             className="
-              flex items-stretch
-              gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12
+              flex items-start
+              gap-8
               px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24
               select-none touch-pan-y
-              h-[62vh] sm:h-[66vh] md:h-[72vh] lg:h-[76vh] xl:h-[78vh]
             "
           >
             {images.map((img, idx) => (
@@ -83,22 +79,34 @@ export default function InstallationViews({
                 key={idx}
                 className="
                   relative shrink-0
-                  basis-[84%] sm:basis-[78%] md:basis-[72%] lg:basis-[68%] xl:basis-[64%]
-                  h-full
+                  basis-[320px] sm:basis-[420px] md:basis-[560px] lg:basis-[640px] xl:basis-[720px] 2xl:basis-[800px]
                 "
               >
                 {/* Image card */}
-                <div className="relative h-full w-full bg-white p-2 sm:p-3 md:p-4 lg:p-6">
-                  <div className="absolute inset-0">
+                <div className="relative w-full bg-white p-4">
+                  {img.width && img.height ? (
                     <Image
                       src={img.url}
                       alt={img.alt || "Installation view"}
-                      fill
-                      sizes="100vw"
-                      className="object-contain"
+                      width={img.width}
+                      height={img.height}
+                      sizes="(min-width:1536px) 800px, (min-width:1280px) 720px, (min-width:1024px) 640px, (min-width:768px) 560px, (min-width:640px) 420px, 320px"
+                      className="w-full h-auto object-contain"
                       priority={idx === 0}
                     />
-                  </div>
+                  ) : (
+                    <div className="relative w-full">
+                      <div className="aspect-[4/3] w-full" />
+                      <Image
+                        src={img.url}
+                        alt={img.alt || "Installation view"}
+                        fill
+                        sizes="(min-width:1536px) 800px, (min-width:1280px) 720px, (min-width:1024px) 640px, (min-width:768px) 560px, (min-width:640px) 420px, 320px"
+                        className="object-contain"
+                        priority={idx === 0}
+                      />
+                    </div>
+                  )}
                   {/* Subtle overlay on non-selected slides */}
                   {idx !== selectedIndex && (
                     <div className="absolute inset-0 bg-white/70 pointer-events-none" />
@@ -118,7 +126,17 @@ export default function InstallationViews({
               onClick={scrollPrev}
               className="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-sm ring-1 ring-black/5 hover:bg-white"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
@@ -129,7 +147,17 @@ export default function InstallationViews({
               onClick={scrollNext}
               className="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-sm ring-1 ring-black/5 hover:bg-white"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </button>
