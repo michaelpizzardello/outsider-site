@@ -1,4 +1,6 @@
 import Link from "next/link";
+
+import Container from "@/components/layout/Container";
 import ExpandableText from "@/components/exhibition/ExpandableText";
 
 export default function AboutArtist({
@@ -15,8 +17,9 @@ export default function AboutArtist({
   if (!bioHtml && !handle) return null;
 
   return (
-    <section className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 py-10 md:py-14">
-      <div
+    <section className="w-full py-10 md:py-14">
+      <Container>
+        <div
         className="
           grid grid-cols-1 gap-y-6
           md:[grid-template-columns:repeat(12,minmax(0,1fr))] md:gap-x-14
@@ -42,6 +45,7 @@ export default function AboutArtist({
             md:[grid-column:4/span_5]
             xl:[grid-column:8/span_10]
             3xl:[grid-column:9/span_9]
+            typ-body
           "
         >
           {bioHtml ? (
@@ -54,7 +58,7 @@ export default function AboutArtist({
             <div className="mt-4">
               <Link
                 href={`/artists/${handle}`}
-                className="inline-flex items-center gap-2 text-sm underline underline-offset-4"
+                className="inline-flex items-center gap-2 typ-body-small underline underline-offset-4"
               >
                 <span aria-hidden>→</span>
                 View {name || "artist"} profile
@@ -62,8 +66,8 @@ export default function AboutArtist({
             </div>
           ) : null}
         </div>
-      </div>
+        </div>
+      </Container>
     </section>
   );
 }
-

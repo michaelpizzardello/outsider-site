@@ -4,6 +4,8 @@ import React from "react";
 import Image from "next/image";
 import useEmblaCarousel, { EmblaOptionsType } from "embla-carousel-react";
 
+import Container from "@/components/layout/Container";
+
 type Img = { url: string; width?: number; height?: number; alt?: string };
 
 export default function InstallationViews({
@@ -38,28 +40,10 @@ export default function InstallationViews({
   const scrollNext = () => embla?.scrollNext();
 
   return (
-    <section className="w-full">
-      {/* Header aligned with page grid/margins */}
-      <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 py-10 md:py-14">
-        <div
-          className="
-            grid grid-cols-1 gap-y-6
-            md:[grid-template-columns:repeat(12,minmax(0,1fr))] md:gap-x-14
-            xl:[grid-template-columns:repeat(24,minmax(0,1fr))] xl:gap-x-8
-          "
-        >
-          <div
-            className="
-              col-span-full
-              md:[grid-column:1/span_3]
-              xl:[grid-column:1/span_5]
-              text-[11px] uppercase tracking-[0.18em] opacity-60
-            "
-          >
-            {title}
-          </div>
-        </div>
-      </div>
+    <section className="w-full py-10 md:py-14">
+      <Container>
+        <h2 className="typ-section-title">{title}</h2>
+      </Container>
 
       {/* Full-bleed carousel wrapper without causing page overflow */}
       <div className="relative w-full overflow-x-hidden mt-6">
@@ -70,7 +54,7 @@ export default function InstallationViews({
             className="
               flex items-start
               gap-8
-              px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24
+              px-4 sm:px-6 lg:px-20
               select-none touch-pan-y
             "
           >
@@ -119,7 +103,7 @@ export default function InstallationViews({
 
         {/* Arrow controls aligned to page margins */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="mx-auto h-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 flex items-center justify-between">
+          <Container className="h-full flex items-center justify-between">
             <button
               type="button"
               aria-label="Previous image"
@@ -161,7 +145,7 @@ export default function InstallationViews({
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </button>
-          </div>
+          </Container>
         </div>
       </div>
     </section>

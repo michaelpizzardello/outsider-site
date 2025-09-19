@@ -20,7 +20,7 @@ export default function ExpandableText({ html, clampLines = 10 }: Props) {
   }, [html, clampLines]);
 
   return (
-    <div className="text-base leading-relaxed">
+    <div className="typ-body">
       <div
         ref={clampedRef}
         className="relative"
@@ -47,8 +47,7 @@ export default function ExpandableText({ html, clampLines = 10 }: Props) {
 
         {/* Slightly smaller text only on ~900–1279px */}
         <div
-          className="prose max-w-none prose-p:mb-4 prose-ul:my-4 prose-ol:my-4
-                     text-[0.9375rem] min-[900px]:text-[0.92rem] xl:text-[0.9375rem]"
+          className="prose max-w-none prose-p:mb-4 prose-ul:my-4 prose-ol:my-4 typ-body"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       </div>
@@ -60,7 +59,7 @@ export default function ExpandableText({ html, clampLines = 10 }: Props) {
             onClick={() => setExpanded((v) => !v)}
             aria-expanded={expanded}
             className="appearance-none bg-transparent border-none p-0
-                       inline-flex items-center gap-2 text-sm underline decoration-neutral-400/70
+                       inline-flex items-center gap-2 typ-body-small underline decoration-neutral-400/70
                        hover:decoration-current focus-visible:outline-none
                        focus-visible:ring-2 focus-visible:ring-neutral-400/40 rounded-[2px]"
           >

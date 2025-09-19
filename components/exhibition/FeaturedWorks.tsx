@@ -1,6 +1,7 @@
 import "server-only";
 import Image from "next/image";
 
+import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 
 type Money = { amount: string; currencyCode: string };
@@ -203,10 +204,10 @@ export default async function FeaturedWorks({
   if (nodes.length === 0) return null;
 
   return (
-    <section className="w-full">
-      <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 md:px-8 xl:px-16 2xl:px-24 py-10 md:py-14">
+    <section className="w-full py-10 md:py-14">
+      <Container>
         {/* Section title above the grid (White Cube pattern) */}
-        <h2 className="text-xl font-medium mb-8 md:mb-12">Featured Works</h2>
+        <h2 className="typ-section-title mb-8 md:mb-12">Featured Works</h2>
 
         {/* Grid of works (2-col at md+, with occasional full-width rows) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 sm:gap-x-10 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 2xl:gap-x-24 gap-y-8 sm:gap-y-10 md:gap-y-12 lg:gap-y-16 xl:gap-y-20 2xl:gap-y-24">
@@ -233,7 +234,7 @@ export default async function FeaturedWorks({
                     <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
                   )}
                   <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                    <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 text-xs">
+                    <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
                       {artist && <p className="font-medium truncate">{artist}</p>}
                       <p className="mt-1 break-words underline-offset-4 group-hover:underline">
                         <span className="italic">{p.title}</span>
@@ -244,7 +245,7 @@ export default async function FeaturedWorks({
                     <div className="flex shrink-0 items-start justify-end">
                       <button
                         type="button"
-                        className="inline-flex h-8 items-center rounded border border-neutral-300 px-2 text-xs hover:border-black"
+                        className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
                         aria-label="Enquire about artwork"
                       >
                         Enquire
@@ -281,7 +282,7 @@ export default async function FeaturedWorks({
                             <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
                           )}
                           <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                            <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 text-xs">
+                            <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
                               {artist && <p className="font-medium truncate">{artist}</p>}
                               <p className="mt-1 break-words underline-offset-4 group-hover:underline">
                                 <span className="italic">{p.title}</span>
@@ -292,7 +293,7 @@ export default async function FeaturedWorks({
                             <div className="flex shrink-0 items-start justify-end">
                               <button
                                 type="button"
-                                className="inline-flex h-8 items-center rounded border border-neutral-300 px-2 text-xs hover:border-black"
+                                className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
                                 aria-label="Enquire about artwork"
                               >
                                 Enquire
@@ -333,7 +334,7 @@ export default async function FeaturedWorks({
                             <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
                           )}
                           <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                            <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 text-xs">
+                            <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
                               {artist && <p className="font-medium truncate">{artist}</p>}
                               <p className="mt-1 break-words underline-offset-4 group-hover:underline">
                                 <span className="italic">{p.title}</span>
@@ -344,7 +345,7 @@ export default async function FeaturedWorks({
                             <div className="flex shrink-0 items-start justify-end">
                               <button
                                 type="button"
-                                className="inline-flex h-8 items-center rounded border border-neutral-300 px-2 text-xs hover:border-black"
+                                className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
                                 aria-label="Enquire about artwork"
                               >
                                 Enquire
@@ -381,7 +382,7 @@ export default async function FeaturedWorks({
                     <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
                   )}
                   <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                    <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 text-xs">
+                    <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
                       {artist && <p className="font-medium truncate">{artist}</p>}
                       <p className="mt-1 break-words underline-offset-4 group-hover:underline">
                         <span className="italic">{p.title}</span>
@@ -392,7 +393,7 @@ export default async function FeaturedWorks({
                     <div className="flex shrink-0 items-start justify-end">
                       <button
                         type="button"
-                        className="inline-flex h-8 items-center rounded border border-neutral-300 px-2 text-xs hover:border-black"
+                        className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
                         aria-label="Enquire about artwork"
                       >
                         Enquire
@@ -404,7 +405,7 @@ export default async function FeaturedWorks({
             }
           })}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

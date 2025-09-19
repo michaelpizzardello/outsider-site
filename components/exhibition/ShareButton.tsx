@@ -38,7 +38,7 @@ export default function ShareButton({ url }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-2 text-sm underline underline-offset-2 decoration-neutral-400/70 hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 rounded-[2px]"
+      className="inline-flex items-center gap-2 typ-body-small underline underline-offset-2 decoration-neutral-400/70 hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400/40 rounded-[2px]"
       aria-label="Share link"
     >
       <svg
