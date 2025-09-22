@@ -1,13 +1,27 @@
-// app/artists/page.tsx
+import "server-only";
+
+import Image from "next/image";
 import Link from "next/link";
+
 import { shopifyFetch } from "@/lib/shopify";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
+export const revalidate = 60;
+
+export const metadata = {
+  title: "Artists — Outsider Gallery",
+  description: "Artists represented by Outsider Gallery.",
+};
 
 type FieldRef =
   | {
       __typename: "MediaImage";
-      image: { url: string; width: number; height: number; altText: string | null };
+      image: {
+        url: string;
+        width: number;
+        height: number;
+        altText: string | null;
+      };
     }
   | {
       __typename: "GenericFile";
@@ -54,77 +68,106 @@ const QUERY = /* GraphQL */ `
   }
 `;
 
-function coverFromFields(fields: Field[]): string | undefined {
-  // your store uses lowercase "coverimage"
-  const f = fields.find(x => x.key === "coverimage");
-  if (!f) return;
-  // MediaImage
-  if (f.reference && "image" in f.reference && f.reference.image?.url) {
-    return f.reference.image.url;
+type ArtistCard = {
+  handle: string;
+  label: string;
+  coverUrl?: string;
+  coverAlt?: string;
+  sortKey: string;
+};
+
+function coverFromFields(fields: Field[]): Pick<ArtistCard, "coverUrl" | "coverAlt"> {
+  const coverField = fields.find((field) => field.key === "coverimage");
+  if (!coverField) return {};
+
+  const ref = coverField.reference;
+
+  if (ref && ref.__typename === "MediaImage" && "image" in ref && ref.image?.url) {
+    return { coverUrl: ref.image.url, coverAlt: ref.image.altText ?? undefined };
   }
-  // GenericFile fallback (not your case, but safe)
-  if (f.reference && "url" in f.reference && f.reference.url) {
-    return f.reference.url;
+
+  if (ref && ref.__typename === "GenericFile") {
+    if (ref.url) return { coverUrl: ref.url };
+    if (ref.previewImage?.url) return { coverUrl: ref.previewImage.url };
   }
-  if (f.reference && "previewImage" in f.reference && f.reference.previewImage?.url) {
-    return f.reference.previewImage.url;
+
+  if (coverField.value.startsWith("http")) {
+    return { coverUrl: coverField.value };
   }
-  // plain URL in value fallback
-  if (typeof f.value === "string" && f.value.startsWith("http")) {
-    return f.value;
-  }
+
+  return {};
 }
 
 function labelFromFields(fields: Field[], handle: string) {
-  const m = Object.fromEntries(fields.map(f => [f.key, f.value]));
-  return (m.name as string) || (m.title as string) || handle;
+  const entries = Object.fromEntries(fields.map((field) => [field.key, field.value]));
+  return (entries.name as string) || (entries.title as string) || handle;
+}
+
+function sortKeyFromFields(fields: Field[], fallback: string) {
+  const raw =
+    fields.find((field) => field.key === "sortkey")?.value ||
+    fields.find((field) => field.key === "name")?.value;
+  return raw ?? fallback;
 }
 
 export default async function ArtistsIndex() {
   const data = await shopifyFetch<ArtistsQuery>(QUERY);
   const nodes = data?.metaobjects?.nodes ?? [];
 
-  const artists = nodes
-    .map(n => ({
-      handle: n.handle,
-      fields: n.fields,
-      label: labelFromFields(n.fields, n.handle),
-      cover: coverFromFields(n.fields),
-      sortkey:
-        n.fields.find(f => f.key === "sortkey")?.value ||
-        n.fields.find(f => f.key === "name")?.value ||
-        n.handle,
-    }))
-    .sort((a, b) => a.sortkey.localeCompare(b.sortkey));
+  const artists: ArtistCard[] = nodes
+    .map((node) => {
+      const { coverUrl, coverAlt } = coverFromFields(node.fields);
+
+      return {
+        handle: node.handle,
+        label: labelFromFields(node.fields, node.handle),
+        coverUrl,
+        coverAlt,
+        sortKey: sortKeyFromFields(node.fields, node.handle),
+      };
+    })
+    .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-3xl font-medium mb-6">Artists</h1>
+    <main
+      className="pb-16 sm:pb-20"
+      style={{ paddingTop: "var(--header-h, 76px)" }}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <header className="mt-10 md:mt-10 lg:mt-20 mb-10">
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">Artists</h1>
+        </header>
 
-      {artists.length === 0 && <p className="text-neutral-600">No artists yet.</p>}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {artists.map(a => (
-          <Link key={a.handle} href={`/artists/${a.handle}`} className="block group">
-            <div className="rounded-2xl shadow border border-neutral-200 overflow-hidden">
-              {a.cover ? (
-                <img src={a.cover} alt={a.label} className="w-full h-64 object-cover" />
-              ) : (
-                <div className="w-full h-64 bg-neutral-100 flex items-center justify-center text-xs text-neutral-500">
-                  no cover — key “coverimage”
-                </div>
-              )}
-              <div className="p-4">
-                <h3 className="text-lg group-hover:underline">{a.label}</h3>
-                {!a.cover && (
-                  <p className="mt-1 text-xs text-neutral-500">
-                    debug: {JSON.stringify(a.fields.find(f => f.key === "coverimage"))}
+        {artists.length === 0 ? (
+          <p className="py-20 text-center text-neutral-500">No artists to show yet.</p>
+        ) : (
+          <section className="grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {artists.map((artist) => (
+              <article key={artist.handle} className="group">
+                <Link href={`/artists/${artist.handle}`} className="block">
+                  <div className="relative aspect-square overflow-hidden">
+                    {artist.coverUrl ? (
+                      <Image
+                        src={artist.coverUrl}
+                        alt={artist.coverAlt ?? artist.label}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-[1.015]"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-neutral-100 text-xs text-neutral-500">
+                        Cover image missing
+                      </div>
+                    )}
+                  </div>
+                  <p className="mt-3 text-sm sm:text-base font-medium text-neutral-900 group-hover:underline">
+                    {artist.label}
                   </p>
-                )}
-              </div>
-            </div>
-          </Link>
-        ))}
+                </Link>
+              </article>
+            ))}
+          </section>
+        )}
       </div>
     </main>
   );

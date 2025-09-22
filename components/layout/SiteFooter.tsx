@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Link from "next/link";
 
@@ -18,11 +19,14 @@ export default function SiteFooter({
 }: {
   links?: Array<{ href: string; label: string }>;
 }) {
+  const pathname = usePathname();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
+  const hideOnArtworkPage = pathname?.startsWith("/exhibitions/") && pathname.includes("/artworks/");
+  if (hideOnArtworkPage) return null;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -200,4 +204,3 @@ export default function SiteFooter({
     </footer>
   );
 }
-

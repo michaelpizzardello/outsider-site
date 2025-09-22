@@ -1,12 +1,11 @@
 import "server-only";
 import Image from "next/image";
+import Link from "next/link";
 
 import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 
 type Money = { amount: string; currencyCode: string };
-type Img = { url: string; width?: number; height?: number; alt?: string };
-
 type Props = {
   exhibitionHandle: string;
   /** Fallback if the product doesn't resolve an artist metaobject */
@@ -39,6 +38,12 @@ type ProductNode = {
 
 type QueryResult = {
   products: { nodes: ProductNode[] } | null;
+};
+
+type ArtworkLayoutItem = {
+  p: ProductNode;
+  aspect: string;
+  isLandscape: boolean;
 };
 
 const QUERY = /* GraphQL */ `
@@ -121,6 +126,75 @@ function productMatchesExhibition(n: ProductNode, handle: string): boolean {
   return nodes?.some((r) => r?.__typename === "Metaobject" && r?.handle === handle) ?? false;
 }
 
+function ArtworkCard({
+  item,
+  href,
+  sizes,
+  fallbackArtist,
+  className = "",
+}: {
+  item: ArtworkLayoutItem;
+  href: string;
+  sizes: string;
+  fallbackArtist?: string | null;
+  className?: string;
+}) {
+  const { p, aspect } = item;
+  const artist = getArtistName(p, fallbackArtist);
+  const price = p.priceRange?.minVariantPrice ?? undefined;
+  const label = priceLabel({ price, status: p.status?.value, availableForSale: p.availableForSale });
+  const img = p.featuredImage;
+  const articleClass = className ? `group ${className}` : "group";
+
+  return (
+    <article className={articleClass}>
+      <Link
+        href={href}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+      >
+        {img ? (
+          <div
+            className="relative overflow-hidden bg-white"
+            style={{ aspectRatio: aspect as any }}
+          >
+            <Image
+              src={img.url}
+              alt={img.altText || p.title}
+              fill
+              sizes={sizes}
+              className="object-contain transition duration-300 group-hover:scale-[1.01]"
+            />
+          </div>
+        ) : (
+          <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
+        )}
+      </Link>
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
+        <Link
+          href={href}
+          className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+        >
+          {artist && <p className="font-medium truncate">{artist}</p>}
+          <p className="mt-1 break-words underline-offset-4 group-hover:underline">
+            <span className="italic">{p.title}</span>
+            {p.year?.value && <span>, {p.year.value}</span>}
+          </p>
+          <p className="mt-2 font-medium">{label}</p>
+        </Link>
+        <div className="flex shrink-0 items-start justify-end">
+          <button
+            type="button"
+            className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
+            aria-label="Enquire about artwork"
+          >
+            Enquire
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export default async function FeaturedWorks({
   exhibitionHandle,
   fallbackArtist,
@@ -136,7 +210,7 @@ export default async function FeaturedWorks({
   const nodes = all.filter((p) => productMatchesExhibition(p, exhibitionHandle));
 
   // Derive orientation and aspect for layout decisions
-  const derived = nodes.map((p) => {
+  const derived: ArtworkLayoutItem[] = nodes.map((p) => {
     const w = p.featuredImage?.width ?? 0;
     const h = p.featuredImage?.height ?? 0;
     const isLandscape = w > 0 && h > 0 ? w / h > 1.05 : false; // small threshold to avoid near-square
@@ -146,7 +220,7 @@ export default async function FeaturedWorks({
   // Build blocks without reordering (row planner):
   // - Landscapes become FULL rows (single wide block)
   // - Portraits pack into PAIRs; use one TRIPLE when it cleans up an odd run
-  type Item = typeof derived[number];
+  type Item = ArtworkLayoutItem;
   type Block =
     | { type: "landscape"; item: Item }
     | { type: "pairPortrait"; items: [Item, Item] }
@@ -213,46 +287,16 @@ export default async function FeaturedWorks({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 sm:gap-x-10 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 2xl:gap-x-24 gap-y-8 sm:gap-y-10 md:gap-y-12 lg:gap-y-16 xl:gap-y-20 2xl:gap-y-24">
           {blocks.map((block, idx) => {
             if (block.type === "landscape") {
-              const { p, aspect } = block.item;
-              const artist = getArtistName(p, fallbackArtist);
-              const price = p.priceRange?.minVariantPrice ?? undefined;
-              const label = priceLabel({ price, status: p.status?.value, availableForSale: p.availableForSale });
-              const img = p.featuredImage;
+              const href = `/exhibitions/${exhibitionHandle}/artworks/${block.item.p.handle}`;
               return (
-                <article key={`land-${idx}`} className="group md:col-span-2">
-                  {img ? (
-                    <div className="relative bg-white overflow-hidden" style={{ aspectRatio: aspect as any }}>
-                      <Image
-                        src={img.url}
-                        alt={img.altText || p.title}
-                        fill
-                        sizes="(min-width:768px) 100vw, 100vw"
-                        className="object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
-                  )}
-                  <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                    <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
-                      {artist && <p className="font-medium truncate">{artist}</p>}
-                      <p className="mt-1 break-words underline-offset-4 group-hover:underline">
-                        <span className="italic">{p.title}</span>
-                        {p.year?.value && <span>, {p.year.value}</span>}
-                      </p>
-                      <p className="mt-2 font-medium">{label}</p>
-                    </div>
-                    <div className="flex shrink-0 items-start justify-end">
-                      <button
-                        type="button"
-                        className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
-                        aria-label="Enquire about artwork"
-                      >
-                        Enquire
-                      </button>
-                    </div>
-                  </div>
-                </article>
+                <ArtworkCard
+                  key={`land-${idx}`}
+                  className="md:col-span-2"
+                  item={block.item}
+                  href={href}
+                  sizes="(min-width:768px) 100vw, 100vw"
+                  fallbackArtist={fallbackArtist}
+                />
               );
             }
 
@@ -261,46 +305,16 @@ export default async function FeaturedWorks({
               return (
                 <div key={`pair-${idx}`} className="md:col-span-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 sm:gap-x-10 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 2xl:gap-x-24 gap-y-8 sm:gap-y-10 md:gap-y-0">
-                    {[a, b].map(({ p, aspect }) => {
-                      const artist = getArtistName(p, fallbackArtist);
-                      const price = p.priceRange?.minVariantPrice ?? undefined;
-                      const label = priceLabel({ price, status: p.status?.value, availableForSale: p.availableForSale });
-                      const img = p.featuredImage;
+                    {[a, b].map((item) => {
+                      const href = `/exhibitions/${exhibitionHandle}/artworks/${item.p.handle}`;
                       return (
-                        <article key={p.id} className="group">
-                          {img ? (
-                            <div className="relative bg-white overflow-hidden" style={{ aspectRatio: aspect as any }}>
-                              <Image
-                                src={img.url}
-                                alt={img.altText || p.title}
-                                fill
-                                sizes="(min-width:768px) 50vw, 100vw"
-                                className="object-contain"
-                              />
-                            </div>
-                          ) : (
-                            <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
-                          )}
-                          <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                            <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
-                              {artist && <p className="font-medium truncate">{artist}</p>}
-                              <p className="mt-1 break-words underline-offset-4 group-hover:underline">
-                                <span className="italic">{p.title}</span>
-                                {p.year?.value && <span>, {p.year.value}</span>}
-                              </p>
-                              <p className="mt-2 font-medium">{label}</p>
-                            </div>
-                            <div className="flex shrink-0 items-start justify-end">
-                              <button
-                                type="button"
-                                className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
-                                aria-label="Enquire about artwork"
-                              >
-                                Enquire
-                              </button>
-                            </div>
-                          </div>
-                        </article>
+                        <ArtworkCard
+                          key={item.p.id}
+                          item={item}
+                          href={href}
+                          sizes="(min-width:768px) 50vw, 100vw"
+                          fallbackArtist={fallbackArtist}
+                        />
                       );
                     })}
                   </div>
@@ -313,46 +327,16 @@ export default async function FeaturedWorks({
               return (
                 <div key={`triple-${idx}`} className="md:col-span-2">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 sm:gap-x-10 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 2xl:gap-x-24 gap-y-8 sm:gap-y-0">
-                    {items.map(({ p, aspect }) => {
-                      const artist = getArtistName(p, fallbackArtist);
-                      const price = p.priceRange?.minVariantPrice ?? undefined;
-                      const label = priceLabel({ price, status: p.status?.value, availableForSale: p.availableForSale });
-                      const img = p.featuredImage;
+                    {items.map((item) => {
+                      const href = `/exhibitions/${exhibitionHandle}/artworks/${item.p.handle}`;
                       return (
-                        <article key={p.id} className="group">
-                          {img ? (
-                            <div className="relative bg-white overflow-hidden" style={{ aspectRatio: aspect as any }}>
-                              <Image
-                                src={img.url}
-                                alt={img.altText || p.title}
-                                fill
-                                sizes="(min-width:640px) 33vw, 100vw"
-                                className="object-contain"
-                              />
-                            </div>
-                          ) : (
-                            <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
-                          )}
-                          <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                            <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
-                              {artist && <p className="font-medium truncate">{artist}</p>}
-                              <p className="mt-1 break-words underline-offset-4 group-hover:underline">
-                                <span className="italic">{p.title}</span>
-                                {p.year?.value && <span>, {p.year.value}</span>}
-                              </p>
-                              <p className="mt-2 font-medium">{label}</p>
-                            </div>
-                            <div className="flex shrink-0 items-start justify-end">
-                              <button
-                                type="button"
-                                className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
-                                aria-label="Enquire about artwork"
-                              >
-                                Enquire
-                              </button>
-                            </div>
-                          </div>
-                        </article>
+                        <ArtworkCard
+                          key={item.p.id}
+                          item={item}
+                          href={href}
+                          sizes="(min-width:640px) 33vw, 100vw"
+                          fallbackArtist={fallbackArtist}
+                        />
                       );
                     })}
                   </div>
@@ -361,46 +345,16 @@ export default async function FeaturedWorks({
             }
 
             if (block.type === "singlePortrait") {
-              const { p, aspect } = block.item;
-              const artist = getArtistName(p, fallbackArtist);
-              const price = p.priceRange?.minVariantPrice ?? undefined;
-              const label = priceLabel({ price, status: p.status?.value, availableForSale: p.availableForSale });
-              const img = p.featuredImage;
+              const href = `/exhibitions/${exhibitionHandle}/artworks/${block.item.p.handle}`;
               return (
-                <article key={`sp-${idx}`} className="group md:col-span-2">
-                  {img ? (
-                    <div className="relative bg-white overflow-hidden" style={{ aspectRatio: aspect as any }}>
-                      <Image
-                        src={img.url}
-                        alt={img.altText || p.title}
-                        fill
-                        sizes="(min-width:768px) 100vw, 100vw"
-                        className="object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
-                  )}
-                  <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-2 md:gap-x-6">
-                    <div className="min-w-[180px] sm:min-w-[220px] flex-1 min-w-0 typ-caption">
-                      {artist && <p className="font-medium truncate">{artist}</p>}
-                      <p className="mt-1 break-words underline-offset-4 group-hover:underline">
-                        <span className="italic">{p.title}</span>
-                        {p.year?.value && <span>, {p.year.value}</span>}
-                      </p>
-                      <p className="mt-2 font-medium">{label}</p>
-                    </div>
-                    <div className="flex shrink-0 items-start justify-end">
-                      <button
-                        type="button"
-                        className="inline-flex h-8 items-center rounded border border-neutral-300 px-3 typ-cta hover:border-black"
-                        aria-label="Enquire about artwork"
-                      >
-                        Enquire
-                      </button>
-                    </div>
-                  </div>
-                </article>
+                <ArtworkCard
+                  key={`sp-${idx}`}
+                  className="md:col-span-2"
+                  item={block.item}
+                  href={href}
+                  sizes="(min-width:768px) 100vw, 100vw"
+                  fallbackArtist={fallbackArtist}
+                />
               );
             }
           })}

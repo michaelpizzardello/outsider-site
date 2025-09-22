@@ -27,20 +27,24 @@ export default function Header({
   logoAriaLabel = "Outsider Gallery — Home",
   nav = NAV_LINKS,
 }: HeaderProps) {
+  const pathname = usePathname();
+  const hideHeader =
+    pathname?.startsWith("/exhibitions/") && (pathname?.split("/")?.length ?? 0) >= 5;
+
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const pathname = usePathname();
   const isTransparentRoute =
     pathname === "/" || pathname?.startsWith("/exhibitions/");
   const overlayFinal = isTransparentRoute;
 
   useEffect(() => {
+    if (hideHeader) return;
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [hideHeader]);
 
   const solid = open || !overlayFinal || scrolled;
   const transitionSmooth = "transition-all duration-500 ease-in-out";
@@ -65,6 +69,7 @@ export default function Header({
 
   const headerRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
+    if (hideHeader) return;
     const el = headerRef.current;
     if (!el || typeof window === "undefined") return;
     const setVar = () => {
@@ -83,7 +88,9 @@ export default function Header({
       ro?.disconnect();
       window.removeEventListener("resize", setVar);
     };
-  }, [scrolled, open, solid]);
+  }, [hideHeader, scrolled, open, solid]);
+
+  if (hideHeader) return null;
 
   return (
     <>
@@ -149,4 +156,3 @@ export default function Header({
     </>
   );
 }
-
