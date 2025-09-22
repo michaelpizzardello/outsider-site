@@ -1,15 +1,32 @@
 // app/artists/[handle]/page.tsx
 import { notFound } from "next/navigation";
+
+import ArtistHero from "@/components/artists/ArtistHero";
 import { shopifyFetch } from "@/lib/shopify";
 
 export const dynamic = "force-dynamic";
 
 type FieldRef =
-  | { __typename: "MediaImage"; image: { url: string; width: number; height: number; altText: string | null } }
+  | {
+      __typename: "MediaImage";
+      image: {
+        url: string;
+        width: number;
+        height: number;
+        altText: string | null;
+      };
+    }
   | { __typename: "GenericFile"; url?: string; previewImage?: { url: string } }
   | { __typename: string };
 
 type Field = { key: string; type: string; value: string; reference: FieldRef | null };
+
+type CoverImage = {
+  url: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+};
 
 type ByHandleQuery = { metaobject: { handle: string; fields: Field[] } | null };
 
@@ -36,13 +53,31 @@ const QUERY = /* GraphQL */ `
   }
 `;
 
-function coverFromFields(fields: Field[]): string | undefined {
-  const f = fields.find(x => x.key === "coverimage");
-  if (!f) return;
-  if (f.reference && "image" in f.reference && f.reference.image?.url) return f.reference.image.url;
-  if (f.reference && "url" in f.reference && f.reference.url) return f.reference.url;
-  if (f.reference && "previewImage" in f.reference && f.reference.previewImage?.url) return f.reference.previewImage.url;
-  if (typeof f.value === "string" && f.value.startsWith("http")) return f.value;
+function coverFromFields(fields: Field[]): CoverImage | null {
+  const f = fields.find((field) => field.key === "coverimage");
+  if (!f) return null;
+
+  const ref = f.reference;
+
+  if (ref && ref.__typename === "MediaImage" && "image" in ref && ref.image?.url) {
+    return {
+      url: ref.image.url,
+      width: ref.image.width,
+      height: ref.image.height,
+      alt: ref.image.altText ?? undefined,
+    };
+  }
+
+  if (ref && ref.__typename === "GenericFile") {
+    if (ref.url) return { url: ref.url };
+    if (ref.previewImage?.url) return { url: ref.previewImage.url };
+  }
+
+  if (typeof f.value === "string" && f.value.startsWith("http")) {
+    return { url: f.value };
+  }
+
+  return null;
 }
 
 export default async function ArtistPage({ params }: { params: { handle: string } }) {
@@ -50,18 +85,31 @@ export default async function ArtistPage({ params }: { params: { handle: string 
   const mo = data.metaobject;
   if (!mo) notFound();
 
-  const valueMap = Object.fromEntries(mo.fields.map(f => [f.key, f.value]));
+  const valueMap = Object.fromEntries(mo.fields.map((field) => [field.key, field.value]));
   const name = (valueMap.name as string) || (valueMap.title as string) || mo.handle;
   const cover = coverFromFields(mo.fields);
+  const nationality = (
+    valueMap.nationality ?? valueMap.country ?? valueMap.origin ?? valueMap.nationalityshort
+  ) as string | undefined;
+  const birthYear = (
+    valueMap.birthyear ??
+    valueMap.birth_year ??
+    valueMap.birth ??
+    valueMap.born ??
+    valueMap.birthdate
+  ) as string | undefined;
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-3xl font-medium mb-6">{name}</h1>
-      {cover && (
-        <div className="mb-6">
-          <img src={cover} alt={name} className="w-full max-h-[560px] object-cover rounded-2xl" />
-        </div>
-      )}
+    <main
+      className="bg-white text-neutral-900"
+      style={{ paddingTop: "var(--header-h, 76px)" }}
+    >
+      <ArtistHero
+        name={name}
+        nationality={nationality}
+        birthYear={birthYear}
+        cover={cover}
+      />
     </main>
   );
 }
