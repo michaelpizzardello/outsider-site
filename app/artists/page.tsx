@@ -3,6 +3,7 @@ import "server-only";
 import Image from "next/image";
 import Link from "next/link";
 
+import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 
 export const dynamic = "force-static";
@@ -126,6 +127,7 @@ export default async function ArtistsIndex() {
         sortKey: sortKeyFromFields(node.fields, node.handle),
       };
     })
+    .filter((artist) => Boolean(artist.coverUrl))
     .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
   return (
@@ -133,7 +135,7 @@ export default async function ArtistsIndex() {
       className="pb-16 sm:pb-20"
       style={{ paddingTop: "var(--header-h, 76px)" }}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <Container className="max-w-7xl">
         <header className="mt-10 md:mt-10 lg:mt-20 mb-10">
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">Artists</h1>
         </header>
@@ -146,19 +148,13 @@ export default async function ArtistsIndex() {
               <article key={artist.handle} className="group">
                 <Link href={`/artists/${artist.handle}`} className="block">
                   <div className="relative aspect-square overflow-hidden">
-                    {artist.coverUrl ? (
-                      <Image
-                        src={artist.coverUrl}
-                        alt={artist.coverAlt ?? artist.label}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-[1.015]"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center bg-neutral-100 text-xs text-neutral-500">
-                        Cover image missing
-                      </div>
-                    )}
+                    <Image
+                      src={artist.coverUrl!}
+                      alt={artist.coverAlt ?? artist.label}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-[1.015]"
+                    />
                   </div>
                   <p className="mt-3 text-sm sm:text-base font-medium text-neutral-900 group-hover:underline">
                     {artist.label}
@@ -168,7 +164,7 @@ export default async function ArtistsIndex() {
             ))}
           </section>
         )}
-      </div>
+      </Container>
     </main>
   );
 }
