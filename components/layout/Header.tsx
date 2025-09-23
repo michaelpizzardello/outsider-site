@@ -24,7 +24,7 @@ export default function Header({
   withSpacer = false,
   logoDarkSrc = "/logo-black.svg",
   logoLightSrc = "/logo-white.svg",
-  logoAriaLabel = "Outsider Gallery — Home",
+  logoAriaLabel = "Outsider Gallery - Home",
   nav = NAV_LINKS,
 }: HeaderProps) {
   const pathname = usePathname();

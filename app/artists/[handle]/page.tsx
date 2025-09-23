@@ -2,7 +2,11 @@
 import { notFound } from "next/navigation";
 
 import ArtistHero from "@/components/artists/ArtistHero";
+import ArtistBioSection from "@/components/artists/ArtistBioSection";
+import ArtistArtworks from "@/components/artists/ArtistArtworks";
+import ArtistExhibitions from "@/components/artists/ArtistExhibitions";
 import { shopifyFetch } from "@/lib/shopify";
+import { extractLongCopy } from "@/lib/extractLongCopy";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +30,12 @@ type CoverImage = {
   width?: number;
   height?: number;
   alt?: string;
+};
+
+type ExtractLongCopyField = {
+  key: string;
+  type: string;
+  value: unknown;
 };
 
 type ByHandleQuery = { metaobject: { handle: string; fields: Field[] } | null };
@@ -52,6 +62,15 @@ const QUERY = /* GraphQL */ `
     }
   }
 `;
+
+function extractBioHtml(fields: Field[]): string | null {
+  const bioLike: ExtractLongCopyField[] = fields
+    .filter((field) => /bio/i.test(field.key))
+    .map(({ key, type, value }) => ({ key, type, value }));
+
+  if (!bioLike.length) return null;
+  return extractLongCopy(bioLike);
+}
 
 function coverFromFields(fields: Field[]): CoverImage | null {
   const f = fields.find((field) => field.key === "coverimage");
@@ -98,6 +117,7 @@ export default async function ArtistPage({ params }: { params: { handle: string 
     valueMap.born ??
     valueMap.birthdate
   ) as string | undefined;
+  const bioHtml = extractBioHtml(mo.fields);
 
   return (
     <main
@@ -110,6 +130,9 @@ export default async function ArtistPage({ params }: { params: { handle: string 
         birthYear={birthYear}
         cover={cover}
       />
+      <ArtistBioSection html={bioHtml} />
+      <ArtistArtworks artistHandle={mo.handle} artistName={name} />
+      <ArtistExhibitions artistHandle={mo.handle} artistName={name} />
     </main>
   );
 }
