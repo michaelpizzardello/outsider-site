@@ -8,7 +8,7 @@ export function buildCartPermalink(
   opts?: { discount?: string }
 ): string {
   const safeLines = lines.filter((line) => line.variantGid && line.quantity > 0);
-  if (!safeLines.length) return "https://shop.outsidergallery.com.au/cart";
+  if (!safeLines.length) return "https://shop.outsidergallery.au/cart";
 
   const items = safeLines
     .map((line) => `${variantNumericIdFromGid(line.variantGid)}:${Math.max(1, line.quantity)}`)
@@ -19,4 +19,17 @@ export function buildCartPermalink(
     return `${base}?discount=${encodeURIComponent(opts.discount)}`;
   }
   return base;
+}
+
+export function rewriteCheckoutDomain(checkoutUrl: string, host = "shop.outsidergallery.au"): string {
+  if (!checkoutUrl) return checkoutUrl;
+  try {
+    const url = new URL(checkoutUrl);
+    url.protocol = "https";
+    url.host = host;
+    return url.toString();
+  } catch (error) {
+    console.error("rewriteCheckoutDomain failed", error);
+    return checkoutUrl;
+  }
 }

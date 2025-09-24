@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
-import { buildCartPermalink } from '@/lib/shopifyPermalink';
+import { buildCartPermalink, rewriteCheckoutDomain } from '@/lib/shopifyPermalink';
 
 export default function CartDrawer() {
   const {
@@ -50,7 +50,8 @@ export default function CartDrawer() {
         return;
       }
 
-      const url = buildCartPermalink(lines);
+      const checkoutUrl = cart.checkoutUrl ? rewriteCheckoutDomain(cart.checkoutUrl) : null;
+      const url = checkoutUrl || buildCartPermalink(lines);
       if (url) {
         window.location.href = url;
         return;
