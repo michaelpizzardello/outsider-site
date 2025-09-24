@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
+import { buildCartPermalink } from '@/lib/shopifyPermalink';
 
 export default function CartDrawer() {
   const {
@@ -16,7 +16,10 @@ export default function CartDrawer() {
     status,
     error,
     clearError,
+    setErrorMessage,
   } = useCart();
+
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
     if (drawerOpen) {
@@ -33,6 +36,34 @@ export default function CartDrawer() {
 
   const subtotal = cart?.cost?.subtotalAmount;
   const empty = !cart || cart.totalQuantity === 0 || cart.lines.length === 0;
+
+  const handleCheckout = async () => {
+    if (!cart || !cart.lines.length || checkoutLoading) return;
+    setCheckoutLoading(true);
+    try {
+      const lines = cart.lines
+        .filter((line) => line.merchandiseId && line.quantity > 0)
+        .map((line) => ({ variantGid: line.merchandiseId, quantity: line.quantity }));
+
+      if (!lines.length) {
+        setCheckoutLoading(false);
+        return;
+      }
+
+      const url = buildCartPermalink(lines);
+      if (url) {
+        window.location.href = url;
+        return;
+      }
+
+      setErrorMessage('Unable to redirect to checkout.');
+    } catch (error) {
+      console.error('Checkout redirect failed', error);
+      setErrorMessage('Unable to start checkout. Please try again.');
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[999] flex">
@@ -180,15 +211,16 @@ export default function CartDrawer() {
             >
               Continue browsing
             </button>
-            <Link
-              href={cart?.checkoutUrl ?? '#'}
-              className={`flex-1 px-4 py-2 text-center text-sm uppercase tracking-[0.18em] text-white ${
-                cart?.checkoutUrl ? 'bg-neutral-900 hover:bg-black' : 'bg-neutral-400 pointer-events-none'
+            <button
+              type="button"
+              onClick={handleCheckout}
+              disabled={empty || checkoutLoading}
+              className={`flex-1 px-4 py-2 text-sm uppercase tracking-[0.18em] text-white transition ${
+                empty || checkoutLoading ? 'bg-neutral-400 cursor-not-allowed' : 'bg-neutral-900 hover:bg-black'
               }`}
-              prefetch={false}
             >
-              Checkout
-            </Link>
+              {checkoutLoading ? 'Processing...' : 'Checkout'}
+            </button>
           </div>
           {status === 'loading' ? (
             <p className="mt-2 text-xs text-neutral-500">Updating cart...</p>

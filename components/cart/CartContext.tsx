@@ -27,6 +27,7 @@ type CartContextValue = {
   removeLine: (lineId: string) => Promise<void>;
   refresh: () => Promise<void>;
   clearError: () => void;
+  setErrorMessage: (message: string) => void;
 };
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
@@ -98,6 +99,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const openCart = useCallback(() => setDrawerOpen(true), []);
   const closeCart = useCallback(() => setDrawerOpen(false), []);
   const clearError = useCallback(() => setError(null), []);
+  const setErrorMessage = useCallback((message: string) => setError(message), []);
 
   const addLine = useCallback(async (input: AddLineInput) => {
     setStatus('loading');
@@ -152,7 +154,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     removeLine,
     refresh,
     clearError,
-  }), [cart, status, ready, drawerOpen, error, openCart, closeCart, addLine, updateLine, removeLine, refresh, clearError]);
+    setErrorMessage,
+  }), [cart, status, ready, drawerOpen, error, openCart, closeCart, addLine, updateLine, removeLine, refresh, clearError, setErrorMessage]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
@@ -164,4 +167,3 @@ export function useCart(): CartContextValue {
   }
   return ctx;
 }
-
