@@ -1,0 +1,1909 @@
+
+
+
+<!DOCTYPE html>
+<html class="no-js"
+      lang="en-GB"
+      dir="ltr">
+<head>
+    <style>[x-cloak] { display: none !important; }</style>
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="referrer" content="origin-when-cross-origin" />
+    <meta name="facebook-domain-verification" content="aiwmgxj2g6gckejg4m2it3v1pcf8o4" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/dist/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/dist/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/dist/favicon/favicon-16x16.png">
+<link rel="manifest" href="/dist/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">    <style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-Clear.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-ClearItalic.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-Regular.ttf') format('truetype');
+                                font-weight: 400;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-RegularItalic.ttf') format('truetype');
+                                font-weight: 400;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-Medium.ttf') format('truetype');
+                                font-weight: 500;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-MediumItalic.ttf') format('truetype');
+                                font-weight: 500;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-display';
+                                src: url('/dist/fonts/BeausiteDisplayWeb-Thin.ttf') format('truetype');
+                                font-weight: 100;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-display';
+                                src: url('/dist/fonts/BeausiteDisplayWeb-ThinItalic.ttf') format('truetype');
+                                font-weight: 100;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-Light.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-LightItalic.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-Bold.ttf') format('truetype');
+                                font-weight: 700;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-BoldItalic.ttf') format('truetype');
+                                font-weight: 700;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style>    <script type="text/javascript">
+  // The below is a debounced calculation of the window's inner height,
+  // set to a CSS custom property `--vh` which tailwind uses.
+  // All of this so that we can achieve accurate screen-based heights on iOS/etc devices
+  // which let UI elements & scroll position cause the normal `100vh` to be inaccurate.
+  var resizeTimer;
+  var resizeCallback = function() {
+    console.log('resizeCallback');
+    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+    var vh = window.innerHeight * 0.01;
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
+  resizeCallback();
+
+  /**
+   * Re-calculate it on resize
+   */
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resizeCallback, 250);
+  });
+
+  /**
+   * Set some globals for our app JS
+   * @type {string}
+   */
+  window.SHOPIFY_HOSTNAME = 'white-cube-shop.myshopify.com';
+  window.SHOPIFY_STOREFRONT_ACCESS_TOKEN = 'f8833a14c47cc9070b65e4be69962680';
+  window.SHOPIFY_BUYER_CURRENCY = '';
+</script>
+
+<script type="module">!function(){const e=document.createElement("link").relList;if(!(e&&e.supports&&e.supports("modulepreload"))){for(const e of document.querySelectorAll('link[rel="modulepreload"]'))r(e);new MutationObserver((e=>{for(const o of e)if("childList"===o.type)for(const e of o.addedNodes)if("LINK"===e.tagName&&"modulepreload"===e.rel)r(e);else if(e.querySelectorAll)for(const o of e.querySelectorAll("link[rel=modulepreload]"))r(o)})).observe(document,{childList:!0,subtree:!0})}function r(e){if(e.ep)return;e.ep=!0;const r=function(e){const r={};return e.integrity&&(r.integrity=e.integrity),e.referrerpolicy&&(r.referrerPolicy=e.referrerpolicy),"use-credentials"===e.crossorigin?r.credentials="include":"anonymous"===e.crossorigin?r.credentials="omit":r.credentials="same-origin",r}(e);fetch(e.href,r)}}();</script>
+<script type="module" src="https://www.whitecube.com/dist/assets/app-CwAOb_bR.js" crossorigin onload="e=new CustomEvent(&#039;vite-script-loaded&#039;, {detail:{path: &#039;src/js/app.js&#039;}});document.dispatchEvent(e);" integrity="sha384-EbGkbMzcBD9CzPRNiGlTwpzWlpfdmXCYB0MLNpYGi3iiky/mNwugHwf7c/M9llHQ"></script>
+<link href="https://www.whitecube.com/dist/assets/app-DaNqc_0c.css" rel="stylesheet">
+
+<link href="https://www.whitecube.com/cpresources/7f7a8a24/css/fields/phone-country.css?v=1731447637" rel="stylesheet">
+<link href="https://www.whitecube.com/cpresources/7f7a8a24/css/formie-theme.css?v=1731447637" rel="stylesheet">
+    <!-- Google Tag Manager -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GTM-P6DZDRN', {
+          'linker': {
+            'domains': ['www.whitecube.com', 'white-cube-shop.myshopify.com', 'checkout.shopify.com', 'shop.app']
+          }
+        });
+    </script>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-P6DZDRN');</script>
+<!-- End Google Tag Manager -->
+<title>Suzanne Song, Mason&#039;s Yard (2025) | White Cube</title>
+      <meta name="X-App-Version" content="1.2.2:1" />
+    
+      <style type="text/css">
+        :root {
+                        --colors-grey-default: 246,246,245;
+                                  --colors-grey-dark: 224,224,224;
+                  }
+      </style>
+    <meta name="generator" content="SEOmatic">
+<meta name="description" content="The abstract painting of Korean American artist Suzanne Song is characterised by the combining of geometric logic and subtle tonal gradations to…">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta name="robots" content="all">
+<meta content="100053132811565" property="fb:profile_id">
+<meta content="en_GB" property="og:locale">
+<meta content="White Cube" property="og:site_name">
+<meta content="website" property="og:type">
+<meta content="https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025" property="og:url">
+<meta content="Suzanne Song, Mason&#039;s Yard (2025)" property="og:title">
+<meta content="The abstract painting of Korean American artist Suzanne Song is characterised by the combining of geometric logic and subtle tonal gradations to…" property="og:description">
+<meta content="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-‘Inside-the-White-Cube_-Interfold’-White-Cube-Masons-Yard-2025_30.jpeg?w=1200&amp;h=630&amp;q=82&amp;auto=format&amp;fit=crop&amp;dm=1756894728&amp;s=27020323b8a444f199f50eddeffb78c3" property="og:image">
+<meta content="1200" property="og:image:width">
+<meta content="630" property="og:image:height">
+<meta content="https://www.xiaohongshu.com/user/profile/613b762e000000001f0398a8" property="og:see_also">
+<meta content="/wechat" property="og:see_also">
+<meta content="https://www.artnet.com/galleries/white-cube/" property="og:see_also">
+<meta content="https://www.artsy.net/partner/white-cube" property="og:see_also">
+<meta content="https://www.youtube.com/c/WhiteCubeOfficial" property="og:see_also">
+<meta content="https://www.instagram.com/whitecube/" property="og:see_also">
+<meta content="https://www.tiktok.com/@whitecube_official" property="og:see_also">
+<meta content="https://www.facebook.com/whitecubegalleries" property="og:see_also">
+<meta content="https://twitter.com/_whitecube" property="og:see_also">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@_whitecube">
+<meta name="twitter:creator" content="@_whitecube">
+<meta name="twitter:title" content="Suzanne Song, Mason&#039;s Yard (2025) | White Cube">
+<meta name="twitter:description" content="The abstract painting of Korean American artist Suzanne Song is characterised by the combining of geometric logic and subtle tonal gradations to…">
+<meta name="twitter:image" content="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-‘Inside-the-White-Cube_-Interfold’-White-Cube-Masons-Yard-2025_30.jpeg?w=800&amp;h=418&amp;q=82&amp;auto=format&amp;fit=crop&amp;dm=1756894728&amp;s=0f7b680cf7d6192354217709c0d70c4b">
+<meta name="twitter:image:width" content="800">
+<meta name="twitter:image:height" content="418">
+<link href="https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025" rel="canonical">
+<link href="https://www.whitecube.com" rel="home">
+<link type="text/plain" href="https://www.whitecube.com/humans.txt" rel="author"></head>
+<body
+    x-data="app()"
+    x-on:keyup.escape="currencyChangeAlert = false"
+    class="relative flex flex-col min-h-screen bg-white text-black antialiased"
+>
+    <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P6DZDRN" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->    <a
+  href="#main"
+  class="fixed left-0 top-0 px-8 py-6 z-[1000] transition-transform bg-white -translate-y-[200%] focus:translate-y-0">
+  Skip to content
+</a>
+
+    <div
+        up-main
+        class="contents"
+                                  style="--header-text-color:white"
+                        >
+                  
+<header>
+
+    
+
+
+        
+
+    
+    <div class="container md:columns-3 mx-auto py-36 md:py-[60px] absolute left-1/2 -translate-x-1/2 z-10 text-headerTextColor text-16 [&_a:focus-visible]:outline-[var(--header-text-color)]">
+        <nav up-nav aria-label="Primary" class="hidden md:block">
+            <ul  class="flex items-center md:gap-x-32 lg:gap-x-64 pt-4"><li  class="leading-none"><a  href="https://www.whitecube.com/artists" title="Go to Artists page" aria-label="Go to Artists page" up-alias="/artists/*">Artists</a></li><li  class="leading-none"><a  href="https://www.whitecube.com/exhibitions/london" up-alias="/exhibitions/* /gallery-exhibitions/* /online-exhibitions/* /external-exhibitions/*">Exhibitions</a></li></ul>
+        </nav>
+        <div class="flex justify-center">
+            <a href="https://www.whitecube.com/" title="Go to White Cube homepage" aria-label="Go to White Cube homepage">
+                    <svg class="fill-current max-w-[180px] md:max-w-[235px] h-auto" width="234" height="18" viewBox="0 0 234 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.0393 4.95584L15.182 17.2183H16.8392L22.0473 0.64716H19.6324L15.916 12.6492L11.8678 0.64716H10.2107L6.1625 12.6492L2.44608 0.64716H0.03125L5.23934 17.2183H6.89646L11.0393 4.95584ZM46.2006 17.2183H48.5679V0.64716H46.2006V7.15684H36.9681V0.64716H34.6008V17.2183H36.9681V9.40622H46.2006V17.2183ZM63.3136 17.2183H65.6809V0.64716H63.3136V17.2183ZM78.6226 2.89611H83.1205V17.2183H85.4878V2.89611H89.9857V0.64716H78.6226V2.89611ZM105.321 7.15684V2.89611H112.423V0.64716H102.953V17.2183H112.659V14.9694H105.321V9.40622H110.765V7.15684H105.321ZM141.516 8.93233C141.516 13.8333 145.162 17.4551 150.11 17.4551C152.667 17.4551 155.128 16.2006 156.549 14.3771L154.868 12.8622C153.945 13.975 152.335 15.2057 150.11 15.2057C146.582 15.2057 143.884 12.6734 143.884 8.93233C143.884 5.35803 146.511 2.65938 149.897 2.65938C151.672 2.65938 153.4 3.46418 154.371 4.52947L155.957 2.96738C154.513 1.38069 152.264 0.410004 149.897 0.410004C145.114 0.410004 141.516 4.15104 141.516 8.93233V8.93233ZM176.547 17.4551C178.583 17.4551 180.429 16.6265 181.684 15.277C182.75 14.1175 183.412 12.5788 183.412 10.3531V0.64716H181.045V10.4715C181.045 12.0336 180.666 13.0047 180.003 13.7382C179.175 14.6618 177.944 15.2057 176.547 15.2057C175.151 15.2057 173.919 14.6618 173.091 13.7382C172.428 13.0047 172.049 12.0336 172.049 10.4715V0.64716H169.682V10.3531C169.682 12.5788 170.345 14.1175 171.41 15.277C172.665 16.6265 174.511 17.4551 176.547 17.4551ZM200.367 14.9694V9.40622H203.965C205.456 9.40622 206.166 9.73755 206.688 10.2581C207.161 10.7558 207.468 11.418 207.468 12.1761C207.468 12.9334 207.161 13.6203 206.688 14.1175C206.166 14.6381 205.456 14.9694 203.965 14.9694H200.367ZM200.367 7.15684V2.89611H203.207C204.533 2.89611 205.101 3.1566 205.48 3.58297C205.835 3.96097 206.048 4.45819 206.048 5.02669C206.048 5.59518 205.835 6.09198 205.48 6.47041C205.101 6.89678 204.533 7.15684 203.207 7.15684H200.367ZM204.391 17.2183C206.072 17.2183 207.161 16.8157 208.013 16.1055C209.126 15.2057 209.836 13.8095 209.836 12.2707C209.836 10.4002 208.676 8.6956 207.113 7.91498C207.894 7.1806 208.415 6.09198 208.415 4.95584C208.415 3.72467 207.894 2.58853 207.043 1.80706C206.261 1.09687 205.243 0.64716 203.633 0.64716H197.999V17.2183H204.391ZM225.727 7.15684V2.89611H232.829V0.64716H223.36V17.2183H233.066V14.9694H225.727V9.40622H231.172V7.15684H225.727Z"/></svg>
+            </a>
+        </div>
+        <nav up-nav aria-label="Secondary" class="hidden md:block">
+          <ul class="flex items-center justify-end flex-nowrap md:gap-x-32 lg:gap-x-64 pt-4">
+                                    <li class="leading-none">
+                <a
+                   href="https://www.whitecube.com/collect"                                                      up-alias="/collect/* /art-fairs/* /salon/* prints-multiples/*"                >
+                    Collect
+                </a>
+            </li>
+                        <li class="leading-none">
+                <a
+                   href="https://www.whitecube.com/shop"                                                      up-alias="/shop/*"                >
+                    Bookshop
+                </a>
+            </li>
+                        <li class="leading-none">
+                <a href="https://www.whitecube.com/account"
+                   up-alias="/account/*"
+                   class="group inline-block"
+                   title="My Account"
+                   aria-label="My Account">    <svg class="fill-current" width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.97853 0C15.2258 0 19.5 4.27424 19.5 9.47853C19.5 14.7258 15.2258 19 9.97853 19C4.77348 19 0.5 14.7258 0.5 9.47853C0.5 4.27348 4.77424 0 9.97853 0ZM9.97853 4.95121C11.7984 4.95121 13.279 6.43262 13.279 8.20933C13.279 9.30926 12.7714 10.2406 11.9676 10.833C13.9567 11.4253 15.6488 12.8643 16.538 14.7681C17.7226 13.329 18.4002 11.51 18.4002 9.47853C18.4002 4.82353 14.6344 1.05773 9.97938 1.05773C5.32438 1.05773 1.55858 4.82353 1.55858 9.47853C1.55858 11.5098 2.27777 13.3291 3.42074 14.7681C4.30914 12.8638 6.00208 11.4253 8.03337 10.833C7.22957 10.2408 6.72193 9.30934 6.72193 8.20933C6.72193 6.43179 8.20334 4.95121 9.98005 4.95121H9.97853ZM9.97853 6.00883C8.79399 6.00883 7.77795 7.02415 7.77795 8.20941C7.77795 9.43624 8.79327 10.41 9.97853 10.41C11.2054 10.41 12.1791 9.43698 12.1791 8.20941C12.1791 7.02487 11.2061 6.00883 9.97853 6.00883ZM15.7334 15.6572C14.845 13.2452 12.5599 11.6376 9.97853 11.6376C7.43956 11.6376 5.11206 13.2459 4.22362 15.6572C5.74732 17.054 7.77795 17.9002 9.97853 17.9002C12.2215 17.9002 14.2528 17.0541 15.7334 15.6572Z"/></svg></a>
+            </li>
+          </ul>
+        </nav>
+    </div>
+
+    
+
+<div
+    x-data="{ mobileMenu: false, moreMenu: false }"
+>
+    <div
+        :class="mobileMenu ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'"
+        x-cloak
+        class="fixed inset-0 w-screen h-screen z-30 bg-black transition-opacity"
+    ></div>
+    <div
+        :class="mobileMenu ? 'bg-white translate-y-0' : 'bg-white/80 translate-y-[calc(100%_-_46px)]'"
+        class="fixed bottom-0 w-full z-30 border-t border-grey-dark backdrop-blur-sm transition-all md:hidden flex flex-col"
+    >
+        <button
+            @click="mobileMenu = ! mobileMenu"
+            class="btn btn-black hover:bg-black hover:text-white rounded-full h-56 w-56 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            aria-label="Menu toggle"
+        >
+            <span
+                x-show="!mobileMenu"
+            >    <svg class="fill-current" width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="24" height="2"/><rect x="2" width="20" height="2"/><rect x="4" y="14" width="16" height="2"/></svg></span>
+            <span
+                x-show="mobileMenu"
+                x-cloak
+            >    <svg class="fill-current w-24 h-auto" width="15" height="14" viewBox="0 0 15 14" fill="eeee" xmlns="http://www.w3.org/2000/svg"><path d="M14.2046 1.9457L13.2178 1L7.60232 6.38152L1.98682 1L1 1.9457L6.6155 7.32722L1 12.7087L1.98682 13.6544L7.60232 8.27293L13.2178 13.6544L14.2046 12.7087L8.58914 7.32722L14.2046 1.9457Z" stroke-width="0.5"/></svg></span>
+        </button>
+
+                <nav up-nav class="text-16 text-center p-32 pt-60">
+            <ul class="flex item-center justify-between gap-x-24 mb-32">
+                                <li><a  href="https://www.whitecube.com/artists">Artists</a></li>
+                                <li><a  href="https://www.whitecube.com/exhibitions/london">Exhibitions</a></li>
+                                <li><a  href="https://www.whitecube.com/collect">Collect</a></li>
+                                <li><a  href="https://www.whitecube.com/shop">Bookshop</a></li>
+                            </ul>
+                
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline text-16 font-normal" href="https://www.whitecube.com/account" target="_self" title="My Account"
+        aria-label="My Account"        >
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.97853 0C15.2258 0 19.5 4.27424 19.5 9.47853C19.5 14.7258 15.2258 19 9.97853 19C4.77348 19 0.5 14.7258 0.5 9.47853C0.5 4.27348 4.77424 0 9.97853 0ZM9.97853 4.95121C11.7984 4.95121 13.279 6.43262 13.279 8.20933C13.279 9.30926 12.7714 10.2406 11.9676 10.833C13.9567 11.4253 15.6488 12.8643 16.538 14.7681C17.7226 13.329 18.4002 11.51 18.4002 9.47853C18.4002 4.82353 14.6344 1.05773 9.97938 1.05773C5.32438 1.05773 1.55858 4.82353 1.55858 9.47853C1.55858 11.5098 2.27777 13.3291 3.42074 14.7681C4.30914 12.8638 6.00208 11.4253 8.03337 10.833C7.22957 10.2408 6.72193 9.30934 6.72193 8.20933C6.72193 6.43179 8.20334 4.95121 9.98005 4.95121H9.97853ZM9.97853 6.00883C8.79399 6.00883 7.77795 7.02415 7.77795 8.20941C7.77795 9.43624 8.79327 10.41 9.97853 10.41C11.2054 10.41 12.1791 9.43698 12.1791 8.20941C12.1791 7.02487 11.2061 6.00883 9.97853 6.00883ZM15.7334 15.6572C14.845 13.2452 12.5599 11.6376 9.97853 11.6376C7.43956 11.6376 5.11206 13.2459 4.22362 15.6572C5.74732 17.054 7.77795 17.9002 9.97853 17.9002C12.2215 17.9002 14.2528 17.0541 15.7334 15.6572Z"/></svg></span>
+                <span >My Account</span>
+    </a>
+
+        </nav>
+        
+                <div
+            x-show="moreMenu"
+            x-cloak
+        >
+                        <nav up-nav class="border-t border-grey-dark text-sm p-32">
+                <ul>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/about">About</a>
+                                                <ul class="w-[calc(100%-6rem)] flex flex-wrap justify-start gap-x-40 gap-y-24 text-14">
+                                                <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/locations">Locations</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/careers">Careers</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/sustainability">Sustainability</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/contact">Contact</a>
+                                            </li>
+                                            </ul>
+                                            </li>
+                                    </ul>
+            </nav>
+                                    <nav up-nav class="border-t border-grey-dark text-sm p-32">
+                <ul>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news">News</a>
+                                                <ul class="w-[calc(100%-6rem)] flex flex-wrap justify-start gap-x-40 gap-y-24 text-14">
+                                                <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news-categories/press-release">Press Releases</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news-categories/events">Events</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news-categories/museum-exhibition">Museum Exhibitions</a>
+                                            </li>
+                                            </ul>
+                                            </li>
+                                    </ul>
+            </nav>
+                    </div>
+
+        <button
+            @click="moreMenu = ! moreMenu"
+            class="border-t border-grey-dark px-32 py-18 flex flex-col items-center gap-y-12"
+            aria-label="Toggle more menu"
+        >
+                <svg class="fill-current" width="31" height="6" viewBox="0 0 31 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.54444 -4.75081e-05C2.33154 -4.75081e-05 1.23819 0.731203 0.772947 1.85152C0.308877 2.97301 0.565524 4.26325 1.42335 5.12092C2.28117 5.97874 3.57141 6.23536 4.69275 5.77132C5.81424 5.30725 6.54432 4.21273 6.54432 2.99983C6.54432 1.34281 5.20134 -0.000167671 3.54432 -0.000167671L3.54444 -4.75081e-05ZM15.5444 -4.75081e-05C14.3315 -4.75081e-05 13.2382 0.731203 12.7729 1.85152C12.3089 2.97301 12.5655 4.26325 13.4233 5.12092C14.2812 5.97874 15.5714 6.23536 16.6927 5.77132C17.8142 5.30725 18.5443 4.21273 18.5443 2.99983C18.5443 2.2006 18.2256 1.43419 17.6596 0.871692C17.0924 0.308022 16.3236 -0.00604767 15.5244 -0.000167671L15.5444 -4.75081e-05ZM27.5444 -4.75081e-05C26.3315 -4.75081e-05 25.2382 0.731203 24.7729 1.85152C24.3089 2.97301 24.5655 4.26325 25.4233 5.12092C26.2812 5.97874 27.5714 6.23536 28.6927 5.77132C29.8142 5.30725 30.5443 4.21273 30.5443 2.99983C30.5443 2.19592 30.2221 1.426 29.6502 0.862332C29.0783 0.298662 28.3037 -0.0118977 27.4998 -0.000167671L27.5444 -4.75081e-05Z"/></svg>
+            <span
+                x-text="moreMenu ? 'Less' : 'More'"
+                class="text-xs uppercase font-medium"
+            ></span>
+        </button>
+            </div>
+</div>
+
+    </header>
+        
+                <main id="main">
+        
+            
+    
+  <div up-id="dropdown-target">
+
+                
+
+  
+  
+ 
+<div class="flex items-center relative deep:max-h-screen overflow-hidden bg-black text-headerTextColor [&_a:focus-visible]:outline-[var(--header-text-color)]" >
+
+    <div
+    x-data="responsiveAsset()"
+    class="
+               opacity-90
+               aspect-w-2 aspect-h-3 w-screen lg:min-h-screen"
+  >
+    
+          <template x-if="showDesktop">
+                                                 <img class="object-cover w-auto max-w-none !left-1/2 -translate-x-1/2 lg:!absolute lg:top-1/2 lg:-translate-y-1/2 lg:w-full lg:h-auto lg:min-w-screen lg:min-h-screen lazyload lazyload-up " src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27960%27%20height%3D%27720%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="960" height="720" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Suzanne-Song-Open-Facet-2025-1.jpg?w=960&amp;h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756895430&amp;s=c7d0761f973701de38b03f3963b890db 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Suzanne-Song-Open-Facet-2025-1.jpg?w=1280&amp;h=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756895430&amp;s=478f84d22da210e503a2deb033d982ad 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Suzanne-Song-Open-Facet-2025-1.jpg?w=1600&amp;h=1200&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756895430&amp;s=bb9f63c8c272886921c7d538158ad12d 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Suzanne-Song-Open-Facet-2025-1.jpg?w=2360&amp;h=1770&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756895430&amp;s=8be72098fdeceeeab4de697b5e6291b1 2360w" x-on:load="$dispatch(&#039;asset-loaded&#039;)" sizes="100vw">
+              </template>
+      </div>
+
+      <div class="absolute inset-0 bg-gradient-to-b from-black opacity-0"></div>
+  
+  
+                        
+                    
+    <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 grid--centered">
+
+      <h1 class="sr-only">Suzanne Song, Mason&#039;s Yard (2025)</h1>
+
+      
+                  <div class="col-span-full sm:col-span-10 sm:col-start-2 xl:col-span-14 xl:col-start-6 text-center items-center flex flex-col gap-y-24">
+                          <p class="font-medium uppercase tracking-widest">Inside the White Cube</p>
+        
+        <div class="flex flex-col gap-y-8">
+          <h1 class="leading-none font-text font-light tracking-tight
+             
+             text-80 3xl:text-90">Suzanne Song</h1>
+                      <div class="text-46 3xl:text-49 leading-extra-tight font-text font-light tracking-tight italic">
+              <p>Interfold</p>
+
+            </div>
+                  </div>
+
+        <div>
+                      <p class="text-lg">    
+        
+  4 September &ndash; 3 October 2025</p>
+                            </div>
+
+        
+                  </div>
+        
+          </div>
+  
+  </div>
+
+                        <div class="grid--centered py-default" id="intro">
+
+            
+            <div class="col-span-full lg:col-span-3 lg:col-start-1 xl:col-span-5 xl:col-start-1 lg:row-start-1">
+                <div class="flex flex-col items-start gap-32 mb-40 lg:mb-0">
+
+                                        
+          
+
+                                                    
+
+                                                            <div class="text-sm">
+                        <h2 class="font-medium">Dates</h2>
+                        <p>    
+        
+  4 September &ndash; 3 October 2025</p>
+                    </div>
+                    
+                                                                                                                                                                                                                                <div class="text-sm">
+                                        <h2 class="font-medium">Location</h2>
+                                        <h3><a href="https://www.whitecube.com/locations/white-cube-masons-yard" title="Learn more about White Cube Mason’s Yard" aria-label="Learn more about White Cube Mason’s Yard">White Cube Mason’s Yard</a></h3>
+                                                                                <address>
+                                            <p>25–26 Mason’s Yard <br />
+London SW1Y 6BU<br /></p>
+
+                                        </address>
+                                                                            </div>
+                                                                                    
+                    <div class="flex flex-col items-start gap-y-12">
+                                                
+                                                
+                                                                                
+        
+        <div
+        x-data="{ share: false }"
+        class="flex flex-col"
+    >
+        <button
+            @click="share = ! share"
+            class="text-14 3xl:text-15 font-medium underline-offset-4 hover:underline inline-flex items-center gap-x-14 group"
+            x-bind:aria-expanded="share"
+        >
+            <span class="w-18 flex justify-center">    <svg class="fill-current" width="17" height="17" viewBox="0 0 16.73 15.38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m14.06,10.03c-.92,0-1.78.48-2.27,1.27l-5.92-2.67c.21-.6.21-1.25,0-1.85l5.92-2.67c.78,1.25,2.43,1.63,3.69.85,1.25-.78,1.63-2.43.85-3.69C15.54,0,13.89-.38,12.64.41c-.78.49-1.25,1.34-1.25,2.26,0,.27.05.53.13.79l-5.92,2.67c-.85-1.43-2.7-1.9-4.12-1.05C.04,5.94-.43,7.78.42,9.21c.85,1.43,2.7,1.9,4.12,1.05.43-.26.79-.62,1.05-1.05l5.92,2.67c-.09.26-.13.54-.13.82,0,1.48,1.2,2.67,2.67,2.67s2.67-1.2,2.67-2.67-1.2-2.67-2.67-2.67h0Z"/></svg></span>
+            <span>Share</span>
+        </button>
+        <ul
+            x-show="share"
+            x-cloak
+            class="flex flex-col items-start gap-16 mt-12 pt-24 border-t border-grey-dark"
+        >
+                          <li>
+                <a class="text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group" href="mailto:?&amp;subject=Suzanne%20Song%2C%20Mason%27s%20Yard%20%282025%29&amp;body=https%3A%2F%2Fwww.whitecube.com%2Fgallery-exhibitions%2Fsuzanne-song-masons-yard-2025" title="Share on Email" aria-label="Share on Email" target="_blank" rel="nofollow">
+                      <svg class="fill-current" width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.1678 0H1.83222C0.821978 0 0 0.821978 0 1.83222V8.35106C0 9.3613 0.821978 10.1833 1.83222 10.1833H13.1678C14.178 10.1833 15 9.3613 15 8.35106V1.83242C15.0002 0.821978 14.1782 0 13.1678 0ZM12.2725 1.19531L7.5 4.27006L2.72751 1.19531H12.2725ZM13.1678 8.98817H1.83222C1.48099 8.98817 1.19531 8.70229 1.19531 8.35126V1.86628L7.13125 5.68332C7.13921 5.6883 7.14778 5.69169 7.15595 5.69627C7.16451 5.70105 7.17328 5.70563 7.18205 5.71002C7.22807 5.73372 7.27548 5.75285 7.32389 5.7654C7.32887 5.76679 7.33385 5.76739 7.33883 5.76859C7.39202 5.78114 7.44581 5.78891 7.4996 5.78891H7.5C7.5004 5.78891 7.5008 5.78891 7.5008 5.78891C7.55459 5.78891 7.60838 5.78134 7.66157 5.76859C7.66655 5.76739 7.67153 5.76679 7.67651 5.7654C7.72492 5.75285 7.77213 5.73372 7.81835 5.71002C7.82712 5.70563 7.83588 5.70105 7.84445 5.69627C7.85262 5.69169 7.86118 5.6883 7.86915 5.68332L13.8051 1.86628V8.35106C13.8049 8.70229 13.519 8.98817 13.1678 8.98817Z"/></svg>
+                  <span>Email</span>
+                </a>
+              </li>
+                          <li>
+                <a class="text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group" href="https://api.whatsapp.com/send?text=Suzanne%20Song%2C%20Mason%27s%20Yard%20%282025%29%0ahttps%3A%2F%2Fwww.whitecube.com%2Fgallery-exhibitions%2Fsuzanne-song-masons-yard-2025" title="Share on WhatsApp" aria-label="Share on WhatsApp" target="_blank" rel="nofollow">
+                      <svg class="fill-current" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 7.30704C15 11.3423 11.7033 14.6136 7.63573 14.6136C6.34493 14.6136 5.13239 14.2834 4.07686 13.7053L0 15L1.32895 11.0787C0.658852 9.97815 0.272932 8.68588 0.272932 7.30655C0.273421 3.27127 3.56915 0 7.63671 0C11.7038 0.00097825 15 3.27176 15 7.30704ZM7.63524 1.1651C4.22164 1.1651 1.44488 3.92083 1.44488 7.30851C1.44488 8.65262 1.88313 9.89696 2.62416 10.9094L1.85134 13.1902L4.22947 12.4345C5.20772 13.0763 6.37819 13.45 7.63524 13.45C11.0488 13.45 13.8266 10.6947 13.8266 7.30704C13.8276 3.92083 11.0493 1.1651 7.63524 1.1651ZM11.3546 8.99012C11.3086 8.91626 11.1882 8.87126 11.0083 8.78126C10.8287 8.69126 9.94 8.25839 9.77517 8.19969C9.60886 8.13953 9.48854 8.10921 9.36821 8.28871C9.24936 8.46822 8.90306 8.87126 8.79692 8.99159C8.69175 9.11142 8.58659 9.12659 8.4061 9.03805C8.22562 8.94708 7.64356 8.75925 6.95389 8.14931C6.41732 7.67388 6.05488 7.0884 5.95021 6.90889C5.84407 6.72987 5.93945 6.63303 6.02896 6.54401C6.10966 6.4633 6.20944 6.33466 6.29993 6.2295C6.39042 6.12531 6.42026 6.05146 6.48042 5.93162C6.5396 5.81178 6.50977 5.7076 6.46526 5.61711C6.42026 5.52711 6.05977 4.64669 5.90863 4.28816C5.75847 3.93012 5.60831 3.9893 5.50266 3.9893C5.3975 3.9893 5.27717 3.97463 5.15685 3.97463C5.03652 3.97463 4.84087 4.01816 4.67604 4.19767C4.5112 4.37718 4.04458 4.81006 4.04458 5.69146C4.04458 6.57384 4.69071 7.42443 4.7812 7.54378C4.87218 7.66263 6.03042 9.5306 7.86513 10.2477C9.70082 10.9642 9.70082 10.725 10.0315 10.6947C10.3631 10.6644 11.0997 10.2618 11.2494 9.84413C11.4 9.42446 11.4 9.06496 11.3546 8.99012Z"/></svg>
+                  <span>WhatsApp</span>
+                </a>
+              </li>
+                    </ul>
+    </div>
+
+                                            </div>
+                </div>
+            </div>
+
+            
+            <div
+                                x-data="{
+                    readMoreEl : null,
+                    fullIntro : false,
+                    init() {
+                        this.readMoreEl = document.getElementById('read-more');
+                    },
+                    toggle() {
+                        this.fullIntro = ! this.fullIntro;
+                        if(this.fullIntro) {
+                            this.readMoreEl.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                }"
+                                class="col-span-full lg:col-span-5 lg:col-start-4 xl:col-span-10 xl:col-start-8 3xl:col-span-9 3xl:col-start-9 lg:row-start-1 prose-responsive"
+            >
+                                    <p>The abstract painting of Korean American artist Suzanne Song is characterised by the combining of geometric logic and subtle tonal gradations to startling, mesmeric effect. Grounded by an inquiry into perception, her practice contends that physical and pictorial space is predicated upon its embodiment – that which is experienced or felt by the viewer. ‘Navigating the balance between control and openness’, as Song describes, her new body of work corrals the viewer into an exchange of perspectives but equally a disorientation, one capable of inspiring an emotional response.</p>
+
+                
+                                
+                                    <button
+                        @click="toggle()"
+                        class="text-14 3xl:text-15 font-medium underline-offset-4 hover:underline inline-flex items-center gap-x-14 group mt-8"
+                        aria-label="Read more/less of Introduction"
+                    >
+                        <span
+                            :class="{
+                                '-rotate-90' : !fullIntro
+                            }"
+                            class="w-18 flex justify-center"
+                        >    <svg class="fill-current" width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.9388 8.14925L7.33595 11.7529L7.33612 0.455924L5.65925 0.455924L5.65942 11.7529L2.05654 8.14925L0.882813 9.32297L6.49771 14.9371L12.1126 9.32297L10.9388 8.14925Z"/></svg></span>
+                        <span
+                            x-show="fullIntro"
+                            x-cloak
+                        >Read less</span>
+                        <span
+                            x-show="!fullIntro"
+                        >Read more</span>
+                    </button>
+                                                <div id="read-more"></div>
+                <div
+                                        x-show="fullIntro"
+                    x-cloak
+                    class="pt-32"
+                                    >
+                    <p>Song studied painting and printing in the early 2000s at the Yale School of Art in Connecticut, USA, and credits her background in printmaking for the development of her layered approach and line-based compositions. Rendered with patience and exceptional precision, Song’s work often involves a trial of puzzling out a composition before anything. Sometimes, this includes the creation of studies by playing with the placement of shapes cut out of paper. At other times, Song may create a small, preparatory painting, or use the computer to study or adjust its proportions, or decide on the thickness of the lines or space in a margin. Upon finally turning to the linen canvas, Song meticulously measures and applies tape to its surface, and only then carefully and methodologically goes over the resulting sections with thin washes of colour. Drawing upon the flattened perspective of traditional Eastern painting, theatre and paper-folding arts, and the discovery of one-point perspective which transformed Western visual conventions, the techniques of Song’s process imbibe different art historical trajectories in relation to space and its expression.<br />
+<br />
+Informed by theories of perception – which emerged concurrent to mid-20th century artistic movements such as Op(tical) art and Minimalism – Song’s work uses line, colour and basic, geometric units to build compositions that are illusionistic in nature. Areas of the canvas are animated by simple changes in the direction of line or a shift in hue and appear as if to cleave, contort or subdivide – a sensation of movement propagating a discovery, Song says, of the ‘tension between belief and perception’. In Op art – as much as in the Renaissance designs that long preceded it – trompe l’oeil was employed to demonstrate artistic mastery and challenge the verisimilitude of sight, both through the very ability of technique to deceive the eye. <br />
+<br />
+Essential to the success of trompe l’oeil is an understanding of the mutual constitution of light and depth, which is often managed and mediated by subtle tonal shifts and gradations. <em>Check Fold I</em> and <em>Tesselle Fold</em> (both 2025) apply this technique at scale; both paintings feature checkered gridwork that is torqued in its vertical run up and down the canvas, the ridge of these now-three-dimensional objects dictating the way shadows fall into the composition’s crevices. Subverting the well-known Minimalist motif of the grid – which is typically depicted flat, like a net diagram – these works of Song’s playfully redress the Minimalist principles of reduction and distillation that purport to bring viewers closer to the essence of a thing. Paintings such as <em>Ply Fold</em> and <em>Counter Fold</em> (both 2025) also possess traits and tenets of Minimalism, namely, their radical simplicity and preference for compositions structured according to the rule of the line. Song’s work, however, exploits a series of vertically stacked lines to different ends, by introducing degrees of change in colour. With lines angled inwards or outwards at various points, the resulting arrangement of forms suggests rustled pleats or bent window blinds, alternating between exposed surfaces that reflect light and shade trapped between the striations. Mirrored and inverted sequences such as these are deployed across Song’s work, visually oscillating, as the artist says, between ‘recognition and reinterpretation’.<br />
+<br />
+ 	Song’s paintings problematise simple, ready distinctions between what can be seen and what can be felt, and therefore, believed. Conditioned by the reciprocity between viewer and artwork, the paintings invoke Rudolf Arnheim’s application of Gestalt psychology to visual art, which explored how humans categorise and order seemingly innocuous shapes and lines to meaningfully perceive an entire image. Song’s awareness and activation of these stimuli – the way in which a line, form or tonal shift is able attract or draw vision along, and like this make intimations – likewise reveals that perception is grounded in interpretation and open to manipulation. Titles such as <em>Traverse </em>or <em>Counter Fold</em> (both 2025) are a nod to, and departure from, the austerity of the Minimalists, and make explicit reference to the dynamic motion and internal connection that distinguishes Song’s work.<br />
+<br />
+   	Integral to Song’s artistic inquiry is how visual perception can be understood as a process that is not only cognitive, but emotional. Contra the alleged neutrality and inhibited expressivity of Minimalism, Song seeks to conjure depth, movement and feeling. Unlike her previous bodies of work – which used the restricted, neutral palette of whites and greys also favoured by the Minimalists – these new paintings explore a new subject and material entirely: colour. <em>Folding Dawn</em> (2025), for instance, features warping ribbing in soft, velvety rose, while the ‘Refraction’ works (2025) emanate an overall periwinkle hue through zig-zagging bands that ebb pink, into purple and light blue. <em>Lunar Fold</em> (2025) lends colour to feeling with its somnambulist, dove-grey complexion and articulated folds, which impart image to a natural cycle of transition. <br />
+<br />
+  	Read through a range of artistic techniques and influences, Song’s practice engages age-old painterly questions concerned with perception and the pliability of the image. Using twisting and pleating movements in her compositions to re-look at the total effect of an image, and its construction by light and colour, Song unsettles the artistic traditions that her work appears to cite. In her understanding of these layers not merely a formal device, but ‘a carrier of meaning’, Song furthers the geometric abstraction to include its emotional potential. At first a physical and psychical experience that traffics in illusion, Song’s work revels in the encounter of beauty, belief and uncertainty, to highlight ‘the impermanence of perception’.</p>
+
+                </div>
+                            </div>
+
+        </div>
+                
+                <div x-data="{ activeAnchor: null }"
+     @click.window="if($event.target.tagName.toLowerCase() == 'a') { const url = new URL($event.target.href); if(url.hash.length) { activeAnchor = url.hash; } }"
+     class="flex flex-col gap-y-default">
+            
+
+        
+<div class="grid--viewport-width items-end overflow-hidden
+            py-default
+            
+            border-y border-grey-dark
+            ">
+        <div class="col-start-2 col-span-2 sm:col-start-2 sm:col-span-12 xl:col-start-2 xl:col-span-24">
+        <h2 class="section-title mb-32 md:mb-64">Installation Views</h2>
+    </div>
+        <div
+        x-data="slideshow()"
+        class="slideshow col-start-2 col-span-2 sm:col-start-2 sm:col-span-12 xl:col-start-2 xl:col-span-24 swiper group"
+        role="region"
+        aria-label="Carousel"
+        aria-live="polite"
+    >
+        <div class="swiper-wrapper">
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_30.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894728&amp;s=4e59b2263131a1312585a8f5f657e632 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_30.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894728&amp;s=9674ec181b65bca30fde7bad6dbc07df 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_30.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894728&amp;s=7601696c11198512861b1897fa712f26 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_28.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894726&amp;s=fce37b80007c2f465469683dbd28c3e2 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_28.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894726&amp;s=49adffd5f4cbb873cb0ecc4162a525c6 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_28.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894726&amp;s=86b2665fbe618ea099192ece6b50d6a6 1919w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_27.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894724&amp;s=68665e01300bee4fbccd1dae9b01c099 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_27.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894724&amp;s=58d41c2aca805b68909a250083ee7a64 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_27.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894724&amp;s=3f06d5d0fe047e94e69faa94c5136cea 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_25.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894722&amp;s=c345884ac7dc39539803a3cd09cab981 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_25.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894722&amp;s=4a54378c3428467487334690a4570a38 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_25.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894722&amp;s=5ce009a4f9ebe11b4c8c2df586168424 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_1.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894703&amp;s=2b2d3f0a9137763df18705cbd5529806 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_1.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894703&amp;s=f8204cc30b2e8704525ff5d68dd49382 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_1.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894703&amp;s=c555a7372830c6910c9037e605ebfc21 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_21.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894719&amp;s=e1d68b5db500212f64fab2bfa960e440 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_21.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894719&amp;s=7b622b57cb0c735f6fb5896ff37553a1 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_21.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894719&amp;s=822eb383512a2c3be1bb16ef32421ade 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_17.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894717&amp;s=f86a1345390f2f38a240fd466f7f9c45 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_17.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894717&amp;s=836f40511c810e6799ba51001fa7aca6 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_17.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894717&amp;s=8e9723cf722ac4266d7d448079dcf3b9 1919w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_14.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894715&amp;s=a6d3d69ae885179dc9286f860fb7ce64 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_14.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894715&amp;s=d7af9804e72e5b268972551db0fe7fa2 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_14.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894715&amp;s=35d97e99fd7d6d70aba64b1196df1c7a 1919w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_13.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894713&amp;s=4954bb4118d660428b930dd9a87c4fa9 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_13.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894713&amp;s=8e3a6041db5306b7c16cb49a9869fa06 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_13.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894713&amp;s=c4483ee532569c7ee33349252894e14c 1919w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_11.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894711&amp;s=4b9a0463a5ffc68efda47859b113805c 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_11.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894711&amp;s=19afa48e45abd4d892e80291a5b0bfa7 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_11.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894711&amp;s=3fca0d5217b61d403ccff7d5f1d03f26 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_6.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894710&amp;s=d8a10a7236db7441c055730953d5a5c8 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_6.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894710&amp;s=0899b767d1f2dacb30ed2b216ee2aca4 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_6.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894710&amp;s=8b431d7584ba09fe029e4a55888d403c 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                                            <div class="swiper-slide group">
+                                        
+                                                                                                                
+                        
+                        <img class="w-full h-auto md:w-auto md:h-[var(--img-height-md)] 2xl:h-[var(--img-height-2xl)] lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27480%27%20height%3D%27360%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="480" height="360" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_24.jpeg?h=360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894721&amp;s=5a9767772d9ad01c7ccbd9c0c2819970 480w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_24.jpeg?h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894721&amp;s=1c63e42adb2d329868dad59d533d203a 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_24.jpeg?h=1440&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894721&amp;s=edffd40b9c868e6ce9198a40af996711 1920w" sizes="100vw" style="--img-height-md:520px; --img-height-2xl:720px;">
+                    
+                                                        </div>
+                    </div>
+        <button class="swiper-button-next focus-visible:opacity-100 group-hover:opacity-100" aria-label="Next Slide">
+                <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg>
+        </button>
+        <button class="swiper-button-prev focus-visible:opacity-100 group-hover:opacity-100" aria-label="Previous Slide">
+                <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.04887 10.1094L3.44517 6.50654L14.7422 6.50671L14.7422 4.82984L3.44517 4.83001L7.04887 1.22713L5.87514 0.0534258L0.261068 5.66831L5.87514 11.2832L7.04887 10.1094Z"/></svg>
+        </button>
+    </div>
+</div>
+            
+
+
+        
+                                                                                                                                                                                                                                
+    
+<div>
+        
+<div class="grid--centered">
+    <div class="col-span-full">
+        <h2 class="section-title mb-32 md:mb-64">Featured Works</h2>
+    </div>
+</div>
+        <div class="container grid grid-cols-1 lg:grid-cols-[var(--col-0)_var(--col-1)] grid-rows-[auto_auto_auto_auto] lg:grid-rows-[auto_auto] grid-flow-col md:gap-x-1col xl:gap-x-2col lg:gap-y-28" style=--col-0:750fr;--col-1:750fr;>
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-1 lg:col-start-1 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/tesselle-fold?origin=suzanne-song-masons-yard-2025"
+        title="View Tesselle Fold"
+        aria-label="View Tesselle Fold"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Tesselle Fold - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Tesselle-Fold/a244496.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608765&amp;s=71f9b029cadaaba9f1bdf9e98ea6caed 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Tesselle-Fold/a244496.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608765&amp;s=6c8cf977859787369ef3e2310b5a0ac2 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Tesselle-Fold/a244496.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608765&amp;s=f7a5c10cc30eb55a7fbc4d295993edea 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Tesselle-Fold/a244496.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608765&amp;s=eed1b6ec7ee41d1f3e54884325392c6e 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Tesselle-Fold/a244496.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608765&amp;s=1224c4679577d3508e3c36ce4f4820bf 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-2 lg:col-start-1 lg:row-start-2 mb-48 lg:mb-0 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-tesselle-fold" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Tesselle Fold,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$23,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/tesselle-fold"
+                title="View Tesselle Fold"
+                id="title-tesselle-fold-link"
+                aria-label="View Tesselle Fold"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955278"
+                 title="Enquire about artwork"
+                 id="title-tesselle-fold-link"
+                 aria-labelledby="title-tesselle-fold title-tesselle-fold-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-3 lg:col-start-2 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/verso-folio?origin=suzanne-song-masons-yard-2025"
+        title="View Verso Folio"
+        aria-label="View Verso Folio"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Verso Folio - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Verso-Folio/a244498.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608758&amp;s=2b3c14ad98bd4c65e35cc10343ba21c3 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Verso-Folio/a244498.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608758&amp;s=58a027b8292df944c6b774b10f342b52 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Verso-Folio/a244498.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608758&amp;s=248d1c9025c4070203e2a7fe6123af40 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Verso-Folio/a244498.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608758&amp;s=bbd169ca6a65165b82228a315f8edc50 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Verso-Folio/a244498.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608758&amp;s=f9074ea26bf5c0a11e4ac546fc5aa5ab 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-4 lg:col-start-2 lg:row-start-2 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-verso-folio" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Verso Folio,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$23,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/verso-folio"
+                title="View Verso Folio"
+                id="title-verso-folio-link"
+                aria-label="View Verso Folio"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955268"
+                 title="Enquire about artwork"
+                 id="title-verso-folio-link"
+                 aria-labelledby="title-verso-folio title-verso-folio-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+            </div>
+</div>
+            
+
+<div>
+                <div class="container">
+                            
+    <div class="w-full sm:w-full flex flex-col gap-y-28">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/refractions-ii?origin=suzanne-song-masons-yard-2025"
+        title="View Refractions II"
+        aria-label="View Refractions II"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27540%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="540" alt="Suzanne Song - Refractions II - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Refractions-II/a244482.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608791&amp;s=35ba11a05d604b862c5c961fd06da8aa 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Refractions-II/a244482.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608791&amp;s=5c6432e1ce9fb7a8e66b3ae2c7720af4 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Refractions-II/a244482.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608791&amp;s=b2f40d039efdd4546e72202c0171e1fd 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Refractions-II/a244482.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608791&amp;s=5da7fe2de731a7ff885e755176526ab9 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Refractions-II/a244482.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608791&amp;s=af905778aadf31a3d02366c908ac9c4a 2360w" sizes="100vw">
+            
+        
+    </a>
+    
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-refractions-ii" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Refractions II,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$70,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/refractions-ii"
+                title="View Refractions II"
+                id="title-refractions-ii-link"
+                aria-label="View Refractions II"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955319"
+                 title="Enquire about artwork"
+                 id="title-refractions-ii-link"
+                 aria-labelledby="title-refractions-ii title-refractions-ii-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+        </div>
+    </div>
+
+            
+
+
+        
+<div>
+        <div class="container grid grid-cols-1 lg:grid-cols-2 grid-rows-[auto_auto_auto_auto] lg:grid-rows-[auto_auto] grid-flow-col md:gap-x-1col xl:gap-x-2col lg:gap-y-28" >
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-1 lg:col-start-1 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/ply-fold?origin=suzanne-song-masons-yard-2025"
+        title="View Ply Fold"
+        aria-label="View Ply Fold"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Ply-fold/Suzanne-Song-Ply-fold-2025.jpeg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755609937&amp;s=06d9b7535795ab1c21d7a0edbc86fe49 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Ply-fold/Suzanne-Song-Ply-fold-2025.jpeg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755609937&amp;s=abbe671aa23b8b907096a64be608bd46 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Ply-fold/Suzanne-Song-Ply-fold-2025.jpeg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755609937&amp;s=8fcf784dc131ba3b977ef481c1093dca 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Ply-fold/Suzanne-Song-Ply-fold-2025.jpeg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755609937&amp;s=fa8fbaa5056b346360921bd64beeda30 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Ply-fold/Suzanne-Song-Ply-fold-2025.jpeg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755609937&amp;s=c4fe46d3c7f493674cab451c1a32a0d0 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-2 lg:col-start-1 lg:row-start-2 mb-48 lg:mb-0 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-ply-fold" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Ply Fold,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$50,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/ply-fold"
+                title="View Ply Fold"
+                id="title-ply-fold-link"
+                aria-label="View Ply Fold"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955299"
+                 title="Enquire about artwork"
+                 id="title-ply-fold-link"
+                 aria-labelledby="title-ply-fold title-ply-fold-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-3 lg:col-start-2 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/open-facet?origin=suzanne-song-masons-yard-2025"
+        title="View Open Facet"
+        aria-label="View Open Facet"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Open Facet - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Open-Facet/a244492.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608773&amp;s=b9787fe78e0842fc9dee348ab107ab26 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Open-Facet/a244492.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608773&amp;s=3021e9295b1e87de09a077700fd32fa7 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Open-Facet/a244492.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608773&amp;s=124edb64fe47df38c70fe478af2f387f 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Open-Facet/a244492.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608773&amp;s=baa5fc08b9767c5f7c593153e9a7cfbd 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Open-Facet/a244492.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608773&amp;s=ca84361d6ff5f4459d2b64d6994319fe 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-4 lg:col-start-2 lg:row-start-2 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-open-facet" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Open Facet,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$50,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/open-facet"
+                title="View Open Facet"
+                id="title-open-facet-link"
+                aria-label="View Open Facet"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955288"
+                 title="Enquire about artwork"
+                 id="title-open-facet-link"
+                 aria-labelledby="title-open-facet title-open-facet-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+            </div>
+</div>
+            
+
+
+        
+                                                                                                                                                                                                                                                                                                                                                            
+    
+<div>
+        <div class="container grid grid-cols-1 lg:grid-cols-[var(--col-0)_var(--col-1)_var(--col-2)] grid-rows-[auto_auto_auto_auto_auto_auto] lg:grid-rows-[auto_auto] grid-flow-col md:gap-x-1col xl:gap-x-1col lg:gap-y-28" style=--col-0:750fr;--col-1:750fr;--col-2:750fr;>
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-1 lg:col-start-1 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/folding-dawn?origin=suzanne-song-masons-yard-2025"
+        title="View Folding Dawn"
+        aria-label="View Folding Dawn"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Folding Dawn - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Folding-Dawn/a244500.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608752&amp;s=871e303343aaf80daaac57de23dd7de1 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Folding-Dawn/a244500.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608752&amp;s=ed98264555d93a52685cf6aa3ff46714 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Folding-Dawn/a244500.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608752&amp;s=1eacff4e0ab22d35cfec933054498c1f 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Folding-Dawn/a244500.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608752&amp;s=8110504c10867413e98833119cf7328a 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Folding-Dawn/a244500.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608752&amp;s=b37b08b3cbb818cc622cdeb57970530d 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-2 lg:col-start-1 lg:row-start-2 mb-48 lg:mb-0 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-folding-dawn" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Folding Dawn,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$23,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/folding-dawn"
+                title="View Folding Dawn"
+                id="title-folding-dawn-link"
+                aria-label="View Folding Dawn"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955257"
+                 title="Enquire about artwork"
+                 id="title-folding-dawn-link"
+                 aria-labelledby="title-folding-dawn title-folding-dawn-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-3 lg:col-start-2 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/counter-fold?origin=suzanne-song-masons-yard-2025"
+        title="View Counter Fold"
+        aria-label="View Counter Fold"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Counter Fold - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Counter-Fold/a244506.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608739&amp;s=380f068335e675b09733232c4cb2a35c 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Counter-Fold/a244506.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608739&amp;s=7c4afaf46613fff8d308e67bade8f6cb 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Counter-Fold/a244506.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608739&amp;s=b7d7efcf84ed98780689a1ea69b70576 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Counter-Fold/a244506.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608739&amp;s=caa94da28340122d3ac97426bf77d6fd 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Counter-Fold/a244506.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608739&amp;s=e62b8b5654e9cefc97e74b0b47fe6163 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-4 lg:col-start-2 lg:row-start-2 mb-48 lg:mb-0 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-counter-fold" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Counter Fold,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$23,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/counter-fold"
+                title="View Counter Fold"
+                id="title-counter-fold-link"
+                aria-label="View Counter Fold"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955237"
+                 title="Enquire about artwork"
+                 id="title-counter-fold-link"
+                 aria-labelledby="title-counter-fold title-counter-fold-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-5 lg:col-start-3 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/recurve?origin=suzanne-song-masons-yard-2025"
+        title="View Recurve"
+        aria-label="View Recurve"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Recurve - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Recurve/a244504.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608745&amp;s=8f9278491270715011417632bbb9518d 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Recurve/a244504.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608745&amp;s=9b35f1d6bb65606fed79955c8d612067 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Recurve/a244504.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608745&amp;s=e622381d6dc92211df2758a2b2cceed5 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Recurve/a244504.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608745&amp;s=c4d94307337a9744ca0b0180f4f81d8f 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Recurve/a244504.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608745&amp;s=7b2c1a1817a60ce2e14b9bf6e035bd58 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-6 lg:col-start-3 lg:row-start-2 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-recurve" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Recurve,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$23,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/recurve"
+                title="View Recurve"
+                id="title-recurve-link"
+                aria-label="View Recurve"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955247"
+                 title="Enquire about artwork"
+                 id="title-recurve-link"
+                 aria-labelledby="title-recurve title-recurve-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+            </div>
+</div>
+            
+
+<div>
+                <div class="container">
+                            
+    <div class="w-full sm:w-full flex flex-col gap-y-28">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/check-fold-ii?origin=suzanne-song-masons-yard-2025"
+        title="View Check Fold II"
+        aria-label="View Check Fold II"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Check Fold II - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Check-Fold-II/a244486.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608786&amp;s=cfd6788494d1a4ad5ae1dc6df96d0b84 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Check-Fold-II/a244486.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608786&amp;s=3f151a26dc2fbb6ab647f1a4342cab59 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Check-Fold-II/a244486.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608786&amp;s=5e582430a86abb04d52bdf8a5a3925bd 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Check-Fold-II/a244486.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608786&amp;s=4ca0adf5f186b927e396a970ee307458 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Check-Fold-II/a244486.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608786&amp;s=c9cc9bc1bea3d8378d566828e15746c6 2360w" sizes="100vw">
+            
+        
+    </a>
+    
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-check-fold-ii" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Check Fold II,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$65,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/check-fold-ii"
+                title="View Check Fold II"
+                id="title-check-fold-ii-link"
+                aria-label="View Check Fold II"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955309"
+                 title="Enquire about artwork"
+                 id="title-check-fold-ii-link"
+                 aria-labelledby="title-check-fold-ii title-check-fold-ii-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+        </div>
+    </div>
+
+            
+
+
+        
+<div>
+        <div class="container grid grid-cols-1 lg:grid-cols-2 grid-rows-[auto_auto_auto_auto] lg:grid-rows-[auto_auto] grid-flow-col md:gap-x-1col xl:gap-x-2col lg:gap-y-28" >
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-1 lg:col-start-1 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/intervals?origin=suzanne-song-masons-yard-2025"
+        title="View Intervals"
+        aria-label="View Intervals"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Intervals - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Intervals/a244518.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608730&amp;s=c677d5e60f4429c33c5164fc7418cc7e 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Intervals/a244518.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608730&amp;s=e6422f5db42c4ae6ac8455a0abecd7e6 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Intervals/a244518.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608730&amp;s=b7171826cdab7a070032ffce6f9d74cd 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Intervals/a244518.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608730&amp;s=0448be01a5ff68a8b301da619755ec41 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Intervals/a244518.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608730&amp;s=2761b4974e56686a8aada0fcf4db2d17 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-2 lg:col-start-1 lg:row-start-2 mb-48 lg:mb-0 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-intervals" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Intervals,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$4,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/intervals"
+                title="View Intervals"
+                id="title-intervals-link"
+                aria-label="View Intervals"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955216"
+                 title="Enquire about artwork"
+                 id="title-intervals-link"
+                 aria-labelledby="title-intervals title-intervals-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+                                        
+                        
+    <div class="flex items-end col-start-1 row-start-3 lg:col-start-2 lg:row-start-1 mb-18 lg:mb-0">
+            
+    
+        
+        <a
+        class="w-full"
+        href="https://www.whitecube.com/artworks/pivot?origin=suzanne-song-masons-yard-2025"
+        title="View Pivot"
+        aria-label="View Pivot"
+        aria-hidden="true"
+        tabindex="-1"
+        up-mode="cover"
+        up-layer="new"
+        up-dismissable="button key"
+        up-history="true"
+        up-target="[up-id=artwork]"
+    >
+                                        
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27960%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="960" alt="Suzanne Song - Pivot - 1" data-srcset="https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Pivot/a244514.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608734&amp;s=484b7bc7081db9646c883065ca917951 720w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Pivot/a244514.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608734&amp;s=ad217363a6735472b915273a190d5323 960w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Pivot/a244514.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608734&amp;s=90b32bea7a54e2755bef05ce57c012f8 1280w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Pivot/a244514.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608734&amp;s=febd14d7180c5fd3d2d9eb52aee307fa 1600w, https://white-cube.transforms.svdcdn.com/production/imported-artworks/Suzanne-Song/Pivot/a244514.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755608734&amp;s=131a027dce063fcf5680f0de9dec1dd1 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+    </a>
+    
+    </div>
+    <div class="col-start-1 row-start-4 lg:col-start-2 lg:row-start-2 ">
+            
+                                        
+    <div class="flex flex-row items-start justify-between gap-18 flex-wrap ">
+        <div class="flex flex-col gap-y-2 text-sm min-w-0">
+                          <p class="font-medium">Suzanne Song</p>
+                        <p id="title-pivot" class="underline-offset-4 group-hover:underline break-words">
+                              <span><span class="italic">Pivot,</span> <span class="inline-block">2025</span></span>
+
+            </p>
+                          <p class="font-medium">US$4,000 (plus applicable taxes)</p>
+                    </div>
+                              <div class="flex justify-end gap-x-14">
+              <a
+                class="btn w-36 h-36 p-0 hidden sm:inline-flex"
+                href="https://www.whitecube.com/artworks/pivot"
+                title="View Pivot"
+                id="title-pivot-link"
+                aria-label="View Pivot"
+                up-mode="cover"
+                up-layer="new"
+                up-dismissable="button"
+                up-history="true"
+                up-target="[up-id=artwork]"
+              >    <svg class="fill-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.13158 0.0115356V4.64311H0.5V6.37996H5.13158V11.0115H6.86842V6.37996H11.5V4.64311H6.86842V0.0115356H5.13158Z"/></svg></a>
+              <a class="btn text-14 h-36"
+                 href="https://www.whitecube.com/enquire/artwork?artworkId=1955226"
+                 title="Enquire about artwork"
+                 id="title-pivot-link"
+                 aria-labelledby="title-pivot title-pivot-link">
+                Enquire
+              </a>
+            </div>
+                      </div>
+
+    </div>
+
+
+            </div>
+</div>
+            <hr role="presentation">
+            
+
+
+
+
+<div>
+        
+<div class="grid--centered">
+    <div class="col-span-full">
+        <h2 class="section-title mb-32 md:mb-64">About the artist</h2>
+    </div>
+</div>
+        <div class="container flex items-center justify-center md:gap-x-1col xl:gap-x-2col gap-y-48
+                flex-col
+                lg:flex-row">
+
+                                                                                        <div class="w-full lg:w-1/2">                    <div x-data="playControl()" class="relative">
+                        <button x-cloak x-show="showControl"
+          x-on:click="playing = !playing"
+          x-bind:aria-label="playing ? 'Pause video' : 'Play video'"
+          class="top-14 right-14 absolute z-10 group opacity-90">
+    <span x-show="playing">
+          <svg class="w-[1.625rem] h-[1.625rem] text-black group-hover:text-white group-hover:[&amp;_&gt;_rect]:fill-black group-hover:[&amp;_&gt;_path]:stroke-black" width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="9.49902" y="9.77759" width="13.8018" height="16.2761" fill="white"/><path d="M16.1895 1.41138C18.3294 1.41138 20.3471 1.81749 22.2373 2.63306C24.1179 3.44455 25.7588 4.54904 27.1553 5.94556C28.5518 7.34207 29.6563 8.98293 30.4678 10.8635C31.2833 12.7537 31.6895 14.7714 31.6895 16.9114C31.6895 19.0353 31.2832 21.045 30.4678 22.9348C29.7071 24.6975 28.6893 26.253 27.415 27.5979L27.1562 27.8635C25.7596 29.2687 24.1185 30.3779 22.2373 31.1897C20.3471 32.0053 18.3294 32.4114 16.1895 32.4114C14.0655 32.4114 12.0558 32.0052 10.166 31.1897C8.40276 30.4288 6.84694 29.4071 5.50195 28.1252L5.23535 27.8655C3.83093 26.4608 2.72277 24.8157 1.91113 22.9348C1.09568 21.045 0.689453 19.0353 0.689453 16.9114C0.689453 14.7714 1.09557 12.7537 1.91113 10.8635C2.7229 8.98229 3.83216 7.34119 5.2373 5.94458L5.50293 5.68579C6.84783 4.4115 8.4033 3.39371 10.166 2.63306C12.0558 1.8176 14.0655 1.41138 16.1895 1.41138ZM18.4395 22.4114H19.9395V11.4114H18.4395V22.4114ZM12.4395 22.4114H13.9395V11.4114H12.4395V22.4114Z" fill="currentColor" stroke="white"/></svg>
+    </span>
+    <span x-show="!playing">
+          <svg class="w-[1.625rem] h-[1.625rem] text-black group-hover:text-white group-hover:[&amp;_&gt;_rect]:fill-black group-hover:[&amp;_&gt;_path]:stroke-black" width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="9.49902" y="9.77759" width="13.8018" height="16.2761" fill="white" /><path d="M16.542 1.41138C18.6819 1.41138 20.6997 1.81749 22.5898 2.63306C24.4704 3.44455 26.1113 4.54904 27.5078 5.94556C28.9043 7.34207 30.0088 8.98293 30.8203 10.8635C31.6359 12.7537 32.042 14.7714 32.042 16.9114C32.042 19.0353 31.6358 21.045 30.8203 22.9348C30.0597 24.6975 29.0419 26.253 27.7676 27.5979L27.5088 27.8635C26.1122 29.2687 24.4711 30.3779 22.5898 31.1897C20.6997 32.0053 18.6819 32.4114 16.542 32.4114C14.4181 32.4114 12.4083 32.0052 10.5186 31.1897C8.7553 30.4288 7.19948 29.4071 5.85449 28.1252L5.58789 27.8655C4.18347 26.4608 3.07531 24.8157 2.26367 22.9348C1.44822 21.045 1.04199 19.0353 1.04199 16.9114C1.04199 14.7714 1.4481 12.7537 2.26367 10.8635C3.07544 8.98229 4.1847 7.34119 5.58984 5.94458L5.85547 5.68579C7.20037 4.4115 8.75584 3.39371 10.5186 2.63306C12.4083 1.8176 14.4181 1.41138 16.542 1.41138ZM13.3672 22.4973L22.1133 16.9114L13.3672 11.3245V22.4973Z" fill="currentColor" stroke="white"/></svg>
+    </span>
+  </button>
+
+                                                          <figure class="w-full">
+    
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27480%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="480" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/suzannesong_portrait_02.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755078163&amp;s=802754e5ffa62c21cc2ac48a4093139a 720w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/suzannesong_portrait_02.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755078163&amp;s=ad6227b3252657fcb331e0047b762054 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/suzannesong_portrait_02.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755078163&amp;s=ec55924a3378cebf905093935e42c081 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/suzannesong_portrait_02.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755078163&amp;s=abb652a483a1dd441bcf79d80b5edbf6 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/suzannesong_portrait_02.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1755078163&amp;s=57f829456913007bd73b2e86559aa196 2360w" sizes="100vw, (min-width: 1024px) 70vw">
+            
+                <figcaption class="text-sm max-w-prose mt-16 [&_a]:underline"><p>Portrait of Suzanne Song © the artist.</p>
+</figcaption>
+    </figure>
+    
+                    </div>
+                  </div>
+                                              
+                            <div class="w-full lg:w-1/2">
+                <div class="prose-responsive">
+                  <p>Suzanne Song (b.1974) lives and works in New York, NY. She holds a BFA from Clemson University and an MFA from the Yale School of Art. She is represented by Gallery Baton in Seoul, South Korea, where she has held three solo exhibitions and participated in multiple group exhibitions. Her work has been featured in solo and group exhibitions at institutions including The Drawing Center, New York (2002) and Doosan Gallery, New York (2011). Song has been awarded fellowships from the Smack Mellon Artist Studio Program, the New York Foundation for the Arts and the Elizabeth Foundation for the Arts, where she is a current member.</p>
+
+                </div>
+                              </div>
+        
+    </div>
+</div>
+            <hr role="presentation">
+            
+<div class="grid--centered">
+    <div class="col-span-full sm:col-span-10 sm:col-start-2 md:col-span-8 md:col-start-3 lg:col-span-6 lg:col-start-4 xl:col-span-12 xl:col-start-7 prose-responsive mx-auto" style="max-width: var(--text-max-width)">
+        <div style="text-align:center;"><a href="/exhibitions/archive/programmes/inside-the-white-cube" target="_blank" rel="noreferrer noopener"><strong>Inside the White Cube</strong></a><br />
+<p><br />
+‘Inside the White Cube’ is a series of exhibitions showcasing work by non-represented artists at the forefront of global developments in contemporary art who have not previously exhibited with the gallery.<br />
+<br />
+Launched in 2011 at White Cube Bermondsey in London, the programme has since expanded to the gallery’s other locations</div></p>
+
+    </div>
+</div>
+            <hr role="presentation" class="text-transparent">
+    </div>
+
+    </div>
+
+
+                              
+            
+    
+                        
+    <div class="relative overflow-hidden">
+                    <div class="absolute inset-0 lg:hidden bg-no-repeat bg-cover bg-center" style="background-image:url(https://white-cube.transforms.svdcdn.com/production/uploads/Banners/Create-account-banner-mobile.png?w=940&amp;h=737&amp;auto=compress%2Cformat&amp;fit=crop&amp;dm=1685011602&amp;s=bec37843beef8d2f0b3696d90abbd459)"></div>
+                                        <div class="absolute inset-0 hidden lg:block bg-no-repeat bg-cover bg-center" style="background-image:url(https://white-cube.transforms.svdcdn.com/production/uploads/Banners/Emin-banner-100.jpg?w=3000&amp;h=957&amp;auto=compress%2Cformat&amp;fit=crop&amp;dm=1684155090&amp;s=b08fce0d60fa2fb14030ee6de7404e2e)"></div>
+                <div class="relative grid--centered py-64 md:py-96 lg:py-[186px]">
+                        <div class="col-span-full sm:col-span-8 sm:col-start-1 md:col-span-6 md:col-start-1 lg:col-span-5 lg:col-start-1 xl:col-span-8 xl:col-start-1 items-start mb-24">
+                <h2 class="font-text text-3xl font-light">Create an Account</h2>
+            </div>
+                                    <div class="col-span-full sm:col-span-8 sm:col-start-1 md:col-span-6 md:col-start-1 lg:col-span-5 lg:col-start-1 xl:col-span-8 xl:col-start-1 items-start flex flex-col gap-y-24 xl:gap-y-40">
+                                <div class="prose-responsive">
+                    <p>To view available artworks and access prices.</p>
+
+                </div>
+                                                    
+    
+            
+    <a
+            class="btn btn-black"
+       href="/account" title="Start the process to create an account" aria-label="Start the process to create an account"
+      >
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span class="sm:whitespace-nowrap">Create account</span>
+    </a>
+
+                            </div>
+                    </div>
+    </div>
+            
+        </main>
+
+                  
+<footer class="bg-white border-t border-grey-dark">
+            <div class="border-b border-grey-dark">
+        <div class="grid--centered py-40 md:py-80">
+            <div class="col-span-full" up-nav>
+                <ul class="flex flex-wrap lg:flex-nowrap items-start justify-between gap-y-32 gap-x-18 md:gap-y-40 text-base font-light">
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/about">About</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/locations">Locations</a></li>
+                                                        <li><a  href="https://www.whitecube.com/careers">Careers</a></li>
+                                                        <li><a  href="https://www.whitecube.com/sustainability">Sustainability</a></li>
+                                                        <li><a  href="https://www.whitecube.com/contact">Contact</a></li>
+                                                        <li><a  href="https://www.whitecube.com/important-notice">Phishing Notice</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/artists">Artists</a>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/collect">Collect</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/collect/create-account">Create Account</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/available-artworks">Available Artworks</a></li>
+                                                        <li><a  href="https://www.whitecube.com/prints-multiples">Prints &amp; Multiples</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/consignments">Consignments</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/salon">Salon</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/art-fairs">Art Fairs</a></li>
+                                                        <li><a  href="https://www.whitecube.com/general-online-terms-of-sale">Online Terms of Sale</a></li>
+                                                        <li><a  href="/faqs#artworks">FAQs</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/exhibitions/london">Exhibitions</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/london">London</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/hong-kong">Hong Kong</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/new-york">New York</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/paris">Paris</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/seoul">Seoul</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/news">News</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/news-categories/press-release">Press Releases</a></li>
+                                                        <li><a  href="https://www.whitecube.com/news-categories/events">Events</a></li>
+                                                        <li><a  href="https://www.whitecube.com/news-categories/museum-exhibition">Museum Exhibitions</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/shop">Bookshop</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/shop-collections/publications">Publications</a></li>
+                                                        <li><a  href="https://www.whitecube.com/shop-collections/everything-else">Everything Else</a></li>
+                                                        <li><a  href="https://www.whitecube.com/general-online-terms-of-sale">Online Terms of Sale</a></li>
+                                                        <li><a  href="/faqs#bookshop">Bookshop FAQs</a></li>
+                                                    </ul>
+                                            </li>
+                                    </ul>
+            </div>
+        </div>
+    </div>
+                <div class="border-b border-grey-dark">
+        <div class="grid--centered py-40 md:py-80">
+            <div class="col-span-full">
+                <h2 class="text-lg font-light mb-16"><a href="https://www.whitecube.com/locations" title="View White Cube gallery locations" aria-label="View White Cube gallery locations">Locations</a></h2>
+                <div class="flex flex-col sm:flex-row flex-wrap xl:flex-nowrap gap-y-24 gap-x-18 md:gap-y-32">
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-bermondsey">Bermondsey, London</h3>
+                                                <address>
+                            <p>144–152 Bermondsey Street <br />
+London SE1 3TQ<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-bermondsey" target="_self" title="Learn more about White Cube Bermondsey"
+                id="white-cube-bermondsey-link" aria-labelledby="white-cube-bermondsey white-cube-bermondsey-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-masons-yard">Mason’s Yard, London</h3>
+                                                <address>
+                            <p>25–26 Mason’s Yard <br />
+London SW1Y 6BU<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-masons-yard" target="_self" title="Learn more about White Cube Mason’s Yard"
+                id="white-cube-masons-yard-link" aria-labelledby="white-cube-masons-yard white-cube-masons-yard-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-new-york">New York</h3>
+                                                <address>
+                            <div>1002 Madison Avenue</div>
+<div>New York, NY 10075</div>
+<div></div>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-new-york" target="_self" title="Learn more about White Cube New York"
+                id="white-cube-new-york-link" aria-labelledby="white-cube-new-york white-cube-new-york-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-hong-kong">Hong Kong</h3>
+                                                <address>
+                            <p>50 Connaught Road Central <br />
+Hong Kong</p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-hong-kong" target="_self" title="Learn more about White Cube Hong Kong"
+                id="white-cube-hong-kong-link" aria-labelledby="white-cube-hong-kong white-cube-hong-kong-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-paris">Paris</h3>
+                                                <address>
+                            <p>10 avenue Matignon <br />
+75008 Paris<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-paris" target="_self" title="Learn more about White Cube Paris"
+                id="white-cube-paris-link" aria-labelledby="white-cube-paris white-cube-paris-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-seoul">Seoul</h3>
+                                                <address>
+                            <p>6, Dosan-daero 45-gil <br />
+Seoul<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-seoul" target="_self" title="Learn more about White Cube Seoul"
+                id="white-cube-seoul-link" aria-labelledby="white-cube-seoul white-cube-seoul-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                    </div>
+            </div>
+        </div>
+    </div>
+        <div class="grid--centered py-40 md:py-80">
+        <div class="col-span-full sm:col-span-8 sm:col-start-1 lg:col-span-3 lg:col-start-1 xl:col-span-6 xl:col-start-1 mb-40 lg:mb-0">
+            <h2 class="text-lg font-light mb-16">Newsletter</h2>
+                                    <p class="text-sm font-light mb-24">Be the first to know about our events, exhibitions, artists and much more</p>
+                        <a
+                class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group"
+                href="https://www.whitecube.com/subscribe"
+                title="Click here to subscribe to our newsletter"
+                aria-label="Click here to subscribe to our newsletter">
+                <span class="w-18 flex justify-center">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span>Subscribe</span>
+            </a>
+        </div>
+                <div class="col-span-full lg:col-span-8 lg:col-start-5 xl:col-span-12 xl:col-start-10">
+            <h2 class="text-lg font-light mb-16">Connect</h2>
+            <ul class="flex flex-wrap gap-24">
+                                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://twitter.com/_whitecube"
+                       title="Go to the White Cube profile page on X"
+                       aria-label="Go to the White Cube profile page on X"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                      <span>X</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.facebook.com/whitecubegalleries"
+                       title="Go to the White Cube profile page on Facebook"
+                       aria-label="Go to the White Cube profile page on Facebook"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.3516 7.4901C15.3516 3.35693 11.9934 0.00585938 7.85156 0.00585938C3.70969 0.00585938 0.351562 3.35693 0.351562 7.4901C0.351562 11.226 3.09406 14.322 6.67969 14.8833V9.65367H4.77531V7.48948H6.67969V5.8417C6.67969 3.96627 7.79969 2.9297 9.51281 2.9297C10.3328 2.9297 11.1916 3.07627 11.1916 3.07627V4.91802H10.2453C9.31344 4.91802 9.02281 5.49493 9.02281 6.08681V7.4901H11.1028L10.7703 9.65429H9.02281V14.8839C12.6091 14.322 15.3516 11.2254 15.3516 7.4901Z"/></svg>
+                      <span>Facebook</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.tiktok.com/@whitecube_official"
+                       title="Go to the White Cube profile page on TikTok"
+                       aria-label="Go to the White Cube profile page on TikTok"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6636 4.18103C11.9147 4.02084 11.2366 3.62562 10.728 3.053C10.2195 2.48037 9.90714 1.76028 9.83652 0.997699V0.666992H7.25311V10.9196C7.25151 11.3735 7.10773 11.8155 6.84198 12.1835C6.57623 12.5515 6.20186 12.8269 5.77149 12.9712C5.34111 13.1154 4.87636 13.1211 4.44255 12.9876C4.00873 12.8541 3.62765 12.588 3.35287 12.2267C3.07382 11.8594 2.91902 11.4128 2.91092 10.9515C2.90283 10.4903 3.04186 10.0385 3.30785 9.66162C3.57384 9.28474 3.95296 9.00238 4.39024 8.85548C4.82752 8.70859 5.30023 8.7048 5.73981 8.84467V6.22002C4.75957 6.08451 3.7615 6.25878 2.88519 6.71845C2.00888 7.17812 1.29817 7.9002 0.852453 8.7837C0.406741 9.66719 0.248326 10.6679 0.399367 11.6459C0.550407 12.6238 1.00335 13.5301 1.69483 14.238C2.35427 14.9127 3.1998 15.3756 4.12351 15.5676C5.04721 15.7597 6.00719 15.6721 6.88089 15.316C7.7546 14.96 8.5024 14.3517 9.02883 13.5688C9.55527 12.7859 9.83646 11.8639 9.83652 10.9204V5.68159C10.8806 6.42799 12.1324 6.82822 13.4158 6.82594V4.25902C13.163 4.25933 12.911 4.2332 12.6636 4.18103Z"/></svg>
+                      <span>TikTok</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.instagram.com/whitecube/"
+                       title="Go to the White Cube profile page on Instagram"
+                       aria-label="Go to the White Cube profile page on Instagram"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9665 0.658203C12.2366 0.658203 13.3556 1.07815 14.1419 1.88804C14.9282 2.66794 15.3516 3.7478 15.3516 5.00763V11.1868C15.3516 12.4767 14.9282 13.5865 14.1116 14.3664C13.3253 15.1163 12.2366 15.5363 10.9362 15.5363H4.76689C3.52697 15.5363 2.43826 15.1463 1.62173 14.3664C0.77495 13.5565 0.351562 12.4466 0.351562 11.1568V5.00763C0.351562 2.39798 2.1056 0.658203 4.73664 0.658203H10.9665ZM13.1439 13.3765C13.6882 12.8666 14.0209 12.1167 14.0209 11.1868V5.00763C14.0209 4.13775 13.7185 3.38784 13.2044 2.84792C12.66 2.30798 11.904 2.03802 10.9967 2.03802H4.76689C3.85963 2.03802 3.07334 2.30798 2.55923 2.81792C2.01487 3.35785 1.74269 4.10775 1.74269 5.00763V11.1568C1.74269 12.0867 2.01487 12.8366 2.55923 13.3765C3.10357 13.8865 3.85963 14.1564 4.76689 14.1564H10.9362C11.8435 14.1564 12.5995 13.8865 13.1439 13.3765ZM11.8741 5.00735C12.3585 5.00735 12.7511 4.61789 12.7511 4.13747C12.7511 3.65704 12.3585 3.26758 11.8741 3.26758C11.3898 3.26758 10.9971 3.65704 10.9971 4.13747C10.9971 4.61789 11.3898 5.00735 11.8741 5.00735ZM7.85168 4.22788C5.73474 4.22788 3.98071 5.93766 3.98071 8.06738C3.98071 10.1971 5.7045 11.9068 7.85168 11.9068C9.99881 11.9068 11.7227 10.1671 11.7227 8.06738C11.7227 5.96766 9.96863 4.22788 7.85168 4.22788ZM7.85168 10.5271C6.49079 10.5271 5.37185 9.4172 5.37185 8.06738C5.37185 6.71756 6.49079 5.6077 7.85168 5.6077C9.21257 5.6077 10.3315 6.71756 10.3315 8.06738C10.3315 9.4172 9.21257 10.5271 7.85168 10.5271Z" /></svg>
+                      <span>Instagram</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.youtube.com/c/WhiteCubeOfficial"
+                       title="Go to the White Cube profile page on YouTube"
+                       aria-label="Go to the White Cube profile page on YouTube"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.9329 2.54892C14.7942 1.78977 14.1335 1.23694 13.3668 1.06434C12.2194 0.822984 10.096 0.650391 7.79855 0.650391C5.50246 0.650391 3.34505 0.822984 2.19632 1.06434C1.43096 1.23694 0.76891 1.75472 0.630247 2.54892C0.490225 3.41188 0.351562 4.62003 0.351562 6.17337C0.351562 7.72671 0.490225 8.93486 0.664233 9.79783C0.804254 10.557 1.46494 11.1098 2.23031 11.2824C3.44836 11.5238 5.53645 11.6964 7.8339 11.6964C10.1313 11.6964 12.2194 11.5238 13.4375 11.2824C14.2028 11.1098 14.8636 10.592 15.0035 9.79783C15.1422 8.93486 15.3162 7.69165 15.3516 6.17337C15.2809 4.62003 15.1069 3.41188 14.9329 2.54892ZM5.91981 8.58968V3.75707L10.1653 6.17337L5.91981 8.58968Z" /></svg>
+                      <span>YouTube</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.artsy.net/partner/white-cube"
+                       title="Go to the White Cube profile page on Artsy"
+                       aria-label="Go to the White Cube profile page on Artsy"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.351562 0.00585938V15.2411H15.7117V0.00585938H0.351562ZM1.45976 1.11321H14.6033V14.1335H12.2713V11.1523H11.1727V14.1335H1.45957V1.11321H1.45976ZM5.3293 2.67872L3.07081 8.44443H4.23864L4.84872 6.82166H7.03796L7.63902 8.44443H8.80742L6.54893 2.67872H5.32937H5.3293ZM5.89122 3.84334L6.632 5.848H5.14078L5.8912 3.84334H5.89122Z"/></svg>
+                      <span>Artsy</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.artnet.com/galleries/white-cube/"
+                       title="Go to the White Cube profile page on Artnet"
+                       aria-label="Go to the White Cube profile page on Artnet"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.84671 0.191406C5.47158 0.191406 4.10901 0.380692 3.11399 0.713306C2.29881 0.985941 1.64619 1.34582 1.64619 1.34582L2.85875 4.4149L3.86399 3.98804C5.01687 3.61258 5.79828 3.57675 6.57577 3.57675C7.65954 3.57675 7.85038 3.8821 7.88336 4.96874L7.85116 5.41197C5.68755 5.44936 4.48205 5.65111 3.19331 6.18703C1.45692 6.9099 0.578125 8.23256 0.578125 10.1426C0.578125 12.7303 2.4009 14.4144 5.21949 14.4144C6.49802 14.4144 7.48833 14.0981 8.47315 13.3542L8.52106 13.3067L9.11085 14.6356L12.9229 13.2116L12.6355 12.5316C12.1588 11.5283 12.0614 10.9106 12.0614 9.8894L12.1572 4.71558C12.1572 3.93585 12.1273 3.47548 11.9656 2.94346C11.419 1.17523 9.5365 0.191406 6.84671 0.191406ZM7.89985 8.37122L7.78833 10.5391C7.27551 11.0282 6.74305 11.283 6.16111 11.283C5.42367 11.283 4.86922 10.7167 4.86922 9.96964C4.86922 9.1603 5.33807 8.40861 7.89985 8.372V8.37122Z"/></svg>
+                      <span>Artnet</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                up-layer="new"
+                         up-target="[up-id=wechat]"
+                         up-class="centered"
+                                              href="/wechat"
+                       title="Go to the White Cube profile page on WeChat"
+                       aria-label="Go to the White Cube profile page on WeChat"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.3349 8.02109C11.9948 8.02109 11.7227 7.74685 11.7227 7.40403C11.7227 7.06121 11.9948 6.78697 12.3349 6.78697C12.6751 6.78697 12.9472 7.06121 12.9472 7.40403C12.9472 7.7297 12.6751 8.02109 12.3349 8.02109ZM9.31748 8.02109C8.97734 8.02109 8.70524 7.74685 8.70524 7.40403C8.70524 7.06121 8.97734 6.78697 9.31748 6.78697C9.65762 6.78697 9.92972 7.06121 9.92972 7.40403C9.92972 7.7297 9.65762 8.02109 9.31748 8.02109ZM13.7951 11.4846C14.7496 10.7922 15.3524 9.76206 15.3524 8.63052C15.3524 6.53645 13.343 4.84766 10.8481 4.84766C8.35312 4.84766 6.34375 6.53645 6.34375 8.63052C6.34375 10.7246 8.35312 12.4134 10.8481 12.4134C11.3672 12.4134 11.8528 12.3459 12.3216 12.2108C12.3551 12.1939 12.4053 12.1939 12.4556 12.1939C12.5393 12.1939 12.623 12.2276 12.69 12.2614L13.6779 12.8356C13.7114 12.8525 13.7282 12.8694 13.7617 12.8694C13.7815 12.8695 13.8011 12.8656 13.8195 12.858C13.8378 12.8504 13.8544 12.8392 13.8684 12.825C13.8824 12.8109 13.8935 12.7941 13.9011 12.7756C13.9086 12.7572 13.9125 12.7374 13.9124 12.7174C13.9124 12.6836 13.8956 12.6498 13.8956 12.5992C13.8956 12.5823 13.7617 12.1263 13.6947 11.8392C13.6779 11.8054 13.6779 11.7717 13.6779 11.7379C13.6612 11.6197 13.7114 11.5353 13.7951 11.4846Z" /><path fill-rule="evenodd" clip-rule="evenodd" d="M7.5235 4.45064C7.13298 4.45064 6.8238 4.13903 6.8238 3.74543C6.8238 3.35184 7.13298 3.04023 7.5235 3.04023C7.91402 3.04023 8.2232 3.35184 8.2232 3.74543C8.2232 4.12263 7.91402 4.45064 7.5235 4.45064ZM3.93753 4.45064C3.54701 4.45064 3.23783 4.13903 3.23783 3.74543C3.23783 3.35184 3.54701 3.04023 3.93753 3.04023C4.32805 3.04023 4.63723 3.35184 4.63723 3.74543C4.63723 4.12263 4.32805 4.45064 3.93753 4.45064ZM5.7725 0.660156C2.78504 0.660156 0.351562 2.683 0.351562 5.19463C0.351562 6.56009 1.07322 7.79063 2.23127 8.61665C2.31519 8.68408 2.38231 8.78519 2.38231 8.92006C2.38231 8.95374 2.36552 9.00434 2.36552 9.03805C2.2816 9.37519 2.13055 9.93146 2.11376 9.9483C2.09701 9.9989 2.08022 10.0326 2.08022 10.0832C2.08022 10.1843 2.16414 10.2686 2.26481 10.2686C2.29839 10.2686 2.33194 10.2518 2.36552 10.2349L3.55711 9.54377C3.64103 9.49318 3.74175 9.45946 3.84242 9.45946C3.89279 9.45946 3.94313 9.45946 3.99346 9.47634C4.54732 9.62805 5.15147 9.72916 5.75571 9.72916H6.0578C5.9403 9.37519 5.87317 9.00434 5.87317 8.6166C5.87317 6.34095 8.08851 4.48669 10.8074 4.48669H11.1095C10.7235 2.3121 8.47453 0.660156 5.7725 0.660156Z" /></svg>
+                      <span>WeChat</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.xiaohongshu.com/user/profile/613b762e000000001f0398a8"
+                       title="Go to the White Cube profile page on Little Red Book"
+                       aria-label="Go to the White Cube profile page on Little Red Book"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="15" height="6" viewBox="0 0 15 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.1577 4.32701C11.1576 4.02522 11.1535 3.72333 11.1597 3.42165C11.1621 3.30552 11.1192 3.26958 11.007 3.2727C10.7768 3.27909 10.5463 3.27076 10.3161 3.27613C10.2066 3.27868 10.1696 3.2368 10.172 3.12907C10.1775 2.88298 10.1775 2.63662 10.172 2.39053C10.1696 2.28292 10.206 2.24116 10.3159 2.2438C10.55 2.24941 10.7845 2.24146 11.0186 2.24713C11.1295 2.2498 11.1789 2.21434 11.1751 2.09786C11.1691 1.9154 11.1697 1.73246 11.1751 1.54994C11.1781 1.44506 11.1347 1.40822 11.0338 1.41164C10.899 1.41623 10.7638 1.41146 10.6288 1.41242C10.5455 1.41302 10.5061 1.37771 10.5069 1.29059C10.5093 1.0206 10.5092 0.750538 10.5069 0.48051C10.5062 0.398731 10.5414 0.36558 10.621 0.36648C10.76 0.3681 10.899 0.363931 11.0379 0.367051C11.1242 0.369001 11.1606 0.333781 11.1581 0.247111C11.15 -0.0400761 11.1737 0.0063341 11.4182 0.00384412C11.6326 0.00165414 11.8472 0.00684417 12.0615 0.00204421C12.1648 -0.000265769 12.2057 0.0412233 12.2028 0.142262C12.1959 0.38346 12.1975 0.365761 12.4319 0.366001C12.7069 0.366301 12.9771 0.38076 13.2328 0.505769C13.6175 0.693838 13.8099 1.0022 13.8279 1.42202C13.8376 1.64798 13.8356 1.87475 13.8297 2.10092C13.8269 2.20987 13.8646 2.2507 13.9735 2.2465C14.2252 2.23681 14.451 2.32054 14.6504 2.46799C14.8601 2.62309 14.9735 2.83798 14.9835 3.09886C15.0026 3.5988 15.0126 4.10013 14.9818 4.59887C14.9551 5.0312 14.6296 5.33297 14.1969 5.37074C13.9757 5.39006 13.7534 5.39801 13.5307 5.39357C13.4164 5.39129 13.3383 5.35652 13.2928 5.24081C13.2144 5.04152 13.1206 4.84838 13.037 4.65104C12.9848 4.52777 12.9996 4.50872 13.1382 4.50785C13.3408 4.50656 13.5433 4.50869 13.7458 4.50659C13.9041 4.50494 13.9756 4.44461 13.981 4.28616C13.9888 4.05615 13.9912 3.82527 13.9806 3.59547C13.9709 3.38442 13.8481 3.27733 13.6275 3.27565C13.1947 3.27229 12.7618 3.27739 12.329 3.27292C12.2144 3.27172 12.2011 3.32991 12.2014 3.42186C12.2034 4.0056 12.2025 4.58933 12.2023 5.1731C12.2022 5.38682 12.1953 5.39357 11.9816 5.39378C11.7672 5.39399 11.5527 5.39426 11.3383 5.39369C11.1703 5.39324 11.1585 5.38151 11.158 5.20859C11.1571 4.91471 11.1577 4.62086 11.1577 4.32701ZM12.1845 1.81802C12.186 1.81802 12.1875 1.81802 12.189 1.81802C12.189 1.92512 12.187 2.03225 12.1897 2.13929C12.1912 2.20159 12.2175 2.24569 12.2902 2.24518C12.4449 2.24413 12.5997 2.24494 12.7544 2.24425C12.8057 2.24401 12.839 2.21941 12.839 2.16574C12.8389 1.95953 12.8406 1.75319 12.8339 1.54715C12.8313 1.46741 12.7819 1.41485 12.6948 1.41422C12.5559 1.4132 12.417 1.41401 12.2781 1.41341C12.2137 1.41314 12.184 1.44503 12.1843 1.50851C12.1848 1.61168 12.1845 1.71485 12.1845 1.81802Z"/><path d="M8.61551 5.39211C8.13491 5.39211 7.65431 5.39295 7.17372 5.39181C6.87648 5.39112 6.87759 5.39028 6.99666 5.12952C7.08903 4.92729 7.18152 4.72501 7.26744 4.52002C7.31454 4.40761 7.38081 4.35355 7.51095 4.36084C7.70892 4.37194 7.90802 4.36111 8.10656 4.36474C8.19302 4.36633 8.22698 4.33429 8.22683 4.24666C8.22512 3.34106 8.22518 2.43549 8.22662 1.52988C8.22677 1.44219 8.18978 1.40904 8.1047 1.41126C7.98563 1.41438 7.86638 1.41033 7.74725 1.41177C7.6554 1.41288 7.60587 1.37581 7.60638 1.27834C7.60779 1.01224 7.60743 0.746111 7.60653 0.480013C7.60626 0.399764 7.6446 0.365474 7.72341 0.365564C8.41451 0.366194 9.10561 0.366435 9.79672 0.365235C9.88953 0.365085 9.92233 0.408164 9.92146 0.497053C9.91894 0.759161 9.91882 1.02136 9.92146 1.28347C9.92239 1.3753 9.88264 1.41354 9.79294 1.41192C9.6778 1.40983 9.56221 1.41745 9.44749 1.41031C9.33355 1.4032 9.29575 1.44597 9.29626 1.56048C9.29992 2.40252 9.29821 3.24455 9.29821 4.08661C9.29821 4.14223 9.301 4.19797 9.29785 4.25341C9.29314 4.33612 9.33067 4.36558 9.41137 4.36462C9.64567 4.36183 9.88012 4.36714 10.1144 4.36231C10.2161 4.36021 10.2572 4.39489 10.2552 4.49953C10.2504 4.74967 10.2498 5.00004 10.2554 5.25015C10.2578 5.36286 10.208 5.39385 10.105 5.39328C9.6085 5.39064 9.112 5.39208 8.61551 5.39211Z"/><path d="M2.92823 2.41214C2.92823 3.15097 2.92985 3.7345 2.92733 4.31799C2.92649 4.5123 2.91272 4.70451 2.83649 4.88946C2.71394 5.18675 2.49881 5.34905 2.17871 5.37584C2.02433 5.38877 1.87004 5.3951 1.7151 5.39369C1.62408 5.39285 1.56975 5.35547 1.53411 5.27039C1.44981 5.06919 1.35807 4.87113 1.26975 4.6716C1.21569 4.5495 1.23651 4.51692 1.37376 4.51425C1.48884 4.512 1.60404 4.51551 1.71909 4.51257C1.84872 4.50927 1.8803 4.47834 1.88111 4.34679C1.88315 4.00938 1.88199 3.67198 1.88214 3.33457C1.88238 2.8106 1.87101 2.28629 1.88625 1.76273C1.90152 1.23888 1.89741 0.715264 1.89984 0.191558C1.90032 0.088119 1.93775 0.0511294 2.04008 0.0530794C2.28212 0.0577294 2.52443 0.0583295 2.76644 0.0528395C2.87519 0.0503796 2.90963 0.0908491 2.91257 0.198428C2.93426 0.988051 2.92583 1.77776 2.92823 2.41214Z"/><path d="M6.27069 4.01339C6.12381 4.01336 5.9769 4.013 5.83002 4.01351C5.74971 4.01378 5.6715 4.00076 5.5965 3.97328C5.39737 3.90032 5.32297 3.76007 5.37544 3.54992C5.42674 3.34445 5.53276 3.16055 5.61405 2.96696C5.6862 2.79513 5.7648 2.62596 5.84235 2.45643C5.8803 2.37348 5.85828 2.34249 5.76591 2.34429C5.63937 2.34672 5.51226 2.35449 5.38669 2.32308C5.13583 2.26032 5.03809 2.08086 5.12467 1.83822C5.26234 1.45243 5.46127 1.0936 5.61738 0.715875C5.69916 0.518057 5.79633 0.326568 5.87757 0.12854C5.91432 0.0389909 5.9622 -0.00207912 6.06258 8.08607e-05C6.32448 0.00575081 6.58659 0.00386136 6.8486 0.00119139C6.94778 0.000171394 6.96761 0.0374011 6.92813 0.12404C6.77681 0.456137 6.626 0.788504 6.47751 1.12186C6.378 1.34524 6.39183 1.3651 6.6315 1.3657C6.82601 1.36618 7.02056 1.36795 7.21508 1.36579C7.31819 1.36465 7.3421 1.40425 7.3004 1.49722C7.09589 1.95327 6.89816 2.41242 6.68798 2.86581C6.56619 3.12851 6.57231 3.14891 6.85961 3.14903C6.95093 3.14906 7.04222 3.14948 7.13354 3.14957C7.21418 3.14966 7.24271 3.17933 7.20569 3.2603C7.1084 3.47309 7.01273 3.68672 6.9203 3.90164C6.8861 3.98117 6.8357 4.01738 6.74708 4.01468C6.58839 4.00997 6.42948 4.01342 6.27069 4.01339Z"/><path d="M0.749471 1.36533C0.88045 1.36533 1.01149 1.36707 1.14244 1.36473C1.23712 1.36305 1.26862 1.40907 1.26112 1.49841C1.20571 2.15807 1.16629 2.81948 1.0921 3.47701C1.03885 3.94924 0.894731 4.40004 0.621793 4.79964C0.532544 4.93029 0.509774 4.93401 0.446024 4.79601C0.297976 4.47555 0.158207 4.15126 0.0149579 3.82858C-4.19404e-05 3.7948 -0.00478194 3.7606 0.00544797 3.72433C0.133847 3.26938 0.107387 2.79677 0.161597 2.3333C0.193336 2.06196 0.200867 1.78773 0.217816 1.5147C0.224266 1.41096 0.264195 1.3551 0.380414 1.36305C0.502903 1.37142 0.626382 1.36494 0.749441 1.36494C0.749471 1.36509 0.749471 1.36521 0.749471 1.36533Z"/><path d="M4.07919 1.36463C4.20231 1.36469 4.32558 1.36808 4.44852 1.36352C4.536 1.36028 4.58121 1.3901 4.58757 1.48223C4.60665 1.75915 4.62933 2.03584 4.65156 2.31256C4.68363 2.71191 4.71648 3.11118 4.7493 3.51048C4.75059 3.52623 4.75119 3.54369 4.7583 3.55704C4.85838 3.74468 4.77495 3.90611 4.69362 4.07267C4.60137 4.26158 4.52091 4.45625 4.43493 4.64822C4.40736 4.70975 4.3785 4.77071 4.35027 4.83194C4.31184 4.91533 4.27128 4.92098 4.21794 4.84136C4.07349 4.62578 3.95739 4.39685 3.87511 4.15037C3.74314 3.75515 3.69943 3.34599 3.67039 2.93322C3.63784 2.47039 3.59797 2.00803 3.55825 1.54573C3.5449 1.39025 3.56284 1.3655 3.72175 1.36463C3.84091 1.36406 3.96003 1.36457 4.07919 1.36463Z"/><path d="M5.73354 5.39119C5.51178 5.39122 5.28963 5.40364 5.06862 5.37571C5.01771 5.36926 4.96635 5.36248 4.91679 5.3497C4.79256 5.31769 4.7815 5.29618 4.83541 5.17648C4.95582 4.90921 5.07897 4.64318 5.20107 4.37666C5.22729 4.31942 5.2575 4.26908 5.33502 4.29515C5.56899 4.37381 5.81127 4.36604 6.05309 4.36457C6.26711 4.36325 6.48113 4.36298 6.69515 4.36466C6.81722 4.36562 6.83444 4.38746 6.7859 4.49699C6.66713 4.76495 6.54194 5.03005 6.4217 5.29738C6.3857 5.37742 6.31748 5.38948 6.24476 5.39044C6.07439 5.39272 5.90397 5.39119 5.73354 5.39119Z"/><path d="M13.9861 1.05096C13.9861 0.987483 13.9846 0.923974 13.9863 0.860554C13.994 0.574957 14.2056 0.366038 14.4878 0.364268C14.7655 0.362528 14.9819 0.574657 14.9922 0.858664C15.0025 1.14153 14.8036 1.37187 14.525 1.3893C14.3827 1.39821 14.2394 1.39053 14.0966 1.39257C14.0161 1.39371 13.9812 1.35777 13.9846 1.27707C13.9878 1.20183 13.9853 1.12635 13.9853 1.05096C13.9856 1.05096 13.9858 1.05096 13.9861 1.05096Z"/></svg>
+                      <span lang="zh-Hans">小红书</span>
+                    </a>
+                </li>
+                            </ul>
+        </div>
+            </div>
+    <div class="bg-grey border-t border-grey-dark">
+        <div class="grid--centered py-24 pb-90 md:pb-24">
+            <div class="col-span-full flex flex-col md:flex-row justify-between gap-y-24 gap-x-20 text-xs font-light uppercase">
+                <div up-nav class="flex gap-x-44">
+                                    <ul class="flex flex-col md:flex-row gap-y-12 gap-x-44">
+                                          <li><a  href="https://www.whitecube.com/website-accessibility">Website Accessibility</a></li>
+                                          <li><a  href="https://www.whitecube.com/visitor-guidelines">Visitor Guidelines</a></li>
+                                          <li><a  href="https://www.whitecube.com/privacy-policy">Privacy Policy</a></li>
+                                          <li><a  href="https://www.whitecube.com/cookie-policy">Cookie Policy</a></li>
+                                          <li><a  href="https://www.whitecube.com/terms-of-use">Terms of Use</a></li>
+                                          <li><a  href="https://www.whitecube.com/modern-slavery-statement">Modern Slavery Statement</a></li>
+                                        <li>
+                      <a href='#' class="iubenda-cs-preferences-link flex items-start gap-x-8">Your Privacy Choices</a>
+                    </li>
+                  </ul>
+                </div>
+                <p>Artworks &copy; the Artist. &copy; 2025 White Cube</p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+        
+        
+    </div>
+
+    <script type="text/javascript" async src="https://static.klaviyo.com/onsite/js/UHpfpr/klaviyo.js"></script>
+
+<script type="text/javascript">window.FormieTranslations={"File {filename} must be smaller than {filesize} MB.":"File {filename} must be smaller than {filesize} MB.","File must be smaller than {filesize} MB.":"File must be smaller than {filesize} MB.","File must be larger than {filesize} MB.":"File must be larger than {filesize} MB.","Choose up to {files} files.":"Choose up to {files} files.","{startTag}{num}{endTag} character left":"{startTag}{num}{endTag} character left","{startTag}{num}{endTag} characters left":"{startTag}{num}{endTag} characters left","{startTag}{num}{endTag} word left":"{startTag}{num}{endTag} word left","{startTag}{num}{endTag} words left":"{startTag}{num}{endTag} words left","This field is required.":"This field is required.","Please select a value.":"Please select a value.","Please select at least one value.":"Please select at least one value.","Please fill out this field.":"Please fill out this field.","Please enter a valid email address.":"Please enter a valid email address.","Please enter a URL.":"Please enter a URL.","Please enter a number":"Please enter a number","Please match the following format: #rrggbb":"Please match the following format: #rrggbb","Please use the YYYY-MM-DD format":"Please use the YYYY-MM-DD format","Please use the 24-hour time format. Ex. 23:00":"Please use the 24-hour time format. Ex. 23:00","Please use the YYYY-MM format":"Please use the YYYY-MM format","Please match the requested format.":"Please match the requested format.","Please select a value that is no more than {max}.":"Please select a value that is no more than {max}.","Please select a value that is no less than {min}.":"Please select a value that is no less than {min}.","Please shorten this text to no more than {maxLength} characters. You are currently using {length} characters.":"Please shorten this text to no more than {maxLength} characters. You are currently using {length} characters.","Please lengthen this text to {minLength} characters or more. You are currently using {length} characters.":"Please lengthen this text to {minLength} characters or more. You are currently using {length} characters.","There was an error with this field.":"There was an error with this field.","Unable to parse response `{e}`.":"Unable to parse response `{e}`.","Are you sure you want to leave?":"Are you sure you want to leave?","The request timed out.":"The request timed out.","The request encountered a network error. Please try again.":"The request encountered a network error. Please try again.","Invalid number":"Invalid number","Invalid country code":"Invalid country code","Too short":"Too short","Too long":"Too long","Missing Authorization ID for approval.":"Missing Authorization ID for approval.","Payment authorized. Finalize the form to complete payment.":"Payment authorized. Finalize the form to complete payment.","Unable to authorize payment. Please try again.":"Unable to authorize payment. Please try again."};</script>
+<script type="application/ld+json">{"@context":"http://schema.org","@graph":[{"@type":"WebSite","author":{"@id":"#identity"},"copyrightHolder":{"@id":"#identity"},"copyrightYear":"2025","creator":{"@id":"#creator"},"dateModified":"2025-09-04T10:20:59+01:00","datePublished":"2025-05-27T16:40:00+01:00","description":"The abstract painting of Korean American artist Suzanne Song is characterised by the combining of geometric logic and subtle tonal gradations to startling, mesmeric effect. Grounded by an inquiry into perception, her practice contends that physical and pictorial space is predicated upon its embodiment – that which is experienced or felt by the viewer.","headline":"Suzanne Song, Mason's Yard (2025)","image":{"@type":"ImageObject","url":"https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-‘Inside-the-White-Cube_-Interfold’-White-Cube-Masons-Yard-2025_30.jpeg?w=1200&h=630&q=82&auto=format&fit=crop&dm=1756894728&s=27020323b8a444f199f50eddeffb78c3"},"inLanguage":"en-gb","mainEntityOfPage":"https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025","name":"Suzanne Song, Mason's Yard (2025)","publisher":{"@id":"#creator"},"url":"https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025"},{"@id":"#identity","@type":"Organization","sameAs":["https://twitter.com/_whitecube","https://www.facebook.com/whitecubegalleries","https://www.tiktok.com/@whitecube_official","https://www.instagram.com/whitecube/","https://www.youtube.com/c/WhiteCubeOfficial","https://www.artsy.net/partner/white-cube","https://www.artnet.com/galleries/white-cube/","/wechat","https://www.xiaohongshu.com/user/profile/613b762e000000001f0398a8"]},{"@id":"#creator","@type":"Organization"},{"@type":"BreadcrumbList","description":"Breadcrumbs list","itemListElement":[{"@type":"ListItem","item":"https://www.whitecube.com","name":"Home","position":1},{"@type":"ListItem","item":"https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025","name":"Suzanne Song, Mason's Yard (2025)","position":2}],"name":"Breadcrumbs"}]}</script>
+
+      <span
+        x-data="notification"
+        x-cloak
+        :class="{
+          'translate-y-0 opacity-100': showMessage,
+          '-translate-y-full opacity-0': !showMessage,
+          'bg-white': status === 'success' || !status,
+          'bg-[#ffbbbb]': status === 'error',
+          'bg-[#f7eea6]': status === 'info'
+        }"
+        class="z-top fixed top-32 left-1/2 -translate-x-1/2 transition-all border border-black inline-flex items-center gap-x-14 leading-none rounded shadow-xl px-24 py-12 pointer-events-none">
+              <svg class="fill-current w-18 h-auto" width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 0C22.4302 0 0 22.4295 0 49.9997C0 77.57 22.4302 100 50 100C77.5698 100 100 77.57 100 49.9997C100 22.4295 77.5704 0 50 0ZM78.7109 41.5544L47.2984 72.9667C45.9628 74.3023 44.1873 75.0374 42.2986 75.0374C40.4099 75.0374 38.6344 74.3023 37.2987 72.9667L21.2891 56.9571C19.9535 55.6215 19.2178 53.846 19.2178 51.9573C19.2178 50.0681 19.9535 48.2926 21.2891 46.957C22.6243 45.6213 24.3997 44.8857 26.289 44.8857C28.1777 44.8857 29.9537 45.6213 31.2888 46.9575L42.2981 57.9662L68.7102 31.5542C70.0458 30.2186 71.8213 29.4834 73.71 29.4834C75.5987 29.4834 77.3742 30.2186 78.7098 31.5542C81.4678 34.3121 81.4678 38.7975 78.7109 41.5544Z"/></svg>
+          <span x-text="message" role="status" aria-live="polite"></span>
+      </span>
+
+      <div up-id="cpEditUrl" up-hungry>
+              </div>
+    </body>
+</html>

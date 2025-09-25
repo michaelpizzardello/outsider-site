@@ -10,10 +10,8 @@ export default function Container({
   return (
     <div
       className={clsx(
-        // same nice gutters as mid viewport
-        "mx-auto px-4 sm:px-6 lg:px-20",
-        // stop capping on very large screens so desktop isn’t pulled in
-        "max-w-7xl 2xl:max-w-none",
+        // shared layout width aligns with White Cube-style container
+        "site-container",
         className
       )}
     >
@@ -21,4 +19,3 @@ export default function Container({
     </div>
   );
 }
-

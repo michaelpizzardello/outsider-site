@@ -46,7 +46,7 @@ export default function CurrentExhibitionHero({
 
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
-      <div className="absolute inset-0 grid place-items-center px-4 text-center">
+      <div className="absolute inset-0 grid place-items-center site-gutters text-center">
         <div className="z-10 max-w-[80ch] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
           <p className="mb-3 text-[11px] md:text-[12px] tracking-[.28em] uppercase opacity-80">
             {topLabel}
@@ -85,4 +85,3 @@ export default function CurrentExhibitionHero({
     </section>
   );
 }
-

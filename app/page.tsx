@@ -3,6 +3,7 @@ import "server-only";
 
 import CurrentExhibitionHero from "@/components/exhibitions/CurrentExhibitionHero";
 import UpcomingShows from "@/components/exhibitions/UpcomingShows";
+import Container from "@/components/layout/Container";
 // import HolidayBanner from "@/components/HolidayBanner";
 
 import {
@@ -61,8 +62,10 @@ export default async function HomePage() {
             buttonLabel={button}
           />
         ) : (
-          <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 text-center text-neutral-500">
-            No exhibitions to display. Please check back soon.
+          <section className="py-14 text-center text-neutral-500">
+            <Container>
+              No exhibitions to display. Please check back soon.
+            </Container>
           </section>
         )}
       </div>

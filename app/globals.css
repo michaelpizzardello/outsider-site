@@ -3,8 +3,33 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --colors-grey-default: #f6f6f5;
+  --colors-grey-default: #f9f9f9;
   --colors-grey-dark: #e0e0e0;
+  --container-width: 90.625vw;
+  --container-padding-x: clamp(2rem, 4.6875vw, 4.6875vw);
+  --max-layout-width: 1740px;
+  --header-text-color: #000000;
+}
+
+.site-container {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  width: calc(100% - 4rem);
+  max-width: var(--max-layout-width);
+}
+
+@media (min-width: 640px) {
+  .site-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: min(var(--container-width), var(--max-layout-width));
+  }
+}
+
+@layer utilities {
+  .site-gutters {
+    padding-inline: var(--container-padding-x);
+  }
 }
 
 @theme inline {

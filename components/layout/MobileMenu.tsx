@@ -1,4 +1,5 @@
 import NavLinks from "@/components/layout/NavLinks";
+import Container from "@/components/layout/Container";
 
 export default function MobileMenu({
   open,
@@ -26,7 +27,7 @@ export default function MobileMenu({
           open ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <div className="mx-auto max-w-7xl px-6 py-8">
+        <Container className="py-8">
           {/* grab-handle */}
           <div className="mb-6 flex justify-center">
             <span className="h-1.5 w-12 rounded-full bg-neutral-200" />
@@ -50,9 +51,8 @@ export default function MobileMenu({
               Close
             </button>
           </div>
-        </div>
+        </Container>
       </div>
     </div>
   );
 }
-

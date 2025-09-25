@@ -18,7 +18,7 @@ export default function NavLinks({
           <Link
             href={item.href}
             className={[
-              "uppercase tracking-[.2em] font-medium transition-opacity hover:opacity-80 focus:opacity-80",
+              "font-normal leading-none transition-opacity duration-150 hover:opacity-80 focus:opacity-80",
               linkClassName,
             ].join(" ")}
             onClick={onClick}
@@ -30,4 +30,3 @@ export default function NavLinks({
     </ul>
   );
 }
-

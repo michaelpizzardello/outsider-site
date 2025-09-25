@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -32,10 +33,10 @@ export default function Logo({
         <Image
           src={logoSrc}
           alt="Outsider Gallery"
-          width={235}
-          height={18}
+          width={400}
+          height={31}
           priority
-          className={className}
+          className={clsx("min-w-[150px]", className)}
           onError={() => setLogoError(true)}
         />
       ) : (
@@ -46,4 +47,3 @@ export default function Logo({
     </Link>
   );
 }
-

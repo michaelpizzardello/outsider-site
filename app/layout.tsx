@@ -1,10 +1,20 @@
 // app/layout.tsx
+import type { Metadata } from "next";
+
 import "./globals.css";
 import { sofiaPro } from "./fonts";
 import Header from "@/components/layout/Header";
 import SiteFooter from "@/components/layout/SiteFooter";
 import { CartProvider } from "@/components/cart/CartContext";
 import CartDrawer from "@/components/cart/CartDrawer";
+
+export const metadata: Metadata = {
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
+  },
+};
 
 export default function RootLayout({
   children,

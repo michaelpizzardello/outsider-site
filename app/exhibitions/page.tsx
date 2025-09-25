@@ -30,6 +30,7 @@ import {
 } from "@/lib/exhibitions";
 
 import { heroLabels, type PickHeroLabel } from "@/lib/labels";
+import Container from "@/components/layout/Container";
 
 // ISR cadence
 export const revalidate = 60;
@@ -97,7 +98,7 @@ export default async function ExhibitionsPage() {
       style={{ paddingTop: "var(--header-h, 76px)" }}
     >
       {/* Container */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <Container>
         {/* HEADER BAND (White Cube pattern) */}
         <header className="mt-10 md:mt-10 lg:mt-20 mb-8 sm:mb-10">
           <div className="grid grid-cols-1 sm:grid-cols-12 items-baseline gap-x-8">
@@ -198,7 +199,7 @@ export default async function ExhibitionsPage() {
             No exhibitions to show yet.
           </p>
         )}
-      </div>
+      </Container>
     </main>
   );
 }
