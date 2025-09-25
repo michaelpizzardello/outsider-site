@@ -252,6 +252,7 @@ function toCard(n: Node): ExhibitionCard {
       img(f, "heroimage") ??
       img(f, "coverimage") ??
       img(f, "coverImage"),
+    variant: text(f, "variant"),
   };
 }
 
