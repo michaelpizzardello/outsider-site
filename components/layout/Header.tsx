@@ -97,9 +97,9 @@ export default function Header({
       <header ref={headerRef} className={wrapClass}>
         <Container className={textClass}>
           <div
-            className={`hidden md:grid items-center justify-center grid-cols-[max-content_auto_max-content] gap-x-12 lg:gap-x-16 xl:gap-x-20 ${headerPaddingDesktop} ${transitionSmooth}`}
+            className={`hidden md:grid w-full items-center grid-cols-[max-content_auto_max-content] gap-x-12 lg:gap-x-16 xl:gap-x-20 ${headerPaddingDesktop} ${transitionSmooth}`}
           >
-            <nav aria-label="Primary" className="justify-self-end">
+            <nav aria-label="Primary" className="justify-self-start">
               <NavLinks
                 items={nav.slice(0, 2)}
                 className={`flex items-center ${navGap}`}
@@ -114,7 +114,7 @@ export default function Header({
                 ariaLabel={logoAriaLabel}
               />
             </div>
-            <nav aria-label="Secondary" className="justify-self-start">
+            <nav aria-label="Secondary" className="justify-self-end">
               <NavLinks
                 items={nav.slice(2)}
                 className={`flex items-center ${navGap}`}
