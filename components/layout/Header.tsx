@@ -61,10 +61,8 @@ export default function Header({
   // ---------------------------------------------------------------------------
   const solid = open || !overlayFinal || scrolled;
   const transitionSmooth = "transition-all duration-500 ease-in-out";
-  const NAV_TEXT_COMPACT = "text-[13px] md:text-[13px] lg:text-[15px]";
-  const NAV_TEXT_LARGE = "text-[15px] md:text-[16px] lg:text-[18px]";
-  const navLinkSize = scrolled ? NAV_TEXT_COMPACT : NAV_TEXT_LARGE;
-  const navGap = scrolled ? "gap-x-8 lg:gap-x-12" : "gap-x-12 lg:gap-x-18";
+  const navLinkSize = "text-sm tracking-tight md:text-base lg:text-lg";
+  const navGap = "gap-x-8 lg:gap-x-12";
   const bgClass = solid ? "bg-white/95 backdrop-blur" : "bg-transparent";
   const shadowClass = scrolled
     ? "shadow-[0_6px_20px_rgba(0,0,0,.06)]"
@@ -77,7 +75,7 @@ export default function Header({
     borderClass
   );
   const textClass = solid ? "text-neutral-900" : "text-white";
-  const headerPaddingDesktop = scrolled ? "py-5 md:py-6" : "py-9 md:py-[60px]";
+  const headerPaddingDesktop = scrolled ? "py-4 md:py-5" : "py-8 md:py-12";
   const headerPaddingMobile = scrolled ? "py-3" : "py-5";
 
   // ---------------------------------------------------------------------------

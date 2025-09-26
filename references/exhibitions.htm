@@ -1,0 +1,1289 @@
+
+
+
+<!DOCTYPE html>
+<html class="no-js"
+      lang="en-GB"
+      dir="ltr">
+<head>
+    <style>[x-cloak] { display: none !important; }</style>
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="referrer" content="origin-when-cross-origin" />
+    <meta name="facebook-domain-verification" content="aiwmgxj2g6gckejg4m2it3v1pcf8o4" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/dist/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/dist/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/dist/favicon/favicon-16x16.png">
+<link rel="manifest" href="/dist/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">    <style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-Clear.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-ClearItalic.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-Regular.ttf') format('truetype');
+                                font-weight: 400;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-RegularItalic.ttf') format('truetype');
+                                font-weight: 400;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-Medium.ttf') format('truetype');
+                                font-weight: 500;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-detail';
+                                src: url('/dist/fonts/BeausiteDetailWeb-MediumItalic.ttf') format('truetype');
+                                font-weight: 500;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-display';
+                                src: url('/dist/fonts/BeausiteDisplayWeb-Thin.ttf') format('truetype');
+                                font-weight: 100;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-display';
+                                src: url('/dist/fonts/BeausiteDisplayWeb-ThinItalic.ttf') format('truetype');
+                                font-weight: 100;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-Light.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-LightItalic.ttf') format('truetype');
+                                font-weight: 300;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-Bold.ttf') format('truetype');
+                                font-weight: 700;
+                font-style: normal;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style><style type="text/css">
+            @font-face {
+                font-family: 'beausite-text';
+                                src: url('/dist/fonts/BeausiteTextWeb-BoldItalic.ttf') format('truetype');
+                                font-weight: 700;
+                font-style: italic;
+                font-stretch: normal;
+                font-display: swap;
+            }
+        </style>    <script type="text/javascript">
+  // The below is a debounced calculation of the window's inner height,
+  // set to a CSS custom property `--vh` which tailwind uses.
+  // All of this so that we can achieve accurate screen-based heights on iOS/etc devices
+  // which let UI elements & scroll position cause the normal `100vh` to be inaccurate.
+  var resizeTimer;
+  var resizeCallback = function() {
+    console.log('resizeCallback');
+    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+    var vh = window.innerHeight * 0.01;
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
+  resizeCallback();
+
+  /**
+   * Re-calculate it on resize
+   */
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resizeCallback, 250);
+  });
+
+  /**
+   * Set some globals for our app JS
+   * @type {string}
+   */
+  window.SHOPIFY_HOSTNAME = 'white-cube-shop.myshopify.com';
+  window.SHOPIFY_STOREFRONT_ACCESS_TOKEN = 'f8833a14c47cc9070b65e4be69962680';
+  window.SHOPIFY_BUYER_CURRENCY = '';
+</script>
+
+<script type="module">!function(){const e=document.createElement("link").relList;if(!(e&&e.supports&&e.supports("modulepreload"))){for(const e of document.querySelectorAll('link[rel="modulepreload"]'))r(e);new MutationObserver((e=>{for(const o of e)if("childList"===o.type)for(const e of o.addedNodes)if("LINK"===e.tagName&&"modulepreload"===e.rel)r(e);else if(e.querySelectorAll)for(const o of e.querySelectorAll("link[rel=modulepreload]"))r(o)})).observe(document,{childList:!0,subtree:!0})}function r(e){if(e.ep)return;e.ep=!0;const r=function(e){const r={};return e.integrity&&(r.integrity=e.integrity),e.referrerpolicy&&(r.referrerPolicy=e.referrerpolicy),"use-credentials"===e.crossorigin?r.credentials="include":"anonymous"===e.crossorigin?r.credentials="omit":r.credentials="same-origin",r}(e);fetch(e.href,r)}}();</script>
+<script type="module" src="https://www.whitecube.com/dist/assets/app-CwAOb_bR.js" crossorigin onload="e=new CustomEvent(&#039;vite-script-loaded&#039;, {detail:{path: &#039;src/js/app.js&#039;}});document.dispatchEvent(e);" integrity="sha384-EbGkbMzcBD9CzPRNiGlTwpzWlpfdmXCYB0MLNpYGi3iiky/mNwugHwf7c/M9llHQ"></script>
+<link href="https://www.whitecube.com/dist/assets/app-DaNqc_0c.css" rel="stylesheet">
+
+<link href="https://www.whitecube.com/cpresources/7f7a8a24/css/fields/phone-country.css?v=1731447637" rel="stylesheet">
+<link href="https://www.whitecube.com/cpresources/7f7a8a24/css/formie-theme.css?v=1731447637" rel="stylesheet">
+    <!-- Google Tag Manager -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GTM-P6DZDRN', {
+          'linker': {
+            'domains': ['www.whitecube.com', 'white-cube-shop.myshopify.com', 'checkout.shopify.com', 'shop.app']
+          }
+        });
+    </script>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-P6DZDRN');</script>
+<!-- End Google Tag Manager -->
+<title>London | White Cube</title>
+      <meta name="X-App-Version" content="1.2.2:0" />
+    
+      <style type="text/css">
+        :root {
+                        --colors-grey-default: 246,246,245;
+                                  --colors-grey-dark: 224,224,224;
+                  }
+      </style>
+    <meta name="generator" content="SEOmatic">
+<meta name="description" content="One of the world&#039;s leading contemporary art galleries, White Cube has spaces in London, Hong Kong, Paris, New York and Seoul.">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta name="robots" content="all">
+<meta content="100053132811565" property="fb:profile_id">
+<meta content="en_GB" property="og:locale">
+<meta content="zh_Hant" property="og:locale:alternate">
+<meta content="ko" property="og:locale:alternate">
+<meta content="zh_Hans" property="og:locale:alternate">
+<meta content="fr" property="og:locale:alternate">
+<meta content="White Cube" property="og:site_name">
+<meta content="website" property="og:type">
+<meta content="https://www.whitecube.com/exhibitions/london" property="og:url">
+<meta content="London" property="og:title">
+<meta content="One of the world&#039;s leading contemporary art galleries, White Cube has spaces in London, Hong Kong, Paris, New York and Seoul." property="og:description">
+<meta content="https://white-cube.transforms.svdcdn.com/production/uploads/seo/white-cube.png?w=1200&amp;h=630&amp;q=82&amp;auto=format&amp;fit=crop&amp;dm=1668027785&amp;s=c6a1d0a195adb101d8678b6f09862d3e" property="og:image">
+<meta content="1200" property="og:image:width">
+<meta content="630" property="og:image:height">
+<meta content="https://www.xiaohongshu.com/user/profile/613b762e000000001f0398a8" property="og:see_also">
+<meta content="/wechat" property="og:see_also">
+<meta content="https://www.artnet.com/galleries/white-cube/" property="og:see_also">
+<meta content="https://www.artsy.net/partner/white-cube" property="og:see_also">
+<meta content="https://www.youtube.com/c/WhiteCubeOfficial" property="og:see_also">
+<meta content="https://www.instagram.com/whitecube/" property="og:see_also">
+<meta content="https://www.tiktok.com/@whitecube_official" property="og:see_also">
+<meta content="https://www.facebook.com/whitecubegalleries" property="og:see_also">
+<meta content="https://twitter.com/_whitecube" property="og:see_also">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@_whitecube">
+<meta name="twitter:creator" content="@_whitecube">
+<meta name="twitter:title" content="London | White Cube">
+<meta name="twitter:description" content="One of the world&#039;s leading contemporary art galleries, White Cube has spaces in London, Hong Kong, Paris, New York and Seoul.">
+<meta name="twitter:image" content="https://white-cube.transforms.svdcdn.com/production/uploads/seo/white-cube.png?w=1200&amp;h=630&amp;q=82&amp;auto=format&amp;fit=crop&amp;dm=1668027785&amp;s=c6a1d0a195adb101d8678b6f09862d3e">
+<meta name="twitter:image:width" content="1200">
+<meta name="twitter:image:height" content="630">
+<link href="https://www.whitecube.com/exhibitions/london" rel="canonical">
+<link href="https://www.whitecube.com" rel="home">
+<link type="text/plain" href="https://www.whitecube.com/humans.txt" rel="author">
+<link href="https://www.whitecube.com/exhibitions/london" rel="alternate" hreflang="zh-hant">
+<link href="https://www.whitecube.com/exhibitions/london" rel="alternate" hreflang="ko">
+<link href="https://www.whitecube.com/exhibitions/london" rel="alternate" hreflang="zh-hans">
+<link href="https://www.whitecube.com/exhibitions/london" rel="alternate" hreflang="fr">
+<link href="https://www.whitecube.com/exhibitions/london" rel="alternate" hreflang="x-default">
+<link href="https://www.whitecube.com/exhibitions/london" rel="alternate" hreflang="en-gb"></head>
+<body
+    x-data="app()"
+    x-on:keyup.escape="currencyChangeAlert = false"
+    class="relative flex flex-col min-h-screen bg-white text-black antialiased"
+>
+    <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P6DZDRN" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->    <a
+  href="#main"
+  class="fixed left-0 top-0 px-8 py-6 z-[1000] transition-transform bg-white -translate-y-[200%] focus:translate-y-0">
+  Skip to content
+</a>
+
+    <div
+        up-main
+        class="contents"
+                                >
+                  
+<header>
+
+    
+
+
+  
+
+    
+    <div class="container md:columns-3 mx-auto py-36 md:py-[60px] absolute left-1/2 -translate-x-1/2 z-10 text-headerTextColor text-16 [&_a:focus-visible]:outline-[var(--header-text-color)]">
+        <nav up-nav aria-label="Primary" class="hidden md:block">
+            <ul  class="flex items-center md:gap-x-32 lg:gap-x-64 pt-4"><li  class="leading-none"><a  href="https://www.whitecube.com/artists" title="Go to Artists page" aria-label="Go to Artists page" up-alias="/artists/*">Artists</a></li><li  class="leading-none"><a  class="active current" href="https://www.whitecube.com/exhibitions/london" up-alias="/exhibitions/* /gallery-exhibitions/* /online-exhibitions/* /external-exhibitions/*" aria-current="page">Exhibitions</a></li></ul>
+        </nav>
+        <div class="flex justify-center">
+            <a href="https://www.whitecube.com/" title="Go to White Cube homepage" aria-label="Go to White Cube homepage">
+                    <svg class="fill-current max-w-[180px] md:max-w-[235px] h-auto" width="234" height="18" viewBox="0 0 234 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.0393 4.95584L15.182 17.2183H16.8392L22.0473 0.64716H19.6324L15.916 12.6492L11.8678 0.64716H10.2107L6.1625 12.6492L2.44608 0.64716H0.03125L5.23934 17.2183H6.89646L11.0393 4.95584ZM46.2006 17.2183H48.5679V0.64716H46.2006V7.15684H36.9681V0.64716H34.6008V17.2183H36.9681V9.40622H46.2006V17.2183ZM63.3136 17.2183H65.6809V0.64716H63.3136V17.2183ZM78.6226 2.89611H83.1205V17.2183H85.4878V2.89611H89.9857V0.64716H78.6226V2.89611ZM105.321 7.15684V2.89611H112.423V0.64716H102.953V17.2183H112.659V14.9694H105.321V9.40622H110.765V7.15684H105.321ZM141.516 8.93233C141.516 13.8333 145.162 17.4551 150.11 17.4551C152.667 17.4551 155.128 16.2006 156.549 14.3771L154.868 12.8622C153.945 13.975 152.335 15.2057 150.11 15.2057C146.582 15.2057 143.884 12.6734 143.884 8.93233C143.884 5.35803 146.511 2.65938 149.897 2.65938C151.672 2.65938 153.4 3.46418 154.371 4.52947L155.957 2.96738C154.513 1.38069 152.264 0.410004 149.897 0.410004C145.114 0.410004 141.516 4.15104 141.516 8.93233V8.93233ZM176.547 17.4551C178.583 17.4551 180.429 16.6265 181.684 15.277C182.75 14.1175 183.412 12.5788 183.412 10.3531V0.64716H181.045V10.4715C181.045 12.0336 180.666 13.0047 180.003 13.7382C179.175 14.6618 177.944 15.2057 176.547 15.2057C175.151 15.2057 173.919 14.6618 173.091 13.7382C172.428 13.0047 172.049 12.0336 172.049 10.4715V0.64716H169.682V10.3531C169.682 12.5788 170.345 14.1175 171.41 15.277C172.665 16.6265 174.511 17.4551 176.547 17.4551ZM200.367 14.9694V9.40622H203.965C205.456 9.40622 206.166 9.73755 206.688 10.2581C207.161 10.7558 207.468 11.418 207.468 12.1761C207.468 12.9334 207.161 13.6203 206.688 14.1175C206.166 14.6381 205.456 14.9694 203.965 14.9694H200.367ZM200.367 7.15684V2.89611H203.207C204.533 2.89611 205.101 3.1566 205.48 3.58297C205.835 3.96097 206.048 4.45819 206.048 5.02669C206.048 5.59518 205.835 6.09198 205.48 6.47041C205.101 6.89678 204.533 7.15684 203.207 7.15684H200.367ZM204.391 17.2183C206.072 17.2183 207.161 16.8157 208.013 16.1055C209.126 15.2057 209.836 13.8095 209.836 12.2707C209.836 10.4002 208.676 8.6956 207.113 7.91498C207.894 7.1806 208.415 6.09198 208.415 4.95584C208.415 3.72467 207.894 2.58853 207.043 1.80706C206.261 1.09687 205.243 0.64716 203.633 0.64716H197.999V17.2183H204.391ZM225.727 7.15684V2.89611H232.829V0.64716H223.36V17.2183H233.066V14.9694H225.727V9.40622H231.172V7.15684H225.727Z"/></svg>
+            </a>
+        </div>
+        <nav up-nav aria-label="Secondary" class="hidden md:block">
+          <ul class="flex items-center justify-end flex-nowrap md:gap-x-32 lg:gap-x-64 pt-4">
+                                    <li class="leading-none">
+                <a
+                   href="https://www.whitecube.com/collect"                                                      up-alias="/collect/* /art-fairs/* /salon/* prints-multiples/*"                >
+                    Collect
+                </a>
+            </li>
+                        <li class="leading-none">
+                <a
+                   href="https://www.whitecube.com/shop"                                                      up-alias="/shop/*"                >
+                    Bookshop
+                </a>
+            </li>
+                        <li class="leading-none">
+                <a href="https://www.whitecube.com/account"
+                   up-alias="/account/*"
+                   class="group inline-block"
+                   title="My Account"
+                   aria-label="My Account">    <svg class="fill-current" width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.97853 0C15.2258 0 19.5 4.27424 19.5 9.47853C19.5 14.7258 15.2258 19 9.97853 19C4.77348 19 0.5 14.7258 0.5 9.47853C0.5 4.27348 4.77424 0 9.97853 0ZM9.97853 4.95121C11.7984 4.95121 13.279 6.43262 13.279 8.20933C13.279 9.30926 12.7714 10.2406 11.9676 10.833C13.9567 11.4253 15.6488 12.8643 16.538 14.7681C17.7226 13.329 18.4002 11.51 18.4002 9.47853C18.4002 4.82353 14.6344 1.05773 9.97938 1.05773C5.32438 1.05773 1.55858 4.82353 1.55858 9.47853C1.55858 11.5098 2.27777 13.3291 3.42074 14.7681C4.30914 12.8638 6.00208 11.4253 8.03337 10.833C7.22957 10.2408 6.72193 9.30934 6.72193 8.20933C6.72193 6.43179 8.20334 4.95121 9.98005 4.95121H9.97853ZM9.97853 6.00883C8.79399 6.00883 7.77795 7.02415 7.77795 8.20941C7.77795 9.43624 8.79327 10.41 9.97853 10.41C11.2054 10.41 12.1791 9.43698 12.1791 8.20941C12.1791 7.02487 11.2061 6.00883 9.97853 6.00883ZM15.7334 15.6572C14.845 13.2452 12.5599 11.6376 9.97853 11.6376C7.43956 11.6376 5.11206 13.2459 4.22362 15.6572C5.74732 17.054 7.77795 17.9002 9.97853 17.9002C12.2215 17.9002 14.2528 17.0541 15.7334 15.6572Z"/></svg></a>
+            </li>
+          </ul>
+        </nav>
+    </div>
+
+    
+
+<div
+    x-data="{ mobileMenu: false, moreMenu: false }"
+>
+    <div
+        :class="mobileMenu ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'"
+        x-cloak
+        class="fixed inset-0 w-screen h-screen z-30 bg-black transition-opacity"
+    ></div>
+    <div
+        :class="mobileMenu ? 'bg-white translate-y-0' : 'bg-white/80 translate-y-[calc(100%_-_46px)]'"
+        class="fixed bottom-0 w-full z-30 border-t border-grey-dark backdrop-blur-sm transition-all md:hidden flex flex-col"
+    >
+        <button
+            @click="mobileMenu = ! mobileMenu"
+            class="btn btn-black hover:bg-black hover:text-white rounded-full h-56 w-56 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            aria-label="Menu toggle"
+        >
+            <span
+                x-show="!mobileMenu"
+            >    <svg class="fill-current" width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="24" height="2"/><rect x="2" width="20" height="2"/><rect x="4" y="14" width="16" height="2"/></svg></span>
+            <span
+                x-show="mobileMenu"
+                x-cloak
+            >    <svg class="fill-current w-24 h-auto" width="15" height="14" viewBox="0 0 15 14" fill="eeee" xmlns="http://www.w3.org/2000/svg"><path d="M14.2046 1.9457L13.2178 1L7.60232 6.38152L1.98682 1L1 1.9457L6.6155 7.32722L1 12.7087L1.98682 13.6544L7.60232 8.27293L13.2178 13.6544L14.2046 12.7087L8.58914 7.32722L14.2046 1.9457Z" stroke-width="0.5"/></svg></span>
+        </button>
+
+                <nav up-nav class="text-16 text-center p-32 pt-60">
+            <ul class="flex item-center justify-between gap-x-24 mb-32">
+                                <li><a  href="https://www.whitecube.com/artists">Artists</a></li>
+                                <li><a  href="https://www.whitecube.com/exhibitions/london">Exhibitions</a></li>
+                                <li><a  href="https://www.whitecube.com/collect">Collect</a></li>
+                                <li><a  href="https://www.whitecube.com/shop">Bookshop</a></li>
+                            </ul>
+                
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline text-16 font-normal" href="https://www.whitecube.com/account" target="_self" title="My Account"
+        aria-label="My Account"        >
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.97853 0C15.2258 0 19.5 4.27424 19.5 9.47853C19.5 14.7258 15.2258 19 9.97853 19C4.77348 19 0.5 14.7258 0.5 9.47853C0.5 4.27348 4.77424 0 9.97853 0ZM9.97853 4.95121C11.7984 4.95121 13.279 6.43262 13.279 8.20933C13.279 9.30926 12.7714 10.2406 11.9676 10.833C13.9567 11.4253 15.6488 12.8643 16.538 14.7681C17.7226 13.329 18.4002 11.51 18.4002 9.47853C18.4002 4.82353 14.6344 1.05773 9.97938 1.05773C5.32438 1.05773 1.55858 4.82353 1.55858 9.47853C1.55858 11.5098 2.27777 13.3291 3.42074 14.7681C4.30914 12.8638 6.00208 11.4253 8.03337 10.833C7.22957 10.2408 6.72193 9.30934 6.72193 8.20933C6.72193 6.43179 8.20334 4.95121 9.98005 4.95121H9.97853ZM9.97853 6.00883C8.79399 6.00883 7.77795 7.02415 7.77795 8.20941C7.77795 9.43624 8.79327 10.41 9.97853 10.41C11.2054 10.41 12.1791 9.43698 12.1791 8.20941C12.1791 7.02487 11.2061 6.00883 9.97853 6.00883ZM15.7334 15.6572C14.845 13.2452 12.5599 11.6376 9.97853 11.6376C7.43956 11.6376 5.11206 13.2459 4.22362 15.6572C5.74732 17.054 7.77795 17.9002 9.97853 17.9002C12.2215 17.9002 14.2528 17.0541 15.7334 15.6572Z"/></svg></span>
+                <span >My Account</span>
+    </a>
+
+        </nav>
+        
+                <div
+            x-show="moreMenu"
+            x-cloak
+        >
+                        <nav up-nav class="border-t border-grey-dark text-sm p-32">
+                <ul>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/about">About</a>
+                                                <ul class="w-[calc(100%-6rem)] flex flex-wrap justify-start gap-x-40 gap-y-24 text-14">
+                                                <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/locations">Locations</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/careers">Careers</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/sustainability">Sustainability</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/contact">Contact</a>
+                                            </li>
+                                            </ul>
+                                            </li>
+                                    </ul>
+            </nav>
+                                    <nav up-nav class="border-t border-grey-dark text-sm p-32">
+                <ul>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news">News</a>
+                                                <ul class="w-[calc(100%-6rem)] flex flex-wrap justify-start gap-x-40 gap-y-24 text-14">
+                                                <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news-categories/press-release">Press Releases</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news-categories/events">Events</a>
+                                            </li>
+                                        <li class="flex items-start justify-between">
+                        <a  href="https://www.whitecube.com/news-categories/museum-exhibition">Museum Exhibitions</a>
+                                            </li>
+                                            </ul>
+                                            </li>
+                                    </ul>
+            </nav>
+                    </div>
+
+        <button
+            @click="moreMenu = ! moreMenu"
+            class="border-t border-grey-dark px-32 py-18 flex flex-col items-center gap-y-12"
+            aria-label="Toggle more menu"
+        >
+                <svg class="fill-current" width="31" height="6" viewBox="0 0 31 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.54444 -4.75081e-05C2.33154 -4.75081e-05 1.23819 0.731203 0.772947 1.85152C0.308877 2.97301 0.565524 4.26325 1.42335 5.12092C2.28117 5.97874 3.57141 6.23536 4.69275 5.77132C5.81424 5.30725 6.54432 4.21273 6.54432 2.99983C6.54432 1.34281 5.20134 -0.000167671 3.54432 -0.000167671L3.54444 -4.75081e-05ZM15.5444 -4.75081e-05C14.3315 -4.75081e-05 13.2382 0.731203 12.7729 1.85152C12.3089 2.97301 12.5655 4.26325 13.4233 5.12092C14.2812 5.97874 15.5714 6.23536 16.6927 5.77132C17.8142 5.30725 18.5443 4.21273 18.5443 2.99983C18.5443 2.2006 18.2256 1.43419 17.6596 0.871692C17.0924 0.308022 16.3236 -0.00604767 15.5244 -0.000167671L15.5444 -4.75081e-05ZM27.5444 -4.75081e-05C26.3315 -4.75081e-05 25.2382 0.731203 24.7729 1.85152C24.3089 2.97301 24.5655 4.26325 25.4233 5.12092C26.2812 5.97874 27.5714 6.23536 28.6927 5.77132C29.8142 5.30725 30.5443 4.21273 30.5443 2.99983C30.5443 2.19592 30.2221 1.426 29.6502 0.862332C29.0783 0.298662 28.3037 -0.0118977 27.4998 -0.000167671L27.5444 -4.75081e-05Z"/></svg>
+            <span
+                x-text="moreMenu ? 'Less' : 'More'"
+                class="text-xs uppercase font-medium"
+            ></span>
+        </button>
+            </div>
+</div>
+
+    </header>
+        
+                <main id="main">
+        
+            
+    
+
+<div class="border-t border-grey-dark mt-[86px] md:mt-[143px]">
+    <div class="grid--centered items-center py-32 lg:pt-56 lg:pb-50">
+        <div class="col-span-full xl:col-span-7 xl:col-start-1 2xl:col-span-6 2xl:col-start-1">
+            <h1 class="sr-only">London Exhibitions</h1>
+            <a href="https://www.whitecube.com/exhibitions/london" title="Go to Exhibitions page" aria-label="Go to Exhibitions page" class="h1 leading-none m-0 hover:no-underline">Exhibitions</a>
+        </div>
+                <div class="hidden lg:block lg:col-span-9 lg:col-start-1 xl:col-span-10 xl:col-start-8 2xl:col-span-12 2xl:col-start-7">
+            <nav class="hidden lg:block" up-nav aria-label="Exhibition locations">
+                <ul class="flex flex-row flex-wrap items-center justify-start xl:justify-center gap-x-32 lg:gap-x-36 gap-y-18 pt-32 pb-18 xl:py-0 mb-18 lg:mb-0 border-b border-grey-dark lg:border-0 text-sm font-normal">
+                                          <li>
+                        <a  href="https://www.whitecube.com/exhibitions/london"                            class="up-current"                                                                                 title="View London Exhibitions"
+                           aria-label="View London Exhibitions">
+                          London
+                        </a>
+                      </li>
+                                          <li>
+                        <a  href="https://www.whitecube.com/exhibitions/hong-kong"                                                                                                            title="View Hong Kong Exhibitions"
+                           aria-label="View Hong Kong Exhibitions">
+                          Hong Kong
+                        </a>
+                      </li>
+                                          <li>
+                        <a  href="https://www.whitecube.com/exhibitions/new-york"                                                                                                            title="View New York Exhibitions"
+                           aria-label="View New York Exhibitions">
+                          New York
+                        </a>
+                      </li>
+                                          <li>
+                        <a  href="https://www.whitecube.com/exhibitions/paris"                                                                                                            title="View Paris Exhibitions"
+                           aria-label="View Paris Exhibitions">
+                          Paris
+                        </a>
+                      </li>
+                                          <li>
+                        <a  href="https://www.whitecube.com/exhibitions/seoul"                                                                                                            title="View Seoul Exhibitions"
+                           aria-label="View Seoul Exhibitions">
+                          Seoul
+                        </a>
+                      </li>
+                                    </ul>
+            </nav>
+        </div>
+                <div class="hidden lg:block lg:col-span-3 lg:col-start-10 xl:col-span-7 xl:col-start-18 2xl:col-span-6 2xl:col-start-19">
+            <nav up-nav aria-label="Exhibition types">
+                <ul class="flex items-center justify-start lg:justify-end gap-x-32 lg:gap-x-36 text-sm font-normal">
+                    <li><a href="https://www.whitecube.com/exhibitions/upcoming" title="View upcoming Exhibitions" aria-label="View upcoming Exhibitions">Upcoming</a></li>
+                    <li><a href="https://www.whitecube.com/exhibitions/archive" title="View Exhibitions Archive" aria-label="View Exhibitions Archive">Archive</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="border-t border-grey-dark lg:hidden">
+    <div class="grid--centered py-32">
+        <div class="col-span-full">
+            <div
+                x-data="{
+                    open: false,
+                    activeId : '497',
+                    toggle() {
+                        if (this.open) {
+                            return this.close()
+                        }
+
+                        this.$refs.button.focus()
+
+                        this.open = true
+                    },
+                    close(focusAfter) {
+                        if (! this.open) return
+
+                        this.open = false
+
+                        focusAfter && focusAfter.focus()
+                    }
+                }"
+                x-on:keydown.escape.prevent.stop="close($refs.button)"
+                x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                x-id="['exhibitions-menu']"
+                class="relative w-full sm:max-w-[320px]"
+            >
+                <!-- Button -->
+                <button
+                    x-ref="button"
+                    @click="toggle()"
+                    :aria-expanded="open"
+                    :aria-controls="$id('exhibitions-menu')"
+                    type="button"
+                    class="w-full border-b border-black pb-16 pr-10 text-18 leading-none text-left flex items-center justify-between space-x-10"
+                >
+                    <span class="font-medium leading-none text-ellipsis whitespace-nowrap">London</span>
+                    <span
+                        x-show="!open"
+                    >    <svg class="fill-current" width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.0703125 1.77072L1.28176 0.587891L6.07031 5.57334L10.8589 0.587891L12.0703 1.77072L6.07026 8.02372L0.0703125 1.77072Z"/></svg></span>
+                    <span
+                        x-show="open"
+                        x-cloak
+                    >    <svg class="fill-current" width="13" height="9" viewBox="0 0 13 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.0703 6.84061L10.8589 8.02344L6.07031 3.03799L1.28176 8.02344L0.0703119 6.84061L6.07037 0.587604L12.0703 6.84061Z"/></svg></span>
+                </button>
+                <!-- Panel -->
+                <div
+                    x-ref="panel"
+                    x-show="open"
+                    x-cloak
+                    x-transition.origin.top.left
+                    @click.outside="close($refs.button)"
+                    :id="$id('exhibitions-menu')"
+                    style="display: none;"
+                    class="bg-white shadow-xl absolute top-full left-0 w-full flex flex-col z-1 overflow-y-scroll"
+                >
+                    <span class="w-full text-16 px-32 py-14 border-b border-black opacity-50">Filter By</span>
+                                          <a  href="https://www.whitecube.com/exhibitions/london"                                                                           title="View London Exhibitions"
+                         aria-label="View London Exhibitions"
+                         up-target="[up-id=dropdown-target]"
+                         up-history="true"
+                         :class="{
+                           'hover:cursor-default' : activeId == 246648,
+                           'hover:text-white hover:bg-black' : activeId != 246648
+                         }"
+                         class="relative w-full text-16 px-32 py-14 border-b border-grey hover:no-underline">
+                        <span
+                            x-bind:class="{ 'hidden' : activeId != 246648 }"
+                            class="absolute top-1/2 left-14 -translate-y-1/2">    <svg class="fill-current" width="10" height="9" viewBox="0 0 10 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.71248 0.180934C8.26007 -0.135844 7.63653 -0.0258955 7.31975 0.42651L3.23493 6.26024L1.74781 4.58526C1.38113 4.17226 0.749082 4.13471 0.336084 4.50139C-0.0769131 4.86806 -0.114463 5.50011 0.252213 5.91311L2.47912 8.42134C2.54743 8.52783 2.63722 8.62305 2.74728 8.70012C3.19969 9.01689 3.82323 8.90694 4.14001 8.45454L8.95805 1.57366C9.27483 1.12126 9.16488 0.497711 8.71248 0.180934Z"/></svg></span>
+                        <span>London</span>
+                      </a>
+                                          <a  href="https://www.whitecube.com/exhibitions/hong-kong"                                                                           title="View Hong Kong Exhibitions"
+                         aria-label="View Hong Kong Exhibitions"
+                         up-target="[up-id=dropdown-target]"
+                         up-history="true"
+                         :class="{
+                           'hover:cursor-default' : activeId == 246649,
+                           'hover:text-white hover:bg-black' : activeId != 246649
+                         }"
+                         class="relative w-full text-16 px-32 py-14 border-b border-grey hover:no-underline">
+                        <span
+                            x-bind:class="{ 'hidden' : activeId != 246649 }"
+                            class="absolute top-1/2 left-14 -translate-y-1/2">    <svg class="fill-current" width="10" height="9" viewBox="0 0 10 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.71248 0.180934C8.26007 -0.135844 7.63653 -0.0258955 7.31975 0.42651L3.23493 6.26024L1.74781 4.58526C1.38113 4.17226 0.749082 4.13471 0.336084 4.50139C-0.0769131 4.86806 -0.114463 5.50011 0.252213 5.91311L2.47912 8.42134C2.54743 8.52783 2.63722 8.62305 2.74728 8.70012C3.19969 9.01689 3.82323 8.90694 4.14001 8.45454L8.95805 1.57366C9.27483 1.12126 9.16488 0.497711 8.71248 0.180934Z"/></svg></span>
+                        <span>Hong Kong</span>
+                      </a>
+                                          <a  href="https://www.whitecube.com/exhibitions/new-york"                                                                           title="View New York Exhibitions"
+                         aria-label="View New York Exhibitions"
+                         up-target="[up-id=dropdown-target]"
+                         up-history="true"
+                         :class="{
+                           'hover:cursor-default' : activeId == 246650,
+                           'hover:text-white hover:bg-black' : activeId != 246650
+                         }"
+                         class="relative w-full text-16 px-32 py-14 border-b border-grey hover:no-underline">
+                        <span
+                            x-bind:class="{ 'hidden' : activeId != 246650 }"
+                            class="absolute top-1/2 left-14 -translate-y-1/2">    <svg class="fill-current" width="10" height="9" viewBox="0 0 10 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.71248 0.180934C8.26007 -0.135844 7.63653 -0.0258955 7.31975 0.42651L3.23493 6.26024L1.74781 4.58526C1.38113 4.17226 0.749082 4.13471 0.336084 4.50139C-0.0769131 4.86806 -0.114463 5.50011 0.252213 5.91311L2.47912 8.42134C2.54743 8.52783 2.63722 8.62305 2.74728 8.70012C3.19969 9.01689 3.82323 8.90694 4.14001 8.45454L8.95805 1.57366C9.27483 1.12126 9.16488 0.497711 8.71248 0.180934Z"/></svg></span>
+                        <span>New York</span>
+                      </a>
+                                          <a  href="https://www.whitecube.com/exhibitions/paris"                                                                           title="View Paris Exhibitions"
+                         aria-label="View Paris Exhibitions"
+                         up-target="[up-id=dropdown-target]"
+                         up-history="true"
+                         :class="{
+                           'hover:cursor-default' : activeId == 246651,
+                           'hover:text-white hover:bg-black' : activeId != 246651
+                         }"
+                         class="relative w-full text-16 px-32 py-14 border-b border-grey hover:no-underline">
+                        <span
+                            x-bind:class="{ 'hidden' : activeId != 246651 }"
+                            class="absolute top-1/2 left-14 -translate-y-1/2">    <svg class="fill-current" width="10" height="9" viewBox="0 0 10 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.71248 0.180934C8.26007 -0.135844 7.63653 -0.0258955 7.31975 0.42651L3.23493 6.26024L1.74781 4.58526C1.38113 4.17226 0.749082 4.13471 0.336084 4.50139C-0.0769131 4.86806 -0.114463 5.50011 0.252213 5.91311L2.47912 8.42134C2.54743 8.52783 2.63722 8.62305 2.74728 8.70012C3.19969 9.01689 3.82323 8.90694 4.14001 8.45454L8.95805 1.57366C9.27483 1.12126 9.16488 0.497711 8.71248 0.180934Z"/></svg></span>
+                        <span>Paris</span>
+                      </a>
+                                          <a  href="https://www.whitecube.com/exhibitions/seoul"                                                                           title="View Seoul Exhibitions"
+                         aria-label="View Seoul Exhibitions"
+                         up-target="[up-id=dropdown-target]"
+                         up-history="true"
+                         :class="{
+                           'hover:cursor-default' : activeId == 1468591,
+                           'hover:text-white hover:bg-black' : activeId != 1468591
+                         }"
+                         class="relative w-full text-16 px-32 py-14 border-b border-grey hover:no-underline">
+                        <span
+                            x-bind:class="{ 'hidden' : activeId != 1468591 }"
+                            class="absolute top-1/2 left-14 -translate-y-1/2">    <svg class="fill-current" width="10" height="9" viewBox="0 0 10 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.71248 0.180934C8.26007 -0.135844 7.63653 -0.0258955 7.31975 0.42651L3.23493 6.26024L1.74781 4.58526C1.38113 4.17226 0.749082 4.13471 0.336084 4.50139C-0.0769131 4.86806 -0.114463 5.50011 0.252213 5.91311L2.47912 8.42134C2.54743 8.52783 2.63722 8.62305 2.74728 8.70012C3.19969 9.01689 3.82323 8.90694 4.14001 8.45454L8.95805 1.57366C9.27483 1.12126 9.16488 0.497711 8.71248 0.180934Z"/></svg></span>
+                        <span>Seoul</span>
+                      </a>
+                                                                                <a
+                        href="https://www.whitecube.com/exhibitions/upcoming"
+                        title="View upcoming Exhibitions"
+                        aria-label="View upcoming Exhibitions"
+                        up-target="[up-id=dropdown-target]"
+                        up-history="true"
+                        :class="{
+                            'hover:cursor-default' : activeId == 4337,
+                            'hover:text-white hover:bg-black' : activeId != 4337
+                        }"
+                        class="relative w-full text-16 px-32 py-14 border-t border-grey-dark hover:no-underline"
+                    >
+                        <span
+                            :class="{ 'hidden' : activeId != 4337 }"
+                            class="absolute top-1/2 left-14 -translate-y-1/2"
+                        >    <svg class="fill-current" width="10" height="9" viewBox="0 0 10 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.71248 0.180934C8.26007 -0.135844 7.63653 -0.0258955 7.31975 0.42651L3.23493 6.26024L1.74781 4.58526C1.38113 4.17226 0.749082 4.13471 0.336084 4.50139C-0.0769131 4.86806 -0.114463 5.50011 0.252213 5.91311L2.47912 8.42134C2.54743 8.52783 2.63722 8.62305 2.74728 8.70012C3.19969 9.01689 3.82323 8.90694 4.14001 8.45454L8.95805 1.57366C9.27483 1.12126 9.16488 0.497711 8.71248 0.180934Z"/></svg></span>
+                        <span>Upcoming</span>
+                    </a>
+                                                                                <a
+                        href="https://www.whitecube.com/exhibitions/archive"
+                        title="View Exhibitions Archive"
+                        aria-label="View Exhibitions Archive"
+                        up-target="[up-id=dropdown-target]"
+                        up-history="true"
+                        :class="{
+                            'hover:cursor-default' : activeId == 2656,
+                            'hover:text-white hover:bg-black' : activeId != 2656
+                        }"
+                        class="relative w-full text-16 px-32 py-14 border-t border-grey hover:no-underline"
+                    >
+                        <span
+                            :class="{ 'hidden' : activeId != 2656 }"
+                            class="absolute top-1/2 left-14 -translate-y-1/2"
+                        >    <svg class="fill-current" width="10" height="9" viewBox="0 0 10 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.71248 0.180934C8.26007 -0.135844 7.63653 -0.0258955 7.31975 0.42651L3.23493 6.26024L1.74781 4.58526C1.38113 4.17226 0.749082 4.13471 0.336084 4.50139C-0.0769131 4.86806 -0.114463 5.50011 0.252213 5.91311L2.47912 8.42134C2.54743 8.52783 2.63722 8.62305 2.74728 8.70012C3.19969 9.01689 3.82323 8.90694 4.14001 8.45454L8.95805 1.57366C9.27483 1.12126 9.16488 0.497711 8.71248 0.180934Z"/></svg></span>
+                        <span>Archive</span>
+                    </a>
+                                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="bg-grey pt-48 pb-64 md:pt-64 md:pb-112">
+
+                <div class="flex flex-col gap-y-default pb-50 xl:pb-90 2xl:pb-110 mb-50 xl:mb-90 2xl:mb-110 border-b border-grey-dark">
+                            
+
+        
+<div class="grid--centered grid-rows-[auto_auto_auto] lg:grid-rows-[auto_auto]">
+    <div class="col-span-full row-start-2 row-span-1 lg:row-start-1 lg:row-span-1 lg:col-span-3 lg:col-start-1 xl:col-span-6 xl:col-start-1 2xl:col-span-5 2xl:col-start-1 flex flex-col gap-y-12 sm:gap-y-24">
+        <h2 class="hidden">Suzanne Song, Mason&#039;s Yard (2025)</h2>
+                <p class="text-xs font-medium uppercase tracking-widest">Gallery Exhibition</p>
+                <a href="https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025" title="View Suzanne Song, Mason&#039;s Yard (2025)" aria-label="View Suzanne Song, Mason&#039;s Yard (2025)" class="flex flex-col gap-y-8">
+            <p id="title-suzanne-song-masons-yard-2025"
+               class="!leading-none font-text font-light tracking-tight
+                      text-2xl 3xl:text-3xl
+                      ">Suzanne Song</p>
+                        <div class="text-22 3xl:text-xl !leading-extra-tight font-text font-light tracking-tight italic">
+                <p>Interfold</p>
+
+            </div>
+                    </a>
+        <div>
+                        <p class="text-14">    
+        
+  4 September &ndash; 3 October 2025</p>
+                        <p class="text-14 font-medium">                                                 <a href="https://www.whitecube.com/locations/white-cube-masons-yard" title="View Mason’s Yard, London gallery" aria-label="View Mason’s Yard, London gallery">
+                                    Mason’s Yard, London
+                            </a>
+                        </p>
+        </div>
+    </div>
+    <div class="col-span-full row-start-3 row-span-1 lg:row-start-2 lg:row-span-1 lg:col-span-3 lg:col-start-1 xl:col-span-6 xl:col-start-1 2xl:col-span-5 2xl:col-start-1 lg:self-end flex flex-col items-start gap-24 lg:gap-32 mt-18 sm:mt-24 lg:mt-32">
+                <div class="hidden sm:block text-sm">
+            <p>The abstract painting of Korean American artist Suzanne Song is characterised by the combining of geometric logic and subtle tonal gradations to startling, mesmeric effect. Grounded by an inquiry into perception, her practice contends that physical and pictorial space is predicated upon its embodiment – that which is experienced or felt by the viewer.</p>
+
+        </div>
+                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline " href="https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025" target="_self" title="Learn more about Suzanne Song, Mason&#039;s Yard (2025)"
+                id="title-suzanne-song-masons-yard-2025-link" aria-labelledby="title-suzanne-song-masons-yard-2025 title-suzanne-song-masons-yard-2025-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit exhibition</span>
+    </a>
+
+    </div>
+            <div class="col-span-full row-start-1 row-span-1 lg:row-start-1 lg:row-span-2 lg:col-span-8 lg:col-start-5 xl:col-span-17 xl:col-start-8 mb-24 sm:mb-32 lg:mb-0">
+        <a href="https://www.whitecube.com/gallery-exhibitions/suzanne-song-masons-yard-2025" title="View Suzanne Song, Mason&#039;s Yard (2025)" aria-label="View Suzanne Song, Mason&#039;s Yard (2025)" tabindex="-1">
+                                            
+        
+                                                                        <img class="w-full lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27960%27%20height%3D%27540%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="960" height="540" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_30.jpeg?w=960&amp;h=540&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894728&amp;s=343c518a9c93f1cdf33cc611ea188bab 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_30.jpeg?w=1280&amp;h=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894728&amp;s=3a41815594d952489f02b8d9acf73507 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_30.jpeg?w=1600&amp;h=900&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894728&amp;s=6c801b3e2875c4739fa21c8698303f4d 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Suzanne-Song/Installation-images/Suzanne-Song-%E2%80%98Inside-the-White-Cube_-Interfold%E2%80%99-White-Cube-Masons-Yard-2025_30.jpeg?w=2360&amp;h=1328&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1756894728&amp;s=3ccf40286e38aa5f5775697832520628 2360w" sizes="100vw, (min-width: 1024px) 50vw, (min-width: 1280px) 75vw">
+            
+        
+        </a>
+    </div>
+    </div>
+                    </div>
+                                            <div class="container">
+                    <h2 class="section-title mb-48">Upcoming London Exhibitions</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-[var(--layout-default-gap)] gap-y-48">
+                                                            
+        
+    <div class="w-full lg:w-full flex flex-col gap-y-24 sm:gap-y-32">
+                                                    <a href="https://www.whitecube.com/gallery-exhibitions/andreas-gursky-masons-yard-2025" title="View Andreas Gursky, Mason&#039;s Yard (2025)" aria-label="View Andreas Gursky, Mason&#039;s Yard (2025)" aria-hidden="true" tabindex="-1">
+                                                                            
+        
+                                                                        <img class=" lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27960%27%20height%3D%27640%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="960" height="640" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Andreas-Gursky/Gursky_OT_XXIV_Detail.jpg?w=960&amp;h=640&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1751021926&amp;s=bd4a3e7d13399587018a85826fb72aad 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Andreas-Gursky/Gursky_OT_XXIV_Detail.jpg?w=1280&amp;h=853&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1751021926&amp;s=a1ab8d0bc8422f33b21ea29af896cf0c 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Andreas-Gursky/Gursky_OT_XXIV_Detail.jpg?w=1600&amp;h=1067&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1751021926&amp;s=618722d74b0f6490354007645c303bbc 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Andreas-Gursky/Gursky_OT_XXIV_Detail.jpg?w=2360&amp;h=1573&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1751021926&amp;s=fc3d17a30d71acd8bdc4f5b9a6cab768 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+                                        </a>
+                            <div class="flex flex-col gap-y-12 sm:gap-y-18">
+                        <div class="flex flex-col gap-y-18 sm:gap-y-24">
+                <div class="flex flex-col sm:flex-row  items-start justify-between gap-12 lg:gap-18">
+                    <h3>
+                                                                    <a href="https://www.whitecube.com/gallery-exhibitions/andreas-gursky-masons-yard-2025"
+                           title="View Andreas Gursky, Mason&#039;s Yard (2025)"
+                           aria-label="View Andreas Gursky, Mason&#039;s Yard (2025)"
+                           class="flex flex-col gap-y-8 lg:block">
+                                                <span id="title-andreas-gursky-masons-yard-2025"
+                             class="leading-tight underline-offset-4
+                                    text-2xl !leading-none font-text font-light tracking-tight lg:h4
+                                    
+                                    ">
+                              Andreas Gursky
+                          </span>
+                                                                            </a>
+                                          </h3>
+
+                    <div class="sm:min-w-[260px] flex flex-col text-14 sm:text-right ">
+                                                <p>    
+        
+  11 October &ndash; 8 November 2025</p>
+                                                <p class="font-medium">                                                 <a href="https://www.whitecube.com/locations/white-cube-masons-yard" title="View Mason’s Yard, London gallery" aria-label="View Mason’s Yard, London gallery">
+                                    Mason’s Yard, London
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                                <div class="flex flex-col gap-y-24 max-w-[400px]">
+                                        <div class="hidden sm:block text-sm">
+                        <p>Coinciding with Frieze London 2025, White Cube Mason’s Yard presents new work by Andreas Gursky, which delves into his interest in music and ongoing investigation into contemporary culture.</p>
+
+                    </div>
+                                                                                                
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline " href="https://www.whitecube.com/gallery-exhibitions/andreas-gursky-masons-yard-2025" target="_self" title="Learn more about Andreas Gursky, Mason&#039;s Yard (2025)"
+                id="title-andreas-gursky-masons-yard-2025-link" aria-labelledby="title-andreas-gursky-masons-yard-2025 title-andreas-gursky-masons-yard-2025-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Learn more</span>
+    </a>
+
+                                                            </div>
+                            </div>
+        </div>
+    </div>
+
+                                                            
+        
+    <div class="w-full lg:w-full flex flex-col gap-y-24 sm:gap-y-32">
+                                                    <a href="https://www.whitecube.com/gallery-exhibitions/beatriz-milhazes-masons-yard-2025" title="View Beatriz Milhazes, Mason&#039;s Yard (2025)" aria-label="View Beatriz Milhazes, Mason&#039;s Yard (2025)" aria-hidden="true" tabindex="-1">
+                                                                            
+        
+                                                                        <img class=" lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27960%27%20height%3D%27640%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="960" height="640" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Beatriz-Milhazes/Photo-by-Vicente-de-Paulo_3Q7A9262_ALTA-crop.jpg?w=960&amp;h=640&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748342447&amp;s=464f94490e6c2f60e3972355701f6ebc 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Beatriz-Milhazes/Photo-by-Vicente-de-Paulo_3Q7A9262_ALTA-crop.jpg?w=1280&amp;h=853&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748342447&amp;s=9c0a00257b61f663b73a5ee5d6bb1236 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Beatriz-Milhazes/Photo-by-Vicente-de-Paulo_3Q7A9262_ALTA-crop.jpg?w=1600&amp;h=1067&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748342447&amp;s=ba1695514e19403c844120dc635a83b7 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Masons-Yard/2025/Beatriz-Milhazes/Photo-by-Vicente-de-Paulo_3Q7A9262_ALTA-crop.jpg?w=2360&amp;h=1573&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748342447&amp;s=a026f2116bb23ec8b17b7211ad6cfdb5 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+                                        </a>
+                            <div class="flex flex-col gap-y-12 sm:gap-y-18">
+                        <div class="flex flex-col gap-y-18 sm:gap-y-24">
+                <div class="flex flex-col sm:flex-row  items-start justify-between gap-12 lg:gap-18">
+                    <h3>
+                                                                    <a href="https://www.whitecube.com/gallery-exhibitions/beatriz-milhazes-masons-yard-2025"
+                           title="View Beatriz Milhazes, Mason&#039;s Yard (2025)"
+                           aria-label="View Beatriz Milhazes, Mason&#039;s Yard (2025)"
+                           class="flex flex-col gap-y-8 lg:block">
+                                                <span id="title-beatriz-milhazes-masons-yard-2025"
+                             class="leading-tight underline-offset-4
+                                    text-2xl !leading-none font-text font-light tracking-tight lg:h4
+                                    
+                                    ">
+                              Beatriz Milhazes
+                          </span>
+                                                                            </a>
+                                          </h3>
+
+                    <div class="sm:min-w-[260px] flex flex-col text-14 sm:text-right ">
+                                                <p>    
+        
+  19 November 2025 &ndash; 17 January 2026</p>
+                                                <p class="font-medium">                                                 <a href="https://www.whitecube.com/locations/white-cube-masons-yard" title="View Mason’s Yard, London gallery" aria-label="View Mason’s Yard, London gallery">
+                                    Mason’s Yard, London
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                                <div class="flex flex-col gap-y-24 max-w-[400px]">
+                                        <div class="hidden sm:block text-sm">
+                        <p>White Cube Mason’s Yard is pleased to present a solo exhibition by Brazilian artist Beatriz Milhazes, comprising new paintings and a site-specific installation.<br />
+<br />
+Known for her densely layered compositions, Milhazes’s practice spans painting, collage and intricate sculpture. Poised between rational structure and spontaneity, her work lies at the intersection of European and Brazilian modernism.</p>
+
+                    </div>
+                                                                                                
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline " href="https://www.whitecube.com/gallery-exhibitions/beatriz-milhazes-masons-yard-2025" target="_self" title="Learn more about Beatriz Milhazes, Mason&#039;s Yard (2025)"
+                id="title-beatriz-milhazes-masons-yard-2025-link" aria-labelledby="title-beatriz-milhazes-masons-yard-2025 title-beatriz-milhazes-masons-yard-2025-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Learn more</span>
+    </a>
+
+                                                            </div>
+                            </div>
+        </div>
+    </div>
+
+                                                            
+        
+    <div class="w-full lg:w-full flex flex-col gap-y-24 sm:gap-y-32">
+                                                    <a href="https://www.whitecube.com/gallery-exhibitions/howardena-pindell-bermondsey-2025" title="View Howardena Pindell, Bermondsey (2025)" aria-label="View Howardena Pindell, Bermondsey (2025)" aria-hidden="true" tabindex="-1">
+                                                                            
+        
+                                                                        <img class=" lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27960%27%20height%3D%27640%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="960" height="640" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Howardena-Pindell/Howardena-Pindell-Still.jpg?w=960&amp;h=640&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748446746&amp;s=e2d962ad5a9aa0b0ed863b570253c213 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Howardena-Pindell/Howardena-Pindell-Still.jpg?w=1280&amp;h=853&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748446746&amp;s=c65323d24752119b2c7dc338ad28e531 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Howardena-Pindell/Howardena-Pindell-Still.jpg?w=1600&amp;h=1067&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748446746&amp;s=b527594c01ab37e72388d4008da86786 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Howardena-Pindell/Howardena-Pindell-Still.jpg?w=2360&amp;h=1573&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748446746&amp;s=5fd705b0a0e5197d1d2c4d03dcee6d62 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+                                        </a>
+                            <div class="flex flex-col gap-y-12 sm:gap-y-18">
+                        <div class="flex flex-col gap-y-18 sm:gap-y-24">
+                <div class="flex flex-col sm:flex-row  items-start justify-between gap-12 lg:gap-18">
+                    <h3>
+                                                                    <a href="https://www.whitecube.com/gallery-exhibitions/howardena-pindell-bermondsey-2025"
+                           title="View Howardena Pindell, Bermondsey (2025)"
+                           aria-label="View Howardena Pindell, Bermondsey (2025)"
+                           class="flex flex-col gap-y-8 lg:block">
+                                                <span id="title-howardena-pindell-bermondsey-2025"
+                             class="leading-tight underline-offset-4
+                                    text-2xl !leading-none font-text font-light tracking-tight lg:h4
+                                    
+                                    ">
+                              Howardena Pindell
+                          </span>
+                                                                            </a>
+                                          </h3>
+
+                    <div class="sm:min-w-[260px] flex flex-col text-14 sm:text-right ">
+                                                <p>    
+        
+  21 November 2025 &ndash; 18 January 2026</p>
+                                                <p class="font-medium">                                                 <a href="https://www.whitecube.com/locations/white-cube-bermondsey" title="View Bermondsey, London gallery" aria-label="View Bermondsey, London gallery">
+                                    Bermondsey, London
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                                <div class="flex flex-col gap-y-24 max-w-[400px]">
+                                        <div class="hidden sm:block text-sm">
+                        <p>American artist Howardena Pindell opens a solo exhibition of paintings, sculpture and works on paper made between the 1960s and the present day. Spanning the Bermondsey galleries, this presentation follows her inaugural show at White Cube Hong Kong in November 2024, after she joined the gallery in May 2024.</p>
+
+                    </div>
+                                                                                                
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline " href="https://www.whitecube.com/gallery-exhibitions/howardena-pindell-bermondsey-2025" target="_self" title="Learn more about Howardena Pindell, Bermondsey (2025)"
+                id="title-howardena-pindell-bermondsey-2025-link" aria-labelledby="title-howardena-pindell-bermondsey-2025 title-howardena-pindell-bermondsey-2025-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Learn more</span>
+    </a>
+
+                                                            </div>
+                            </div>
+        </div>
+    </div>
+
+                                                            
+        
+    <div class="w-full lg:w-full flex flex-col gap-y-24 sm:gap-y-32">
+                                                    <a href="https://www.whitecube.com/gallery-exhibitions/klára-hosnedlová-bermondsey-2026" title="View Klára Hosnedlová, Bermondsey (2026)" aria-label="View Klára Hosnedlová, Bermondsey (2026)" aria-hidden="true" tabindex="-1">
+                                                                            
+        
+                                                                        <img class=" lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27960%27%20height%3D%27640%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="960" height="640" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Kl%C3%A1ra-Hosnedlov%C3%A1/photo-by-Laura-Schaeffer-kopie-crop.png?w=960&amp;h=640&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748511546&amp;s=daf697375fb6f073886a1eecd34c3b27 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Kl%C3%A1ra-Hosnedlov%C3%A1/photo-by-Laura-Schaeffer-kopie-crop.png?w=1280&amp;h=853&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748511546&amp;s=4e5ae495b380abbb696ca26cfda30d6c 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Kl%C3%A1ra-Hosnedlov%C3%A1/photo-by-Laura-Schaeffer-kopie-crop.png?w=1600&amp;h=1067&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748511546&amp;s=c332902ea82c603ef8cc120a11cffcdc 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2025/Kl%C3%A1ra-Hosnedlov%C3%A1/photo-by-Laura-Schaeffer-kopie-crop.png?w=2360&amp;h=1573&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1748511546&amp;s=7460476ab406b43f6a88c1cc795495ce 2360w" sizes="100vw, (min-width: 1024px) 50vw">
+            
+        
+                                        </a>
+                            <div class="flex flex-col gap-y-12 sm:gap-y-18">
+                        <div class="flex flex-col gap-y-18 sm:gap-y-24">
+                <div class="flex flex-col sm:flex-row  items-start justify-between gap-12 lg:gap-18">
+                    <h3>
+                                                                    <a href="https://www.whitecube.com/gallery-exhibitions/klára-hosnedlová-bermondsey-2026"
+                           title="View Klára Hosnedlová, Bermondsey (2026)"
+                           aria-label="View Klára Hosnedlová, Bermondsey (2026)"
+                           class="flex flex-col gap-y-8 lg:block">
+                                                <span id="title-klára-hosnedlová-bermondsey-2026"
+                             class="leading-tight underline-offset-4
+                                    text-2xl !leading-none font-text font-light tracking-tight lg:h4
+                                    
+                                    ">
+                              Klára Hosnedlová
+                          </span>
+                                                                            </a>
+                                          </h3>
+
+                    <div class="sm:min-w-[260px] flex flex-col text-14 sm:text-right ">
+                                                <p class="font-medium">                                                 <a href="https://www.whitecube.com/locations/white-cube-bermondsey" title="View Bermondsey, London gallery" aria-label="View Bermondsey, London gallery">
+                                    Bermondsey, London
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                                <div class="flex flex-col gap-y-24 max-w-[400px]">
+                                        <div class="hidden sm:block text-sm">
+                        <p><strong>February – March 2026</strong><br />
+<br />
+In February 2026, White Cube Bermondsey will open a solo exhibition of work by Klára Hosnedlová, marking the artist’s debut with the gallery.</p>
+
+                    </div>
+                                                                                                
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline " href="https://www.whitecube.com/gallery-exhibitions/klára-hosnedlová-bermondsey-2026" target="_self" title="Learn more about Klára Hosnedlová, Bermondsey (2026)"
+                id="title-klára-hosnedlová-bermondsey-2026-link" aria-labelledby="title-klára-hosnedlová-bermondsey-2026 title-klára-hosnedlová-bermondsey-2026-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Learn more</span>
+    </a>
+
+                                                            </div>
+                            </div>
+        </div>
+    </div>
+
+                                            </div>
+                </div>
+                    
+                                                
+            <div class="grid--centered md:items-center sm:bg-white overflow-hidden mt-80 md:mt-112">
+                                <div class="col-span-full md:col-span-6 md:col-start-7 md:row-start-1 xl:col-span-15 xl:col-start-10 relative">
+                                                    
+        
+                                                                        <img class="w-full md:min-h-full md:max-h-[215px] md:object-cover md:object-center lazyload lazyload-up" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27720%27%20height%3D%27260%27%20style%3D%27background%3A%23f9f9f9%27%2F%3E" width="720" height="260" alt="" data-srcset="https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2023/Anselm-Kiefer/Kiefer_Banner2.jpg?w=720&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1747825308&amp;s=f005f9de8e0b35adfe633a61d9470473 720w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2023/Anselm-Kiefer/Kiefer_Banner2.jpg?w=960&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1747825308&amp;s=7b6c9cc088a0cbaae1dcb76eb18f28b7 960w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2023/Anselm-Kiefer/Kiefer_Banner2.jpg?w=1280&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1747825308&amp;s=048b3320965a0e7aaa9c1407726907aa 1280w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2023/Anselm-Kiefer/Kiefer_Banner2.jpg?w=1600&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1747825308&amp;s=7a27b85101f5d179e7945c4d4c32954e 1600w, https://white-cube.transforms.svdcdn.com/production/uploads/Exhibitions/Gallery-Exhibitions/Bermondsey/2023/Anselm-Kiefer/Kiefer_Banner2.jpg?w=2360&amp;q=80&amp;auto=format&amp;fit=crop&amp;crop=focalpoint&amp;fp-x=0.5&amp;fp-y=0.5&amp;dm=1747825308&amp;s=82de506f0e35d9a2d58b1fa4e7a85381 2360w" sizes="100vw">
+            
+        
+                </div>
+                                                <div class="col-span-full sm:col-span-8 sm:col-start-2 md:col-span-4 md:col-start-2 md:row-start-1 xl:col-span-5 xl:col-start-2 p-32 sm:px-0 bg-white">
+                    <h2 class="h3 mb-24">Explore our past London exhibitions</h2>
+                                            
+    
+            
+    <a
+            class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline "
+       href="/exhibitions/archive/locations/london" title="Go to the Exhibitions Archive" aria-label="Go to the Exhibitions Archive"
+      >
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit Archive</span>
+    </a>
+
+                                    </div>
+                            </div>
+        
+    </div>
+
+
+            
+        </main>
+
+                  
+<footer class="bg-white border-t border-grey-dark">
+            <div class="border-b border-grey-dark">
+        <div class="grid--centered py-40 md:py-80">
+            <div class="col-span-full" up-nav>
+                <ul class="flex flex-wrap lg:flex-nowrap items-start justify-between gap-y-32 gap-x-18 md:gap-y-40 text-base font-light">
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/about">About</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/locations">Locations</a></li>
+                                                        <li><a  href="https://www.whitecube.com/careers">Careers</a></li>
+                                                        <li><a  href="https://www.whitecube.com/sustainability">Sustainability</a></li>
+                                                        <li><a  href="https://www.whitecube.com/contact">Contact</a></li>
+                                                        <li><a  href="https://www.whitecube.com/important-notice">Phishing Notice</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/artists">Artists</a>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/collect">Collect</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/collect/create-account">Create Account</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/available-artworks">Available Artworks</a></li>
+                                                        <li><a  href="https://www.whitecube.com/prints-multiples">Prints &amp; Multiples</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/consignments">Consignments</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/salon">Salon</a></li>
+                                                        <li><a  href="https://www.whitecube.com/collect/art-fairs">Art Fairs</a></li>
+                                                        <li><a  href="https://www.whitecube.com/general-online-terms-of-sale">Online Terms of Sale</a></li>
+                                                        <li><a  href="/faqs#artworks">FAQs</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/exhibitions/london">Exhibitions</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/london">London</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/hong-kong">Hong Kong</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/new-york">New York</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/paris">Paris</a></li>
+                                                        <li><a  href="https://www.whitecube.com/exhibitions/seoul">Seoul</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/news">News</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/news-categories/press-release">Press Releases</a></li>
+                                                        <li><a  href="https://www.whitecube.com/news-categories/events">Events</a></li>
+                                                        <li><a  href="https://www.whitecube.com/news-categories/museum-exhibition">Museum Exhibitions</a></li>
+                                                    </ul>
+                                            </li>
+                                        <li class="w-[calc(50%_-_9px)] sm:w-[calc(33.3333%_-_12px)] md:w-[calc(25%_-_14px)] lg:w-auto">
+                        <a  href="https://www.whitecube.com/shop">Bookshop</a>
+                                                <ul class="flex flex-col gap-y-12 md:gap-y-20 text-sm mt-12 md:mt-24">
+                                                        <li><a  href="https://www.whitecube.com/shop-collections/publications">Publications</a></li>
+                                                        <li><a  href="https://www.whitecube.com/shop-collections/everything-else">Everything Else</a></li>
+                                                        <li><a  href="https://www.whitecube.com/general-online-terms-of-sale">Online Terms of Sale</a></li>
+                                                        <li><a  href="/faqs#bookshop">Bookshop FAQs</a></li>
+                                                    </ul>
+                                            </li>
+                                    </ul>
+            </div>
+        </div>
+    </div>
+                <div class="border-b border-grey-dark">
+        <div class="grid--centered py-40 md:py-80">
+            <div class="col-span-full">
+                <h2 class="text-lg font-light mb-16"><a href="https://www.whitecube.com/locations" title="View White Cube gallery locations" aria-label="View White Cube gallery locations">Locations</a></h2>
+                <div class="flex flex-col sm:flex-row flex-wrap xl:flex-nowrap gap-y-24 gap-x-18 md:gap-y-32">
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-bermondsey">Bermondsey, London</h3>
+                                                <address>
+                            <p>144–152 Bermondsey Street <br />
+London SE1 3TQ<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-bermondsey" target="_self" title="Learn more about White Cube Bermondsey"
+                id="white-cube-bermondsey-link" aria-labelledby="white-cube-bermondsey white-cube-bermondsey-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-masons-yard">Mason’s Yard, London</h3>
+                                                <address>
+                            <p>25–26 Mason’s Yard <br />
+London SW1Y 6BU<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-masons-yard" target="_self" title="Learn more about White Cube Mason’s Yard"
+                id="white-cube-masons-yard-link" aria-labelledby="white-cube-masons-yard white-cube-masons-yard-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-new-york">New York</h3>
+                                                <address>
+                            <div>1002 Madison Avenue</div>
+<div>New York, NY 10075</div>
+<div></div>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-new-york" target="_self" title="Learn more about White Cube New York"
+                id="white-cube-new-york-link" aria-labelledby="white-cube-new-york white-cube-new-york-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-hong-kong">Hong Kong</h3>
+                                                <address>
+                            <p>50 Connaught Road Central <br />
+Hong Kong</p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-hong-kong" target="_self" title="Learn more about White Cube Hong Kong"
+                id="white-cube-hong-kong-link" aria-labelledby="white-cube-hong-kong white-cube-hong-kong-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-paris">Paris</h3>
+                                                <address>
+                            <p>10 avenue Matignon <br />
+75008 Paris<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-paris" target="_self" title="Learn more about White Cube Paris"
+                id="white-cube-paris-link" aria-labelledby="white-cube-paris white-cube-paris-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                        <div class="sm:w-[calc(50%_-_9px)] md:w-[calc(33.3333%_-_12px)] xl:w-[calc(16.666667%_-_18px)] text-sm font-light">
+                        <h3 id="white-cube-seoul">Seoul</h3>
+                                                <address>
+                            <p>6, Dosan-daero 45-gil <br />
+Seoul<br /></p>
+
+                        </address>
+                                                    
+    
+    <a class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group focus-visible:underline mt-12" href="https://www.whitecube.com/locations/white-cube-seoul" target="_self" title="Learn more about White Cube Seoul"
+                id="white-cube-seoul-link" aria-labelledby="white-cube-seoul white-cube-seoul-link">
+                <span class="w-18 justify-center hidden xs:flex">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span >Visit</span>
+    </a>
+
+                    </div>
+                                    </div>
+            </div>
+        </div>
+    </div>
+        <div class="grid--centered py-40 md:py-80">
+        <div class="col-span-full sm:col-span-8 sm:col-start-1 lg:col-span-3 lg:col-start-1 xl:col-span-6 xl:col-start-1 mb-40 lg:mb-0">
+            <h2 class="text-lg font-light mb-16">Newsletter</h2>
+                                    <p class="text-sm font-light mb-24">Be the first to know about our events, exhibitions, artists and much more</p>
+                        <a
+                class="text-14 3xl:text-15 font-medium inline-flex items-center gap-x-14 group"
+                href="https://www.whitecube.com/subscribe"
+                title="Click here to subscribe to our newsletter"
+                aria-label="Click here to subscribe to our newsletter">
+                <span class="w-18 flex justify-center">    <svg class="fill-current" width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.951 1.22621L11.5547 4.82909L0.257681 4.82892L0.257682 6.50579L11.5547 6.50562L7.951 10.1085L9.12473 11.2822L14.7388 5.66732L9.12473 0.0524227L7.951 1.22621Z"/></svg></span>
+                <span>Subscribe</span>
+            </a>
+        </div>
+                <div class="col-span-full lg:col-span-8 lg:col-start-5 xl:col-span-12 xl:col-start-10">
+            <h2 class="text-lg font-light mb-16">Connect</h2>
+            <ul class="flex flex-wrap gap-24">
+                                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://twitter.com/_whitecube"
+                       title="Go to the White Cube profile page on X"
+                       aria-label="Go to the White Cube profile page on X"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                      <span>X</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.facebook.com/whitecubegalleries"
+                       title="Go to the White Cube profile page on Facebook"
+                       aria-label="Go to the White Cube profile page on Facebook"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.3516 7.4901C15.3516 3.35693 11.9934 0.00585938 7.85156 0.00585938C3.70969 0.00585938 0.351562 3.35693 0.351562 7.4901C0.351562 11.226 3.09406 14.322 6.67969 14.8833V9.65367H4.77531V7.48948H6.67969V5.8417C6.67969 3.96627 7.79969 2.9297 9.51281 2.9297C10.3328 2.9297 11.1916 3.07627 11.1916 3.07627V4.91802H10.2453C9.31344 4.91802 9.02281 5.49493 9.02281 6.08681V7.4901H11.1028L10.7703 9.65429H9.02281V14.8839C12.6091 14.322 15.3516 11.2254 15.3516 7.4901Z"/></svg>
+                      <span>Facebook</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.tiktok.com/@whitecube_official"
+                       title="Go to the White Cube profile page on TikTok"
+                       aria-label="Go to the White Cube profile page on TikTok"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6636 4.18103C11.9147 4.02084 11.2366 3.62562 10.728 3.053C10.2195 2.48037 9.90714 1.76028 9.83652 0.997699V0.666992H7.25311V10.9196C7.25151 11.3735 7.10773 11.8155 6.84198 12.1835C6.57623 12.5515 6.20186 12.8269 5.77149 12.9712C5.34111 13.1154 4.87636 13.1211 4.44255 12.9876C4.00873 12.8541 3.62765 12.588 3.35287 12.2267C3.07382 11.8594 2.91902 11.4128 2.91092 10.9515C2.90283 10.4903 3.04186 10.0385 3.30785 9.66162C3.57384 9.28474 3.95296 9.00238 4.39024 8.85548C4.82752 8.70859 5.30023 8.7048 5.73981 8.84467V6.22002C4.75957 6.08451 3.7615 6.25878 2.88519 6.71845C2.00888 7.17812 1.29817 7.9002 0.852453 8.7837C0.406741 9.66719 0.248326 10.6679 0.399367 11.6459C0.550407 12.6238 1.00335 13.5301 1.69483 14.238C2.35427 14.9127 3.1998 15.3756 4.12351 15.5676C5.04721 15.7597 6.00719 15.6721 6.88089 15.316C7.7546 14.96 8.5024 14.3517 9.02883 13.5688C9.55527 12.7859 9.83646 11.8639 9.83652 10.9204V5.68159C10.8806 6.42799 12.1324 6.82822 13.4158 6.82594V4.25902C13.163 4.25933 12.911 4.2332 12.6636 4.18103Z"/></svg>
+                      <span>TikTok</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.instagram.com/whitecube/"
+                       title="Go to the White Cube profile page on Instagram"
+                       aria-label="Go to the White Cube profile page on Instagram"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9665 0.658203C12.2366 0.658203 13.3556 1.07815 14.1419 1.88804C14.9282 2.66794 15.3516 3.7478 15.3516 5.00763V11.1868C15.3516 12.4767 14.9282 13.5865 14.1116 14.3664C13.3253 15.1163 12.2366 15.5363 10.9362 15.5363H4.76689C3.52697 15.5363 2.43826 15.1463 1.62173 14.3664C0.77495 13.5565 0.351562 12.4466 0.351562 11.1568V5.00763C0.351562 2.39798 2.1056 0.658203 4.73664 0.658203H10.9665ZM13.1439 13.3765C13.6882 12.8666 14.0209 12.1167 14.0209 11.1868V5.00763C14.0209 4.13775 13.7185 3.38784 13.2044 2.84792C12.66 2.30798 11.904 2.03802 10.9967 2.03802H4.76689C3.85963 2.03802 3.07334 2.30798 2.55923 2.81792C2.01487 3.35785 1.74269 4.10775 1.74269 5.00763V11.1568C1.74269 12.0867 2.01487 12.8366 2.55923 13.3765C3.10357 13.8865 3.85963 14.1564 4.76689 14.1564H10.9362C11.8435 14.1564 12.5995 13.8865 13.1439 13.3765ZM11.8741 5.00735C12.3585 5.00735 12.7511 4.61789 12.7511 4.13747C12.7511 3.65704 12.3585 3.26758 11.8741 3.26758C11.3898 3.26758 10.9971 3.65704 10.9971 4.13747C10.9971 4.61789 11.3898 5.00735 11.8741 5.00735ZM7.85168 4.22788C5.73474 4.22788 3.98071 5.93766 3.98071 8.06738C3.98071 10.1971 5.7045 11.9068 7.85168 11.9068C9.99881 11.9068 11.7227 10.1671 11.7227 8.06738C11.7227 5.96766 9.96863 4.22788 7.85168 4.22788ZM7.85168 10.5271C6.49079 10.5271 5.37185 9.4172 5.37185 8.06738C5.37185 6.71756 6.49079 5.6077 7.85168 5.6077C9.21257 5.6077 10.3315 6.71756 10.3315 8.06738C10.3315 9.4172 9.21257 10.5271 7.85168 10.5271Z" /></svg>
+                      <span>Instagram</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.youtube.com/c/WhiteCubeOfficial"
+                       title="Go to the White Cube profile page on YouTube"
+                       aria-label="Go to the White Cube profile page on YouTube"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.9329 2.54892C14.7942 1.78977 14.1335 1.23694 13.3668 1.06434C12.2194 0.822984 10.096 0.650391 7.79855 0.650391C5.50246 0.650391 3.34505 0.822984 2.19632 1.06434C1.43096 1.23694 0.76891 1.75472 0.630247 2.54892C0.490225 3.41188 0.351562 4.62003 0.351562 6.17337C0.351562 7.72671 0.490225 8.93486 0.664233 9.79783C0.804254 10.557 1.46494 11.1098 2.23031 11.2824C3.44836 11.5238 5.53645 11.6964 7.8339 11.6964C10.1313 11.6964 12.2194 11.5238 13.4375 11.2824C14.2028 11.1098 14.8636 10.592 15.0035 9.79783C15.1422 8.93486 15.3162 7.69165 15.3516 6.17337C15.2809 4.62003 15.1069 3.41188 14.9329 2.54892ZM5.91981 8.58968V3.75707L10.1653 6.17337L5.91981 8.58968Z" /></svg>
+                      <span>YouTube</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.artsy.net/partner/white-cube"
+                       title="Go to the White Cube profile page on Artsy"
+                       aria-label="Go to the White Cube profile page on Artsy"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.351562 0.00585938V15.2411H15.7117V0.00585938H0.351562ZM1.45976 1.11321H14.6033V14.1335H12.2713V11.1523H11.1727V14.1335H1.45957V1.11321H1.45976ZM5.3293 2.67872L3.07081 8.44443H4.23864L4.84872 6.82166H7.03796L7.63902 8.44443H8.80742L6.54893 2.67872H5.32937H5.3293ZM5.89122 3.84334L6.632 5.848H5.14078L5.8912 3.84334H5.89122Z"/></svg>
+                      <span>Artsy</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.artnet.com/galleries/white-cube/"
+                       title="Go to the White Cube profile page on Artnet"
+                       aria-label="Go to the White Cube profile page on Artnet"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.84671 0.191406C5.47158 0.191406 4.10901 0.380692 3.11399 0.713306C2.29881 0.985941 1.64619 1.34582 1.64619 1.34582L2.85875 4.4149L3.86399 3.98804C5.01687 3.61258 5.79828 3.57675 6.57577 3.57675C7.65954 3.57675 7.85038 3.8821 7.88336 4.96874L7.85116 5.41197C5.68755 5.44936 4.48205 5.65111 3.19331 6.18703C1.45692 6.9099 0.578125 8.23256 0.578125 10.1426C0.578125 12.7303 2.4009 14.4144 5.21949 14.4144C6.49802 14.4144 7.48833 14.0981 8.47315 13.3542L8.52106 13.3067L9.11085 14.6356L12.9229 13.2116L12.6355 12.5316C12.1588 11.5283 12.0614 10.9106 12.0614 9.8894L12.1572 4.71558C12.1572 3.93585 12.1273 3.47548 11.9656 2.94346C11.419 1.17523 9.5365 0.191406 6.84671 0.191406ZM7.89985 8.37122L7.78833 10.5391C7.27551 11.0282 6.74305 11.283 6.16111 11.283C5.42367 11.283 4.86922 10.7167 4.86922 9.96964C4.86922 9.1603 5.33807 8.40861 7.89985 8.372V8.37122Z"/></svg>
+                      <span>Artnet</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                up-layer="new"
+                         up-target="[up-id=wechat]"
+                         up-class="centered"
+                                              href="/wechat"
+                       title="Go to the White Cube profile page on WeChat"
+                       aria-label="Go to the White Cube profile page on WeChat"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.3349 8.02109C11.9948 8.02109 11.7227 7.74685 11.7227 7.40403C11.7227 7.06121 11.9948 6.78697 12.3349 6.78697C12.6751 6.78697 12.9472 7.06121 12.9472 7.40403C12.9472 7.7297 12.6751 8.02109 12.3349 8.02109ZM9.31748 8.02109C8.97734 8.02109 8.70524 7.74685 8.70524 7.40403C8.70524 7.06121 8.97734 6.78697 9.31748 6.78697C9.65762 6.78697 9.92972 7.06121 9.92972 7.40403C9.92972 7.7297 9.65762 8.02109 9.31748 8.02109ZM13.7951 11.4846C14.7496 10.7922 15.3524 9.76206 15.3524 8.63052C15.3524 6.53645 13.343 4.84766 10.8481 4.84766C8.35312 4.84766 6.34375 6.53645 6.34375 8.63052C6.34375 10.7246 8.35312 12.4134 10.8481 12.4134C11.3672 12.4134 11.8528 12.3459 12.3216 12.2108C12.3551 12.1939 12.4053 12.1939 12.4556 12.1939C12.5393 12.1939 12.623 12.2276 12.69 12.2614L13.6779 12.8356C13.7114 12.8525 13.7282 12.8694 13.7617 12.8694C13.7815 12.8695 13.8011 12.8656 13.8195 12.858C13.8378 12.8504 13.8544 12.8392 13.8684 12.825C13.8824 12.8109 13.8935 12.7941 13.9011 12.7756C13.9086 12.7572 13.9125 12.7374 13.9124 12.7174C13.9124 12.6836 13.8956 12.6498 13.8956 12.5992C13.8956 12.5823 13.7617 12.1263 13.6947 11.8392C13.6779 11.8054 13.6779 11.7717 13.6779 11.7379C13.6612 11.6197 13.7114 11.5353 13.7951 11.4846Z" /><path fill-rule="evenodd" clip-rule="evenodd" d="M7.5235 4.45064C7.13298 4.45064 6.8238 4.13903 6.8238 3.74543C6.8238 3.35184 7.13298 3.04023 7.5235 3.04023C7.91402 3.04023 8.2232 3.35184 8.2232 3.74543C8.2232 4.12263 7.91402 4.45064 7.5235 4.45064ZM3.93753 4.45064C3.54701 4.45064 3.23783 4.13903 3.23783 3.74543C3.23783 3.35184 3.54701 3.04023 3.93753 3.04023C4.32805 3.04023 4.63723 3.35184 4.63723 3.74543C4.63723 4.12263 4.32805 4.45064 3.93753 4.45064ZM5.7725 0.660156C2.78504 0.660156 0.351562 2.683 0.351562 5.19463C0.351562 6.56009 1.07322 7.79063 2.23127 8.61665C2.31519 8.68408 2.38231 8.78519 2.38231 8.92006C2.38231 8.95374 2.36552 9.00434 2.36552 9.03805C2.2816 9.37519 2.13055 9.93146 2.11376 9.9483C2.09701 9.9989 2.08022 10.0326 2.08022 10.0832C2.08022 10.1843 2.16414 10.2686 2.26481 10.2686C2.29839 10.2686 2.33194 10.2518 2.36552 10.2349L3.55711 9.54377C3.64103 9.49318 3.74175 9.45946 3.84242 9.45946C3.89279 9.45946 3.94313 9.45946 3.99346 9.47634C4.54732 9.62805 5.15147 9.72916 5.75571 9.72916H6.0578C5.9403 9.37519 5.87317 9.00434 5.87317 8.6166C5.87317 6.34095 8.08851 4.48669 10.8074 4.48669H11.1095C10.7235 2.3121 8.47453 0.660156 5.7725 0.660156Z" /></svg>
+                      <span>WeChat</span>
+                    </a>
+                </li>
+                                <li>
+                    <a class="w-[140px] text-xs font-medium uppercase tracking-widest inline-flex items-center gap-x-14 group"
+                                                target="_blank"
+                                              href="https://www.xiaohongshu.com/user/profile/613b762e000000001f0398a8"
+                       title="Go to the White Cube profile page on Little Red Book"
+                       aria-label="Go to the White Cube profile page on Little Red Book"
+                       rel="nofollow">
+                          <svg class="fill-current h-[15px]" width="15" height="6" viewBox="0 0 15 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.1577 4.32701C11.1576 4.02522 11.1535 3.72333 11.1597 3.42165C11.1621 3.30552 11.1192 3.26958 11.007 3.2727C10.7768 3.27909 10.5463 3.27076 10.3161 3.27613C10.2066 3.27868 10.1696 3.2368 10.172 3.12907C10.1775 2.88298 10.1775 2.63662 10.172 2.39053C10.1696 2.28292 10.206 2.24116 10.3159 2.2438C10.55 2.24941 10.7845 2.24146 11.0186 2.24713C11.1295 2.2498 11.1789 2.21434 11.1751 2.09786C11.1691 1.9154 11.1697 1.73246 11.1751 1.54994C11.1781 1.44506 11.1347 1.40822 11.0338 1.41164C10.899 1.41623 10.7638 1.41146 10.6288 1.41242C10.5455 1.41302 10.5061 1.37771 10.5069 1.29059C10.5093 1.0206 10.5092 0.750538 10.5069 0.48051C10.5062 0.398731 10.5414 0.36558 10.621 0.36648C10.76 0.3681 10.899 0.363931 11.0379 0.367051C11.1242 0.369001 11.1606 0.333781 11.1581 0.247111C11.15 -0.0400761 11.1737 0.0063341 11.4182 0.00384412C11.6326 0.00165414 11.8472 0.00684417 12.0615 0.00204421C12.1648 -0.000265769 12.2057 0.0412233 12.2028 0.142262C12.1959 0.38346 12.1975 0.365761 12.4319 0.366001C12.7069 0.366301 12.9771 0.38076 13.2328 0.505769C13.6175 0.693838 13.8099 1.0022 13.8279 1.42202C13.8376 1.64798 13.8356 1.87475 13.8297 2.10092C13.8269 2.20987 13.8646 2.2507 13.9735 2.2465C14.2252 2.23681 14.451 2.32054 14.6504 2.46799C14.8601 2.62309 14.9735 2.83798 14.9835 3.09886C15.0026 3.5988 15.0126 4.10013 14.9818 4.59887C14.9551 5.0312 14.6296 5.33297 14.1969 5.37074C13.9757 5.39006 13.7534 5.39801 13.5307 5.39357C13.4164 5.39129 13.3383 5.35652 13.2928 5.24081C13.2144 5.04152 13.1206 4.84838 13.037 4.65104C12.9848 4.52777 12.9996 4.50872 13.1382 4.50785C13.3408 4.50656 13.5433 4.50869 13.7458 4.50659C13.9041 4.50494 13.9756 4.44461 13.981 4.28616C13.9888 4.05615 13.9912 3.82527 13.9806 3.59547C13.9709 3.38442 13.8481 3.27733 13.6275 3.27565C13.1947 3.27229 12.7618 3.27739 12.329 3.27292C12.2144 3.27172 12.2011 3.32991 12.2014 3.42186C12.2034 4.0056 12.2025 4.58933 12.2023 5.1731C12.2022 5.38682 12.1953 5.39357 11.9816 5.39378C11.7672 5.39399 11.5527 5.39426 11.3383 5.39369C11.1703 5.39324 11.1585 5.38151 11.158 5.20859C11.1571 4.91471 11.1577 4.62086 11.1577 4.32701ZM12.1845 1.81802C12.186 1.81802 12.1875 1.81802 12.189 1.81802C12.189 1.92512 12.187 2.03225 12.1897 2.13929C12.1912 2.20159 12.2175 2.24569 12.2902 2.24518C12.4449 2.24413 12.5997 2.24494 12.7544 2.24425C12.8057 2.24401 12.839 2.21941 12.839 2.16574C12.8389 1.95953 12.8406 1.75319 12.8339 1.54715C12.8313 1.46741 12.7819 1.41485 12.6948 1.41422C12.5559 1.4132 12.417 1.41401 12.2781 1.41341C12.2137 1.41314 12.184 1.44503 12.1843 1.50851C12.1848 1.61168 12.1845 1.71485 12.1845 1.81802Z"/><path d="M8.61551 5.39211C8.13491 5.39211 7.65431 5.39295 7.17372 5.39181C6.87648 5.39112 6.87759 5.39028 6.99666 5.12952C7.08903 4.92729 7.18152 4.72501 7.26744 4.52002C7.31454 4.40761 7.38081 4.35355 7.51095 4.36084C7.70892 4.37194 7.90802 4.36111 8.10656 4.36474C8.19302 4.36633 8.22698 4.33429 8.22683 4.24666C8.22512 3.34106 8.22518 2.43549 8.22662 1.52988C8.22677 1.44219 8.18978 1.40904 8.1047 1.41126C7.98563 1.41438 7.86638 1.41033 7.74725 1.41177C7.6554 1.41288 7.60587 1.37581 7.60638 1.27834C7.60779 1.01224 7.60743 0.746111 7.60653 0.480013C7.60626 0.399764 7.6446 0.365474 7.72341 0.365564C8.41451 0.366194 9.10561 0.366435 9.79672 0.365235C9.88953 0.365085 9.92233 0.408164 9.92146 0.497053C9.91894 0.759161 9.91882 1.02136 9.92146 1.28347C9.92239 1.3753 9.88264 1.41354 9.79294 1.41192C9.6778 1.40983 9.56221 1.41745 9.44749 1.41031C9.33355 1.4032 9.29575 1.44597 9.29626 1.56048C9.29992 2.40252 9.29821 3.24455 9.29821 4.08661C9.29821 4.14223 9.301 4.19797 9.29785 4.25341C9.29314 4.33612 9.33067 4.36558 9.41137 4.36462C9.64567 4.36183 9.88012 4.36714 10.1144 4.36231C10.2161 4.36021 10.2572 4.39489 10.2552 4.49953C10.2504 4.74967 10.2498 5.00004 10.2554 5.25015C10.2578 5.36286 10.208 5.39385 10.105 5.39328C9.6085 5.39064 9.112 5.39208 8.61551 5.39211Z"/><path d="M2.92823 2.41214C2.92823 3.15097 2.92985 3.7345 2.92733 4.31799C2.92649 4.5123 2.91272 4.70451 2.83649 4.88946C2.71394 5.18675 2.49881 5.34905 2.17871 5.37584C2.02433 5.38877 1.87004 5.3951 1.7151 5.39369C1.62408 5.39285 1.56975 5.35547 1.53411 5.27039C1.44981 5.06919 1.35807 4.87113 1.26975 4.6716C1.21569 4.5495 1.23651 4.51692 1.37376 4.51425C1.48884 4.512 1.60404 4.51551 1.71909 4.51257C1.84872 4.50927 1.8803 4.47834 1.88111 4.34679C1.88315 4.00938 1.88199 3.67198 1.88214 3.33457C1.88238 2.8106 1.87101 2.28629 1.88625 1.76273C1.90152 1.23888 1.89741 0.715264 1.89984 0.191558C1.90032 0.088119 1.93775 0.0511294 2.04008 0.0530794C2.28212 0.0577294 2.52443 0.0583295 2.76644 0.0528395C2.87519 0.0503796 2.90963 0.0908491 2.91257 0.198428C2.93426 0.988051 2.92583 1.77776 2.92823 2.41214Z"/><path d="M6.27069 4.01339C6.12381 4.01336 5.9769 4.013 5.83002 4.01351C5.74971 4.01378 5.6715 4.00076 5.5965 3.97328C5.39737 3.90032 5.32297 3.76007 5.37544 3.54992C5.42674 3.34445 5.53276 3.16055 5.61405 2.96696C5.6862 2.79513 5.7648 2.62596 5.84235 2.45643C5.8803 2.37348 5.85828 2.34249 5.76591 2.34429C5.63937 2.34672 5.51226 2.35449 5.38669 2.32308C5.13583 2.26032 5.03809 2.08086 5.12467 1.83822C5.26234 1.45243 5.46127 1.0936 5.61738 0.715875C5.69916 0.518057 5.79633 0.326568 5.87757 0.12854C5.91432 0.0389909 5.9622 -0.00207912 6.06258 8.08607e-05C6.32448 0.00575081 6.58659 0.00386136 6.8486 0.00119139C6.94778 0.000171394 6.96761 0.0374011 6.92813 0.12404C6.77681 0.456137 6.626 0.788504 6.47751 1.12186C6.378 1.34524 6.39183 1.3651 6.6315 1.3657C6.82601 1.36618 7.02056 1.36795 7.21508 1.36579C7.31819 1.36465 7.3421 1.40425 7.3004 1.49722C7.09589 1.95327 6.89816 2.41242 6.68798 2.86581C6.56619 3.12851 6.57231 3.14891 6.85961 3.14903C6.95093 3.14906 7.04222 3.14948 7.13354 3.14957C7.21418 3.14966 7.24271 3.17933 7.20569 3.2603C7.1084 3.47309 7.01273 3.68672 6.9203 3.90164C6.8861 3.98117 6.8357 4.01738 6.74708 4.01468C6.58839 4.00997 6.42948 4.01342 6.27069 4.01339Z"/><path d="M0.749471 1.36533C0.88045 1.36533 1.01149 1.36707 1.14244 1.36473C1.23712 1.36305 1.26862 1.40907 1.26112 1.49841C1.20571 2.15807 1.16629 2.81948 1.0921 3.47701C1.03885 3.94924 0.894731 4.40004 0.621793 4.79964C0.532544 4.93029 0.509774 4.93401 0.446024 4.79601C0.297976 4.47555 0.158207 4.15126 0.0149579 3.82858C-4.19404e-05 3.7948 -0.00478194 3.7606 0.00544797 3.72433C0.133847 3.26938 0.107387 2.79677 0.161597 2.3333C0.193336 2.06196 0.200867 1.78773 0.217816 1.5147C0.224266 1.41096 0.264195 1.3551 0.380414 1.36305C0.502903 1.37142 0.626382 1.36494 0.749441 1.36494C0.749471 1.36509 0.749471 1.36521 0.749471 1.36533Z"/><path d="M4.07919 1.36463C4.20231 1.36469 4.32558 1.36808 4.44852 1.36352C4.536 1.36028 4.58121 1.3901 4.58757 1.48223C4.60665 1.75915 4.62933 2.03584 4.65156 2.31256C4.68363 2.71191 4.71648 3.11118 4.7493 3.51048C4.75059 3.52623 4.75119 3.54369 4.7583 3.55704C4.85838 3.74468 4.77495 3.90611 4.69362 4.07267C4.60137 4.26158 4.52091 4.45625 4.43493 4.64822C4.40736 4.70975 4.3785 4.77071 4.35027 4.83194C4.31184 4.91533 4.27128 4.92098 4.21794 4.84136C4.07349 4.62578 3.95739 4.39685 3.87511 4.15037C3.74314 3.75515 3.69943 3.34599 3.67039 2.93322C3.63784 2.47039 3.59797 2.00803 3.55825 1.54573C3.5449 1.39025 3.56284 1.3655 3.72175 1.36463C3.84091 1.36406 3.96003 1.36457 4.07919 1.36463Z"/><path d="M5.73354 5.39119C5.51178 5.39122 5.28963 5.40364 5.06862 5.37571C5.01771 5.36926 4.96635 5.36248 4.91679 5.3497C4.79256 5.31769 4.7815 5.29618 4.83541 5.17648C4.95582 4.90921 5.07897 4.64318 5.20107 4.37666C5.22729 4.31942 5.2575 4.26908 5.33502 4.29515C5.56899 4.37381 5.81127 4.36604 6.05309 4.36457C6.26711 4.36325 6.48113 4.36298 6.69515 4.36466C6.81722 4.36562 6.83444 4.38746 6.7859 4.49699C6.66713 4.76495 6.54194 5.03005 6.4217 5.29738C6.3857 5.37742 6.31748 5.38948 6.24476 5.39044C6.07439 5.39272 5.90397 5.39119 5.73354 5.39119Z"/><path d="M13.9861 1.05096C13.9861 0.987483 13.9846 0.923974 13.9863 0.860554C13.994 0.574957 14.2056 0.366038 14.4878 0.364268C14.7655 0.362528 14.9819 0.574657 14.9922 0.858664C15.0025 1.14153 14.8036 1.37187 14.525 1.3893C14.3827 1.39821 14.2394 1.39053 14.0966 1.39257C14.0161 1.39371 13.9812 1.35777 13.9846 1.27707C13.9878 1.20183 13.9853 1.12635 13.9853 1.05096C13.9856 1.05096 13.9858 1.05096 13.9861 1.05096Z"/></svg>
+                      <span lang="zh-Hans">小红书</span>
+                    </a>
+                </li>
+                            </ul>
+        </div>
+            </div>
+    <div class="bg-grey border-t border-grey-dark">
+        <div class="grid--centered py-24 pb-90 md:pb-24">
+            <div class="col-span-full flex flex-col md:flex-row justify-between gap-y-24 gap-x-20 text-xs font-light uppercase">
+                <div up-nav class="flex gap-x-44">
+                                    <ul class="flex flex-col md:flex-row gap-y-12 gap-x-44">
+                                          <li><a  href="https://www.whitecube.com/website-accessibility">Website Accessibility</a></li>
+                                          <li><a  href="https://www.whitecube.com/visitor-guidelines">Visitor Guidelines</a></li>
+                                          <li><a  href="https://www.whitecube.com/privacy-policy">Privacy Policy</a></li>
+                                          <li><a  href="https://www.whitecube.com/cookie-policy">Cookie Policy</a></li>
+                                          <li><a  href="https://www.whitecube.com/terms-of-use">Terms of Use</a></li>
+                                          <li><a  href="https://www.whitecube.com/modern-slavery-statement">Modern Slavery Statement</a></li>
+                                        <li>
+                      <a href='#' class="iubenda-cs-preferences-link flex items-start gap-x-8">Your Privacy Choices</a>
+                    </li>
+                  </ul>
+                </div>
+                <p>Artworks &copy; the Artist. &copy; 2025 White Cube</p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+        
+        
+    </div>
+
+    <script type="text/javascript" async src="https://static.klaviyo.com/onsite/js/UHpfpr/klaviyo.js"></script>
+
+<script type="text/javascript">window.FormieTranslations={"File {filename} must be smaller than {filesize} MB.":"File {filename} must be smaller than {filesize} MB.","File must be smaller than {filesize} MB.":"File must be smaller than {filesize} MB.","File must be larger than {filesize} MB.":"File must be larger than {filesize} MB.","Choose up to {files} files.":"Choose up to {files} files.","{startTag}{num}{endTag} character left":"{startTag}{num}{endTag} character left","{startTag}{num}{endTag} characters left":"{startTag}{num}{endTag} characters left","{startTag}{num}{endTag} word left":"{startTag}{num}{endTag} word left","{startTag}{num}{endTag} words left":"{startTag}{num}{endTag} words left","This field is required.":"This field is required.","Please select a value.":"Please select a value.","Please select at least one value.":"Please select at least one value.","Please fill out this field.":"Please fill out this field.","Please enter a valid email address.":"Please enter a valid email address.","Please enter a URL.":"Please enter a URL.","Please enter a number":"Please enter a number","Please match the following format: #rrggbb":"Please match the following format: #rrggbb","Please use the YYYY-MM-DD format":"Please use the YYYY-MM-DD format","Please use the 24-hour time format. Ex. 23:00":"Please use the 24-hour time format. Ex. 23:00","Please use the YYYY-MM format":"Please use the YYYY-MM format","Please match the requested format.":"Please match the requested format.","Please select a value that is no more than {max}.":"Please select a value that is no more than {max}.","Please select a value that is no less than {min}.":"Please select a value that is no less than {min}.","Please shorten this text to no more than {maxLength} characters. You are currently using {length} characters.":"Please shorten this text to no more than {maxLength} characters. You are currently using {length} characters.","Please lengthen this text to {minLength} characters or more. You are currently using {length} characters.":"Please lengthen this text to {minLength} characters or more. You are currently using {length} characters.","There was an error with this field.":"There was an error with this field.","Unable to parse response `{e}`.":"Unable to parse response `{e}`.","Are you sure you want to leave?":"Are you sure you want to leave?","The request timed out.":"The request timed out.","The request encountered a network error. Please try again.":"The request encountered a network error. Please try again.","Invalid number":"Invalid number","Invalid country code":"Invalid country code","Too short":"Too short","Too long":"Too long","Missing Authorization ID for approval.":"Missing Authorization ID for approval.","Payment authorized. Finalize the form to complete payment.":"Payment authorized. Finalize the form to complete payment.","Unable to authorize payment. Please try again.":"Unable to authorize payment. Please try again."};</script>
+<script type="application/ld+json">{"@context":"http://schema.org","@graph":[{"@type":"WebPage","author":{"@id":"#identity"},"copyrightHolder":{"@id":"#identity"},"copyrightYear":"2022","creator":{"@id":"#creator"},"dateCreated":"2022-10-10T10:05:02+01:00","dateModified":"2025-09-08T10:38:40+01:00","datePublished":"2022-10-10T10:05:02+01:00","description":"One of the world's leading contemporary art galleries, White Cube has spaces in London, Hong Kong, Paris, New York and Seoul.","headline":"London","image":{"@type":"ImageObject","url":"https://white-cube.transforms.svdcdn.com/production/uploads/seo/white-cube.png?w=1200&h=630&q=82&auto=format&fit=crop&dm=1668027785&s=c6a1d0a195adb101d8678b6f09862d3e"},"inLanguage":"en-gb","mainEntityOfPage":"https://www.whitecube.com/exhibitions/london","name":"London","publisher":{"@id":"#creator"},"url":"https://www.whitecube.com/exhibitions/london"},{"@id":"#identity","@type":"Organization","sameAs":["https://twitter.com/_whitecube","https://www.facebook.com/whitecubegalleries","https://www.tiktok.com/@whitecube_official","https://www.instagram.com/whitecube/","https://www.youtube.com/c/WhiteCubeOfficial","https://www.artsy.net/partner/white-cube","https://www.artnet.com/galleries/white-cube/","/wechat","https://www.xiaohongshu.com/user/profile/613b762e000000001f0398a8"]},{"@id":"#creator","@type":"Organization"},{"@type":"BreadcrumbList","description":"Breadcrumbs list","itemListElement":[{"@type":"ListItem","item":"https://www.whitecube.com","name":"Home","position":1},{"@type":"ListItem","item":"https://www.whitecube.com/exhibitions/london","name":"London","position":2}],"name":"Breadcrumbs"}]}</script>
+
+      <span
+        x-data="notification"
+        x-cloak
+        :class="{
+          'translate-y-0 opacity-100': showMessage,
+          '-translate-y-full opacity-0': !showMessage,
+          'bg-white': status === 'success' || !status,
+          'bg-[#ffbbbb]': status === 'error',
+          'bg-[#f7eea6]': status === 'info'
+        }"
+        class="z-top fixed top-32 left-1/2 -translate-x-1/2 transition-all border border-black inline-flex items-center gap-x-14 leading-none rounded shadow-xl px-24 py-12 pointer-events-none">
+              <svg class="fill-current w-18 h-auto" width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 0C22.4302 0 0 22.4295 0 49.9997C0 77.57 22.4302 100 50 100C77.5698 100 100 77.57 100 49.9997C100 22.4295 77.5704 0 50 0ZM78.7109 41.5544L47.2984 72.9667C45.9628 74.3023 44.1873 75.0374 42.2986 75.0374C40.4099 75.0374 38.6344 74.3023 37.2987 72.9667L21.2891 56.9571C19.9535 55.6215 19.2178 53.846 19.2178 51.9573C19.2178 50.0681 19.9535 48.2926 21.2891 46.957C22.6243 45.6213 24.3997 44.8857 26.289 44.8857C28.1777 44.8857 29.9537 45.6213 31.2888 46.9575L42.2981 57.9662L68.7102 31.5542C70.0458 30.2186 71.8213 29.4834 73.71 29.4834C75.5987 29.4834 77.3742 30.2186 78.7098 31.5542C81.4678 34.3121 81.4678 38.7975 78.7109 41.5544Z"/></svg>
+          <span x-text="message" role="status" aria-live="polite"></span>
+      </span>
+
+      <div up-id="cpEditUrl" up-hungry>
+              </div>
+    </body>
+</html>

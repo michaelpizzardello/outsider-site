@@ -43,12 +43,12 @@ export default function Details({
           className="
             col-span-full
             md:col-span-1 md:col-start-1
-            space-y-6 typ-body-small
+            space-y-6 text-sm leading-relaxed
           "
         >
           {(startDate || endDate) && (
             <div>
-              <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
+              <div className="text-xs uppercase tracking-[0.18em] opacity-60">
                 Dates
               </div>
               <div className="mt-1">{dateRange}</div>
@@ -57,7 +57,7 @@ export default function Details({
 
           {location && location.trim() && (
             <div>
-              <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
+              <div className="text-xs uppercase tracking-[0.18em] opacity-60">
                 Location
               </div>
               <div className="mt-1 whitespace-pre-wrap">{location}</div>
@@ -65,7 +65,7 @@ export default function Details({
           )}
 
           <div>
-            <div className="text-[11px] uppercase tracking-[0.18em] opacity-60">
+            <div className="text-xs uppercase tracking-[0.18em] opacity-60">
               Share
             </div>
             <div className="mt-1">

@@ -151,16 +151,16 @@ function ArtworkCard({
       <div className="mt-4 flex flex-col gap-2">
         <div>
           {product.medium?.value ? (
-            <p className="typ-caption uppercase tracking-[0.18em] text-neutral-500">
+            <p className="text-xs uppercase tracking-[0.18em] text-neutral-500">
               {product.medium.value}
             </p>
           ) : null}
-          <p className="mt-2 typ-body font-medium">
+          <p className="mt-2 text-base font-medium leading-relaxed">
             <span className="italic">{product.title}</span>
             {product.year?.value ? <span>, {product.year.value}</span> : null}
           </p>
         </div>
-        <div className="typ-body-small text-neutral-600">
+        <div className="text-sm leading-relaxed text-neutral-600">
           {priceLabel({ price: product.priceRange?.minVariantPrice ?? null, availableForSale: product.availableForSale })}
         </div>
         <div className="pt-2">
@@ -191,7 +191,7 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
   return (
     <section className="w-full py-12 md:py-16">
       <Container>
-        <h2 className="typ-section-title mb-8 md:mb-12">Artworks</h2>
+        <h2 className="mb-8 text-2xl font-medium tracking-tight sm:text-3xl lg:mb-12 lg:text-4xl">Artworks</h2>
         <div className="grid grid-cols-1 gap-y-12 gap-x-10 md:grid-cols-2 md:gap-y-16 md:gap-x-14">
           {filtered.map((product) => {
             const exhibitionHandle = firstExhibitionHandle(product);

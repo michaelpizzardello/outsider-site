@@ -74,10 +74,10 @@ export default function ArtworkLayout({
 
   const renderHeading = (className = "") => (
     <div className={`space-y-1 ${className}`.trim()}>
-      {artist && <p className="typ-body font-medium">{artist}</p>}
-      <p className="typ-body italic">{title}</p>
-      {year && <p className="typ-body">{year}</p>}
-      {priceLabel && <p className="typ-body-small font-medium text-neutral-600">{priceLabel}</p>}
+      {artist && <p className="text-base font-medium leading-relaxed">{artist}</p>}
+      <p className="text-base leading-relaxed italic">{title}</p>
+      {year && <p className="text-base leading-relaxed">{year}</p>}
+      {priceLabel && <p className="text-sm font-medium leading-relaxed text-neutral-600">{priceLabel}</p>}
     </div>
   );
 
@@ -90,7 +90,7 @@ export default function ArtworkLayout({
         {leadDivider && <div className="h-px bg-neutral-300" />}
         <button
           type="button"
-          className="inline-flex h-11 items-center justify-center border border-neutral-300 bg-white px-6 typ-cta tracking-[0.2em] uppercase transition hover:border-black hover:text-black"
+          className="inline-flex h-11 items-center justify-center border border-neutral-300 bg-white px-6 text-xs font-medium uppercase tracking-[0.2em] transition hover:border-black hover:text-black"
           onClick={onEnquire}
         >
           Enquire
@@ -103,13 +103,13 @@ export default function ArtworkLayout({
 
       {hasCaption && (
         <div
-          className="typ-body-small space-y-3 leading-relaxed text-neutral-800"
+          className="space-y-3 text-sm leading-relaxed text-neutral-800"
           dangerouslySetInnerHTML={{ __html: captionHtml! }}
         />
       )}
 
       {hasMetaList && (
-        <div className="typ-body-small space-y-1 text-neutral-800">
+        <div className="space-y-1 text-sm leading-relaxed text-neutral-800">
           {medium && <p>{medium}</p>}
           {dimensionsLabel && <p>{dimensionsLabel}</p>}
           {additionalInfoHtml && <div dangerouslySetInnerHTML={{ __html: additionalInfoHtml }} />}

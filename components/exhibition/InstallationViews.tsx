@@ -42,7 +42,7 @@ export default function InstallationViews({
   return (
     <section className="w-full py-10 md:py-14">
       <Container>
-        <h2 className="typ-section-title">{title}</h2>
+        <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
       </Container>
 
       {/* Full-bleed carousel wrapper without causing page overflow */}

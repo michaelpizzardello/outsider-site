@@ -10,7 +10,6 @@ export default function Container({
   return (
     <div
       className={clsx(
-        // shared layout width aligns with White Cube-style container
         "site-container",
         className
       )}

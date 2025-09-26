@@ -3,6 +3,7 @@ import "server-only";
 import Image from "next/image";
 import Link from "next/link";
 
+import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 import { headingParts, formatDates, type ExhibitionCard } from "@/lib/exhibitions";
@@ -214,7 +215,7 @@ export default async function ArtistExhibitions({ artistHandle, artistName }: Pr
   return (
     <section className="w-full py-12 md:py-16">
       <Container>
-        <h2 className="typ-section-title mb-8 md:mb-12">Exhibitions</h2>
+        <h2 className="mb-8 text-2xl font-medium tracking-tight sm:text-3xl lg:mb-12 lg:text-4xl">Exhibitions</h2>
         <div className="grid grid-cols-1 gap-y-12 md:grid-cols-2 md:gap-x-14 md:gap-y-16">
           {sorted.map((ex) => {
             const labels = heroLabels(statusFor(ex));
@@ -241,9 +242,7 @@ export default async function ArtistExhibitions({ artistHandle, artistName }: Pr
                   )}
 
                   <div className="mt-4">
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-neutral-500">
-                      {labels.top}
-                    </p>
+                    <ExhibitionLabel as="p">{labels.top}</ExhibitionLabel>
                     <h3 className="mt-2 text-base font-medium leading-snug">
                       <span className="block">{heading.primary}</span>
                       {heading.secondary && (

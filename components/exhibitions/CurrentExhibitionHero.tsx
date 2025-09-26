@@ -1,6 +1,7 @@
 // components/exhibitions/CurrentExhibitionHero.tsx
 import Image from "next/image";
 import Link from "next/link";
+import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
 import { ExhibitionCard, headingParts } from "@/lib/exhibitions";
 import { HERO_LABELS } from "@/lib/labels";
@@ -18,10 +19,7 @@ export default function CurrentExhibitionHero({
   const title = ex?.title ?? "";
   const artist = ex?.artist?.trim() ?? "";
 
-  const dateText =
-    [formatDates(ex?.start, ex?.end), ex?.location]
-      .filter(Boolean)
-      .join(" · ") || "Details to be announced";
+  const dateText = formatDates(ex?.start, ex?.end) || "Details to be announced";
 
   const { primary, secondary, isGroup } = headingParts({
     title,
@@ -46,37 +44,47 @@ export default function CurrentExhibitionHero({
 
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
-      <div className="absolute inset-0 grid place-items-center site-gutters text-center">
+      <div className="absolute inset-0 grid place-items-center px-4 text-center sm:px-6 lg:px-8">
         <div className="z-10 max-w-[80ch] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
-          <p className="mb-3 text-[11px] md:text-[12px] tracking-[.28em] uppercase opacity-80">
+          <ExhibitionLabel
+            as="p"
+            className="mb-6 md:text-[1rem] lg:text-[1.15rem] opacity-80 text-white"
+          >
             {topLabel}
-          </p>
+          </ExhibitionLabel>
 
+          {/* Artist name/ Header 1 */}
           <h1
-            className={`text-[40px] leading-[1.08] md:text-7xl md:leading-[1.06] font-medium ${
-              isGroup ? "italic" : ""
-            }`}
+            className={["text-display-1", isGroup ? "italic" : ""]
+              .filter(Boolean)
+              .join(" ")}
           >
             {primary}
           </h1>
 
+          {/* Exhibition Title, H2 */}
           {secondary ? (
-            <p
-              className={`mt-3 text-[20px] md:text-[24px] opacity-95 ${
-                !isGroup ? "italic" : ""
-              }`}
+            <h2
+              className={[
+                "mt-3 text-display-2 text-white/90",
+                !isGroup ? "italic" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
             >
               {secondary}
-            </p>
+            </h2>
           ) : null}
 
-          <p className="mt-5 text-[15px] md:text-[17px] opacity-90">
+          {/* Dates + location */}
+          <p className="mt-10 text-lg opacity-90 sm:text-lg md:text-2xl xl:text-3xl">
             {dateText}
           </p>
 
+          {/* Call to action button */}
           <Link
             href={ex ? `/exhibitions/${ex.handle}` : "/exhibitions"}
-            className="mt-7 inline-flex items-center justify-center text-[15px] md:text-[16px] font-medium underline decoration-1 underline-offset-[6px] hover:opacity-85"
+            className="mt-12 inline-flex items-center justify-center text-sm font-medium underline decoration-1 underline-offset-[6px] hover:opacity-85 md:text-base"
           >
             {buttonLabel}
           </Link>

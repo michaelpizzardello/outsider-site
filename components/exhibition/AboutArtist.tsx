@@ -32,7 +32,7 @@ export default function AboutArtist({
             col-span-full
             md:[grid-column:1/span_3]
             xl:[grid-column:1/span_5]
-            text-[11px] uppercase tracking-[0.18em] opacity-60
+            text-xs uppercase tracking-[0.18em] opacity-60
           "
         >
           {title}
@@ -45,7 +45,7 @@ export default function AboutArtist({
             md:[grid-column:4/span_5]
             xl:[grid-column:8/span_10]
             3xl:[grid-column:9/span_9]
-            typ-body
+            text-base leading-relaxed
           "
         >
           {bioHtml ? (
@@ -58,7 +58,7 @@ export default function AboutArtist({
             <div className="mt-4">
               <Link
                 href={`/artists/${handle}`}
-                className="inline-flex items-center gap-2 typ-body-small underline underline-offset-4"
+                className="inline-flex items-center gap-2 text-sm leading-relaxed underline underline-offset-4"
               >
                 <span aria-hidden>→</span>
                 View {name || "artist"} profile

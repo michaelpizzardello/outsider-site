@@ -26,7 +26,7 @@ export default function AboutArtistWithPortrait({
   return (
     <section className="w-full py-10 md:py-14">
       <Container>
-        <h2 className="typ-section-title">{title}</h2>
+        <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 sm:gap-x-10 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 2xl:gap-x-24 gap-y-8 items-center">
           {/* Portrait occupies full column */}
@@ -57,7 +57,7 @@ export default function AboutArtistWithPortrait({
               )}
               {captionHtml ? (
                 <figcaption
-                  className="typ-body-small max-w-prose mt-3 [&_a]:underline"
+                  className="mt-3 max-w-prose text-sm leading-relaxed [&_a]:underline"
                   dangerouslySetInnerHTML={{ __html: captionHtml }}
                 />
               ) : null}
@@ -65,11 +65,11 @@ export default function AboutArtistWithPortrait({
           ) : null}
 
           {/* Bio + CTA */}
-          <div className="flex flex-col justify-center typ-body">
+          <div className="flex flex-col justify-center text-base leading-relaxed">
             {bioHtml ? (
               <div className="max-w-[60ch] w-full md:mx-auto">
                 <div
-                  className="prose max-w-none prose-p:mb-4 prose-ul:my-4 prose-ol:my-4 typ-body"
+                  className="prose max-w-none prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4"
                   dangerouslySetInnerHTML={{ __html: bioHtml }}
                 />
               </div>
@@ -79,7 +79,7 @@ export default function AboutArtistWithPortrait({
               <div className="mt-4">
                 <Link
                   href={`/artists/${handle}`}
-                  className="group inline-flex items-center gap-2 typ-body-small"
+                  className="group inline-flex items-center gap-2 text-sm leading-relaxed"
                 >
                   <span aria-hidden className="translate-y-[1px]">→</span>
                   <span className="underline underline-offset-4 group-hover:underline">

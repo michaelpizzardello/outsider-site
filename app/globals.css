@@ -5,31 +5,6 @@
   --foreground: #171717;
   --colors-grey-default: #f9f9f9;
   --colors-grey-dark: #e0e0e0;
-  --container-width: 90.625vw;
-  --container-padding-x: clamp(2rem, 4.6875vw, 4.6875vw);
-  --max-layout-width: 1740px;
-  --header-text-color: #000000;
-}
-
-.site-container {
-  margin-left: 2rem;
-  margin-right: 2rem;
-  width: calc(100% - 4rem);
-  max-width: var(--max-layout-width);
-}
-
-@media (min-width: 640px) {
-  .site-container {
-    margin-left: auto;
-    margin-right: auto;
-    width: min(var(--container-width), var(--max-layout-width));
-  }
-}
-
-@layer utilities {
-  .site-gutters {
-    padding-inline: var(--container-padding-x);
-  }
 }
 
 @theme inline {
@@ -49,35 +24,61 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
-/* --------------------------- Typography scale --------------------------- */
-.typ-section-title {
-  font-size: clamp(1.35rem, 0.75vw + 1.1rem, 1.75rem);
-  line-height: 1.15;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+.site-container {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  width: calc(100% - 4rem);
+  max-width: 1740px;
 }
 
-.typ-body {
-  font-size: clamp(1rem, 0.35vw + 0.95rem, 1.18rem);
-  line-height: 1.65;
+@media (min-width: 640px) {
+  .site-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: min(90.625vw, 1740px);
+  }
 }
 
-.typ-body-small {
-  font-size: clamp(0.92rem, 0.32vw + 0.86rem, 1.05rem);
-  line-height: 1.6;
+@layer utilities {
+  .text-display-1 {
+    /* margin-top: 30px; */
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    font-size: clamp(1rem, 1rem + 5vw, 5.25rem);
+  }
+
+  .text-display-2 {
+    /* margin-top: 15px; */
+    font-weight: 300;
+    line-height: 0.5;
+    letter-spacing: -0.02em;
+    font-size: clamp(0.5rem, 0.8rem + 3.5vw, 3.75rem);
+  }
+
+  .text-display-3 {
+    margin-top: 40px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    font-size: clamp(2rem);
+  }
 }
 
-.typ-caption {
-  font-size: clamp(0.84rem, 0.3vw + 0.78rem, 0.98rem);
-  line-height: 1.45;
-}
+@media (min-width: 1536px) {
+  @layer utilities {
+    .text-display-1 {
+      font-size: clamp(2.75rem, 2.3rem + 3vw, 6rem);
+    }
 
-.typ-cta {
-  font-size: clamp(0.86rem, 0.28vw + 0.8rem, 0.98rem);
-  line-height: 1.35;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+    .text-display-2 {
+      font-size: clamp(2.25rem, 1.8rem + 2.2vw, 4.5rem);
+    }
+
+    .text-display-3 {
+      font-size: clamp(1.75rem, 1.45rem + 1.4vw, 3.1rem);
+    }
+  }
 }

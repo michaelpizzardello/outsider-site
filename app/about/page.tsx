@@ -1,6 +1,7 @@
 import "server-only";
 
 import Container from "@/components/layout/Container";
+import PageSubheader from "@/components/layout/PageSubheader";
 
 const TIMELINE = [
   {
@@ -40,7 +41,7 @@ const SERVICES = [
   },
   {
     title: "Public programmes",
-    body: "Talks, screenings, and performances staged across our galleries and partner venues invite audiences into the artists' processes." ,
+    body: "Talks, screenings, and performances staged across our galleries and partner venues invite audiences into the artists&rsquo; processes." ,
   },
 ];
 
@@ -85,21 +86,19 @@ export default function AboutPage() {
       className="bg-white text-neutral-900"
       style={{ paddingTop: "var(--header-h, 76px)" }}
     >
-      <section className="border-b border-neutral-200 bg-[var(--colors-grey-default,#f6f6f5)] py-16 sm:py-24">
-        <Container className="grid gap-y-10 md:grid-cols-12 md:gap-x-14 lg:gap-x-20">
-          <div className="md:col-span-7 lg:col-span-8">
-            <p className="text-xs uppercase tracking-[0.32em] text-neutral-500">About</p>
-            <h1 className="mt-4 text-4xl font-light leading-tight tracking-tight sm:text-5xl md:text-6xl">
+      <PageSubheader
+        title="About"
+        description={
+          <>
+            <p>
               Outsider Gallery is a platform for boundary-pushing artists working across continents and disciplines.
-            </h1>
-          </div>
-          <div className="md:col-span-5 lg:col-span-4 md:self-end">
-            <p className="text-base leading-relaxed text-neutral-600 sm:text-lg">
+            </p>
+            <p className="mt-4">
               Founded in 2015, the gallery operates from New York, London, and Accra, staging exhibitions, commissions, and publications that centre new voices. Our programme nurtures long-term relationships with artists while connecting collectors, institutions, and audiences with vital contemporary practice.
             </p>
-          </div>
-        </Container>
-      </section>
+          </>
+        }
+      />
 
       <section className="py-16 sm:py-20">
         <Container>
@@ -110,7 +109,7 @@ export default function AboutPage() {
                 Outsider Gallery began as a single room championing artists whose practices fell between disciplines. Today, we continue to prioritise experimentation and offer production resources, scholarly support, and curatorial collaboration to each artist we represent. Our exhibitions pair newly commissioned works with context drawn from archives, oral histories, and research trips.
               </p>
               <p className="mt-4 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                Beyond the gallery walls we collaborate with museums, biennials, and civic organisations to bring artists' ideas to wider publics. Publications, artist talks, and workshops extend the life of each exhibition and provide entry points for first-time collectors and long-time supporters alike.
+                Beyond the gallery walls we collaborate with museums, biennials, and civic organisations to bring artists&rsquo; ideas to wider publics. Publications, artist talks, and workshops extend the life of each exhibition and provide entry points for first-time collectors and long-time supporters alike.
               </p>
             </div>
             <div className="md:col-span-6 lg:col-span-5">

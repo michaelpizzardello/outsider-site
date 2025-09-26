@@ -297,7 +297,7 @@ export default async function FeaturedWorks({
   return (
     <section className="w-full py-10 md:py-14">
       <Container>
-        <h2 className="typ-section-title mb-8 md:mb-12">Featured Works</h2>
+        <h2 className="mb-8 text-2xl font-medium tracking-tight sm:text-3xl lg:mb-12 lg:text-4xl">Featured Works</h2>
 
         <div className="flex flex-col gap-y-16">
           {rows.map((row, idx) => {
