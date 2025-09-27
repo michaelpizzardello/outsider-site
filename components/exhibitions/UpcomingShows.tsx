@@ -14,7 +14,7 @@ type Props = {
 export default function UpcomingShows({
   items,
   labelKey = "galleryExhibition",
-  ctaText = "Visit exhibition",
+  ctaText = "Visit Exhibition",
   className = "",
 }: Props) {
   if (!items?.length) return null;

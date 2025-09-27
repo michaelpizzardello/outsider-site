@@ -34,6 +34,7 @@ import Container from "@/components/layout/Container";
 import PageSubheader from "@/components/layout/PageSubheader";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import ExhibitionFeatureWhiteCube from "@/components/exhibitions/ExhibitionFeatureWhiteCube";
+import { ArrowCtaInline } from "@/components/ui/ArrowCta";
 
 // ISR cadence
 export const revalidate = 60;
@@ -214,12 +215,11 @@ function CardText({
       {ex.location && <p className="text-sm text-neutral-500">{ex.location}</p>}
 
       {/* CTA (arrow + underline on hover) */}
-      <p className="mt-4 inline-flex items-center text-sm">
-        <span className="mr-2">→</span>
-        <span className="underline-offset-4 hover:underline">
-          {buttonLabel}
-        </span>
-      </p>
+      <ArrowCtaInline
+        label={buttonLabel}
+        className="mt-4"
+        underline={false}
+      />
     </div>
   );
 }

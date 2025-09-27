@@ -6,6 +6,10 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 
+// -----------------------------------------------------------------------------
+// Type shapes and GraphQL query fragments
+// -----------------------------------------------------------------------------
+
 type Money = { amount: string; currencyCode: string };
 
 type ProductNode = {
@@ -14,7 +18,12 @@ type ProductNode = {
   title: string;
   vendor?: string | null;
   availableForSale: boolean;
-  featuredImage?: { url: string; width?: number | null; height?: number | null; altText?: string | null } | null;
+  featuredImage?: {
+    url: string;
+    width?: number | null;
+    height?: number | null;
+    altText?: string | null;
+  } | null;
   priceRange?: { minVariantPrice?: Money | null } | null;
   year?: { value?: string | null } | null;
   medium?: { value?: string | null } | null;
@@ -28,7 +37,12 @@ type ProductNode = {
   } | null;
   exhibitions?: {
     reference?: { __typename: string; handle?: string | null } | null;
-    references?: { nodes?: Array<{ __typename: string; handle?: string | null } | null> | null } | null;
+    references?: {
+      nodes?: Array<{
+        __typename: string;
+        handle?: string | null;
+      } | null> | null;
+    } | null;
   } | null;
 };
 
@@ -41,6 +55,7 @@ type Props = {
   artistName: string;
 };
 
+// Pull every actively available product alongside rich metafield content.
 const QUERY = /* GraphQL */ `
   query ArtistArtworks(
     $first: Int = 80
@@ -54,10 +69,24 @@ const QUERY = /* GraphQL */ `
         title
         vendor
         availableForSale
-        featuredImage { url width height altText }
-        priceRange { minVariantPrice { amount currencyCode } }
-        year: metafield(namespace: $ns, key: "year") { value }
-        medium: metafield(namespace: $ns, key: "medium") { value }
+        featuredImage {
+          url
+          width
+          height
+          altText
+        }
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        year: metafield(namespace: $ns, key: "year") {
+          value
+        }
+        medium: metafield(namespace: $ns, key: "medium") {
+          value
+        }
         artistMeta: metafield(namespace: $ns, key: $artistKey) {
           value
           reference {
@@ -69,9 +98,21 @@ const QUERY = /* GraphQL */ `
           }
         }
         exhibitions: metafield(namespace: $ns, key: "exhibitions") {
-          reference { __typename ... on Metaobject { handle type } }
+          reference {
+            __typename
+            ... on Metaobject {
+              handle
+              type
+            }
+          }
           references(first: 20) {
-            nodes { __typename ... on Metaobject { handle type } }
+            nodes {
+              __typename
+              ... on Metaobject {
+                handle
+                type
+              }
+            }
           }
         }
       }
@@ -79,30 +120,54 @@ const QUERY = /* GraphQL */ `
   }
 `;
 
-function priceLabel({ price, availableForSale }: { price?: Money | null; availableForSale: boolean }): string {
+// -----------------------------------------------------------------------------
+// Helper utilities (formatting + filtering + linking)
+// -----------------------------------------------------------------------------
+
+function priceLabel({
+  price,
+  availableForSale,
+}: {
+  price?: Money | null;
+  availableForSale: boolean;
+}): string {
+  // Sold works skip pricing entirely.
   if (!availableForSale) return "Sold";
+
   if (price) {
     const amount = Number(price.amount);
+
     try {
+      // Rely on Intl for currency formatting when possible.
       return new Intl.NumberFormat("en-GB", {
         style: "currency",
         currency: price.currencyCode,
         maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
       }).format(amount);
     } catch {
+      // Fallback keeps the currency visible if Intl fails.
       return `${price.currencyCode} ${amount.toLocaleString("en-GB")}`;
     }
   }
+
   return "Price on request";
 }
 
-function matchesArtist(node: ProductNode, handle: string, artistName: string): boolean {
+function matchesArtist(
+  node: ProductNode,
+  handle: string,
+  artistName: string
+): boolean {
+  // 1) Exact metaobject reference match (preferred).
   const refHandle = node.artistMeta?.reference?.handle;
-  if (refHandle && refHandle.toLowerCase() === handle.toLowerCase()) return true;
+  if (refHandle && refHandle.toLowerCase() === handle.toLowerCase())
+    return true;
 
+  // 2) Raw metafield string fallback.
   const metaValue = node.artistMeta?.value?.trim().toLowerCase();
   if (metaValue && metaValue === artistName.trim().toLowerCase()) return true;
 
+  // 3) Vendor-as-artist final fallback.
   const vendorName = node.vendor?.trim().toLowerCase();
   if (vendorName && vendorName === artistName.trim().toLowerCase()) return true;
 
@@ -110,12 +175,18 @@ function matchesArtist(node: ProductNode, handle: string, artistName: string): b
 }
 
 function firstExhibitionHandle(node: ProductNode): string | null {
+  // Priority: single reference metafield, then the references array.
   const ref = node.exhibitions?.reference;
   if (ref?.__typename === "Metaobject" && ref.handle) return ref.handle;
+
   const nodes = node.exhibitions?.references?.nodes || [];
   const found = nodes.find((n) => n?.__typename === "Metaobject" && n.handle);
   return found?.handle ?? null;
 }
+
+// -----------------------------------------------------------------------------
+// Presentational leaf component – renders a single artwork card
+// -----------------------------------------------------------------------------
 
 function ArtworkCard({
   product,
@@ -128,14 +199,24 @@ function ArtworkCard({
   const showLink = Boolean(href);
   const Wrapper = showLink ? Link : ("div" as const);
   const wrapperProps = showLink
-    ? { href: href!, className: "block focus:outline-none focus-visible:ring-2 focus-visible:ring-black" }
+    ? {
+        href: href!,
+        className:
+          "block focus:outline-none focus-visible:ring-2 focus-visible:ring-black",
+      }
     : { className: "block" };
 
   return (
     <article className="group">
       <Wrapper {...(wrapperProps as any)}>
         {img ? (
-          <div className="relative bg-white" style={{ aspectRatio: img.width && img.height ? `${img.width}/${img.height}` : "4/5" }}>
+          <div
+            className="relative bg-neutral-400"
+            style={{
+              aspectRatio:
+                img.width && img.height ? `${img.width}/${img.height}` : "4/5",
+            }}
+          >
             <Image
               src={img.url}
               alt={img.altText || product.title}
@@ -145,9 +226,10 @@ function ArtworkCard({
             />
           </div>
         ) : (
-          <div className="bg-neutral-100" style={{ aspectRatio: "4/5" }} />
+          <div className="bg-neutral-400" style={{ aspectRatio: "4/5" }} />
         )}
       </Wrapper>
+
       <div className="mt-4 flex flex-col gap-2">
         <div>
           {product.medium?.value ? (
@@ -155,14 +237,20 @@ function ArtworkCard({
               {product.medium.value}
             </p>
           ) : null}
+
           <p className="mt-2 text-base font-medium leading-relaxed">
             <span className="italic">{product.title}</span>
             {product.year?.value ? <span>, {product.year.value}</span> : null}
           </p>
         </div>
+
         <div className="text-sm leading-relaxed text-neutral-600">
-          {priceLabel({ price: product.priceRange?.minVariantPrice ?? null, availableForSale: product.availableForSale })}
+          {priceLabel({
+            price: product.priceRange?.minVariantPrice ?? null,
+            availableForSale: product.availableForSale,
+          })}
         </div>
+
         <div className="pt-2">
           <button
             type="button"
@@ -176,29 +264,46 @@ function ArtworkCard({
   );
 }
 
-export default async function ArtistArtworks({ artistHandle, artistName }: Props) {
+// -----------------------------------------------------------------------------
+// Entry point – fetch data and render the artwork grid for an artist
+// -----------------------------------------------------------------------------
+
+export default async function ArtistArtworks({
+  artistHandle,
+  artistName,
+}: Props) {
+  // Fetch the raw catalogue with Shopify metafields needed for filtering.
   const data = await shopifyFetch<QueryResult>(QUERY, {
     first: 80,
     ns: "custom",
     artistKey: "artist",
   });
 
+  // Filter the returned products down to this artist via various fallbacks.
   const products = data?.products?.nodes ?? [];
-  const filtered = products.filter((node) => matchesArtist(node, artistHandle, artistName));
+  const filtered = products.filter((node) =>
+    matchesArtist(node, artistHandle, artistName)
+  );
 
   if (!filtered.length) return null;
 
   return (
     <section className="w-full py-12 md:py-16">
       <Container>
-        <h2 className="mb-8 text-2xl font-medium tracking-tight sm:text-3xl lg:mb-12 lg:text-4xl">Artworks</h2>
+        <h2 className="mb-8 text-2xl font-medium tracking-tight sm:text-3xl lg:mb-12 lg:text-4xl">
+          Artworks
+        </h2>
+
         <div className="grid grid-cols-1 gap-y-12 gap-x-10 md:grid-cols-2 md:gap-y-16 md:gap-x-14">
           {filtered.map((product) => {
             const exhibitionHandle = firstExhibitionHandle(product);
             const href = exhibitionHandle
               ? `/exhibitions/${exhibitionHandle}/artworks/${product.handle}`
               : null;
-            return <ArtworkCard key={product.id} product={product} href={href} />;
+
+            return (
+              <ArtworkCard key={product.id} product={product} href={href} />
+            );
           })}
         </div>
       </Container>

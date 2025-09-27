@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Container from "@/components/layout/Container";
+import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 import { shopifyFetch } from "@/lib/shopify";
 
 type Money = { amount: string; currencyCode: string };
@@ -275,13 +276,12 @@ export default async function FeaturedWorks({
           </Link>
 
           <div className="flex shrink-0 items-center gap-x-6 text-[13px] uppercase tracking-[0.2em]">
-            <Link
+            <ArrowCtaLink
               href={href}
-              className="hidden items-center gap-x-2 hover:underline sm:inline-flex"
-            >
-              <span aria-hidden>→</span>
-              <span>View work</span>
-            </Link>
+              label="View work"
+              className="hidden uppercase tracking-[0.2em] sm:inline-flex"
+              underline={false}
+            />
             <Link
               href={`/enquire?artwork=${encodeURIComponent(product.id)}`}
               className="hover:underline"

@@ -4,6 +4,7 @@ import Link from "next/link";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
 import { headingParts, type ExhibitionCard } from "@/lib/exhibitions";
+import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 
 type Props = {
   ex: ExhibitionCard;
@@ -96,14 +97,13 @@ export default function ExhibitionFeature({
             </p>
           ) : null}
 
-          <Link
+          <ArrowCtaLink
             href={`/exhibitions/${ex.handle}`}
-            className="mt-7 inline-flex items-center gap-3 text-[15px] font-medium underline-offset-[6px] hover:underline focus:underline md:mt-8 md:text-[16px] xl:text-[18px]"
+            label={ctaText}
+            className="mt-7 md:mt-8"
             aria-label={`${ctaText}: ${ex.artist ? `${ex.artist} — ` : ""}${ex.title}`}
-          >
-            <span aria-hidden>→</span>
-            {ctaText}
-          </Link>
+            underline={false}
+          />
         </div>
       </div>
     </article>

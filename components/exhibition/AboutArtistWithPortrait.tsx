@@ -1,6 +1,6 @@
 import Container from "@/components/layout/Container";
 import Image from "next/image";
-import Link from "next/link";
+import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 
 type Img = { url: string; width?: number; height?: number; alt?: string };
 
@@ -77,15 +77,11 @@ export default function AboutArtistWithPortrait({
 
             {handle ? (
               <div className="mt-4">
-                <Link
+                <ArrowCtaLink
                   href={`/artists/${handle}`}
-                  className="group inline-flex items-center gap-2 text-sm leading-relaxed"
-                >
-                  <span aria-hidden className="translate-y-[1px]">→</span>
-                  <span className="underline underline-offset-4 group-hover:underline">
-                    View {name || "artist"} profile
-                  </span>
-                </Link>
+                  label={`View ${name || "artist"} profile`}
+                  className="leading-relaxed"
+                />
               </div>
             ) : null}
           </div>

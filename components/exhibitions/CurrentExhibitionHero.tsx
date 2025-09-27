@@ -1,10 +1,10 @@
 // components/exhibitions/CurrentExhibitionHero.tsx
 import Image from "next/image";
-import Link from "next/link";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
 import { ExhibitionCard, headingParts } from "@/lib/exhibitions";
 import { HERO_LABELS } from "@/lib/labels";
+import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 
 export default function CurrentExhibitionHero({
   ex,
@@ -82,12 +82,12 @@ export default function CurrentExhibitionHero({
           </p>
 
           {/* Call to action button */}
-          <Link
+          <ArrowCtaLink
             href={ex ? `/exhibitions/${ex.handle}` : "/exhibitions"}
-            className="mt-12 inline-flex items-center justify-center text-sm font-medium underline decoration-1 underline-offset-[6px] hover:opacity-85 md:text-base"
-          >
-            {buttonLabel}
-          </Link>
+            label={buttonLabel}
+            align="center"
+            className="mt-12 hover:opacity-85"
+          />
         </div>
       </div>
     </section>

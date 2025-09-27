@@ -6,6 +6,7 @@ import clsx from "clsx";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
 import { headingParts, type ExhibitionCard } from "@/lib/exhibitions";
+import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 
 type Props = {
   ex: ExhibitionCard;
@@ -81,16 +82,15 @@ export default function ExhibitionFeatureWhiteCube({
           ) : null}
 
           {/* CTA keeps the gallery arrow vernacular */}
-          <Link
+          <ArrowCtaLink
             href={`/exhibitions/${ex.handle}`}
-            className="mt-5 inline-flex items-center gap-3 text-sm font-semibold tracking-wider text-neutral-900 underline-offset-[8px] transition hover:underline focus-visible:underline sm:text-md"
+            label={ctaText}
+            className="mt-5 text-neutral-900"
             aria-label={`${ctaText}: ${ex.artist ? `${ex.artist} — ` : ""}${
               ex.title
             }`}
-          >
-            <span aria-hidden>→</span>
-            {ctaText}
-          </Link>
+            underline={false}
+          />
         </div>
 
         {/* Image column mirrors White Cube's hover lift */}

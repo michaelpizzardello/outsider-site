@@ -1,7 +1,6 @@
-import Link from "next/link";
-
 import Container from "@/components/layout/Container";
 import ExpandableText from "@/components/exhibition/ExpandableText";
+import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 
 export default function AboutArtist({
   name,
@@ -56,13 +55,11 @@ export default function AboutArtist({
 
           {handle ? (
             <div className="mt-4">
-              <Link
+              <ArrowCtaLink
                 href={`/artists/${handle}`}
-                className="inline-flex items-center gap-2 text-sm leading-relaxed underline underline-offset-4"
-              >
-                <span aria-hidden>→</span>
-                View {name || "artist"} profile
-              </Link>
+                label={`View ${name || "artist"} profile`}
+                className="leading-relaxed"
+              />
             </div>
           ) : null}
         </div>

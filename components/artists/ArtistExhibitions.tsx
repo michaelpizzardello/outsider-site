@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import Container from "@/components/layout/Container";
+import { ArrowCtaInline } from "@/components/ui/ArrowCta";
 import { shopifyFetch } from "@/lib/shopify";
 import { headingParts, formatDates, type ExhibitionCard } from "@/lib/exhibitions";
 import { heroLabels, type PickHeroLabel } from "@/lib/labels";
@@ -255,12 +256,11 @@ export default async function ArtistExhibitions({ artistHandle, artistName }: Pr
                     {ex.location ? (
                       <p className="text-sm text-neutral-500">{ex.location}</p>
                     ) : null}
-                    <p className="mt-4 inline-flex items-center text-sm">
-                      <span className="mr-2">→</span>
-                      <span className="underline-offset-4 hover:underline">
-                        {labels.button}
-                      </span>
-                    </p>
+                    <ArrowCtaInline
+                      label={labels.button}
+                      className="mt-4"
+                      underline={false}
+                    />
                   </div>
                 </Link>
               </article>
