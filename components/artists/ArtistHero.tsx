@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import Container from "@/components/layout/Container";
+import { EXHIBITION_LABEL_BASE_CLASS } from "@/components/exhibitions/ExhibitionLabel";
 
 export type ArtistHeroProps = {
   name: string;
@@ -35,9 +36,12 @@ export default function ArtistHero({
       : `b. ${trimmedBirthYear}`;
   })();
 
+  const aspectRatio =
+    cover?.width && cover?.height ? `${cover.width}/${cover.height}` : undefined;
+
   return (
     <section className="relative border-b border-[var(--colors-grey-dark,#e0e0e0)] bg-[var(--colors-grey-default,#f6f6f5)]">
-      <Container className="grid gap-y-12 pb-16 pt-28 sm:pt-32 lg:grid-cols-2 lg:items-center lg:justify-items-center lg:gap-x-16 xl:gap-x-20">
+      <Container className="grid items-center gap-y-12 py-24 sm:py-32 lg:grid-cols-2 lg:gap-x-20 lg:justify-items-center xl:gap-x-24">
         <div className="flex w-full flex-col items-center">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="text-4xl font-light tracking-tight text-neutral-900 sm:text-5xl md:text-6xl">
@@ -53,21 +57,23 @@ export default function ArtistHero({
         </div>
 
         {cover?.url ? (
-          <figure className="relative flex w-full max-w-[560px] flex-col items-center text-center sm:max-w-none">
-            <div className="relative mx-auto w-full max-w-[560px] overflow-hidden border border-[var(--colors-grey-dark,#e0e0e0)] bg-white sm:max-w-none">
-              <div className="relative aspect-[4/5] w-full lg:max-h-[575px]">
+          <figure className="relative flex w-full max-w-[560px] flex-col items-center self-center text-center sm:max-w-none">
+            <div className="relative mx-auto flex w-full max-w-[560px] items-center justify-center overflow-hidden border border-[var(--colors-grey-dark,#e0e0e0)] bg-white sm:max-w-none">
+              <div className="relative w-full" style={{ aspectRatio: aspectRatio ?? "4 / 5" }}>
                 <Image
                   src={cover.url}
                   alt={cover.alt || `${displayName} — artwork`}
                   fill
                   sizes="(max-width: 1024px) 90vw, (max-width: 1440px) 42vw, 38vw"
-                  className="object-cover object-center"
+                  className="object-contain object-center"
                   priority
                 />
               </div>
             </div>
             {cover.alt ? (
-              <figcaption className="mt-4 text-center text-sm uppercase tracking-[0.28em] text-neutral-500">
+              <figcaption
+                className={`${EXHIBITION_LABEL_BASE_CLASS} mt-6 text-center text-neutral-500`}
+              >
                 {cover.alt}
               </figcaption>
             ) : null}

@@ -1,4 +1,5 @@
 import Container from "@/components/layout/Container";
+import { EXHIBITION_LABEL_BASE_CLASS } from "@/components/exhibitions/ExhibitionLabel";
 
 type Props = {
   html?: string | null;
@@ -14,7 +15,9 @@ export default function ArtistBioSection({ html, title = "Biography" }: Props) {
         <div
           className="grid grid-cols-1 gap-y-6 md:[grid-template-columns:repeat(12,minmax(0,1fr))] md:gap-x-14 xl:[grid-template-columns:repeat(24,minmax(0,1fr))] xl:gap-x-8"
         >
-          <div className="col-span-full md:[grid-column:1/span_3] xl:[grid-column:1/span_5] text-xs uppercase tracking-[0.18em] text-neutral-500">
+          <div
+            className={`${EXHIBITION_LABEL_BASE_CLASS.trim()} col-span-full md:[grid-column:1/span_3] xl:[grid-column:1/span_5] text-neutral-500`}
+          >
             {title}
           </div>
 
