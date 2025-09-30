@@ -100,14 +100,49 @@ function asDate(v?: string) {
 }
 
 // ----- Title logic centralised -----
-export function isGroupShow(ex: Pick<ExhibitionCard, "artist" | "isGroup">): boolean {
+export function isGroupShow(
+  ex: Pick<ExhibitionCard, "artist" | "isGroup" | "variant">
+): boolean {
   if (ex?.isGroup === true) return true;
-  const a = (ex?.artist ?? "").trim().toLowerCase();
-  return a === "group exhibition" || a === "group show" || a === "group";
+
+  const variant = ex?.variant?.trim().toLowerCase();
+  if (variant && (variant.includes("group") || variant.includes("collective"))) {
+    return true;
+  }
+
+  const artistValue = (ex?.artist ?? "").trim().toLowerCase();
+  if (!artistValue) return false;
+
+  const simpleMatches = [
+    "group exhibition",
+    "group show",
+    "group",
+    "various artists",
+    "multiple artists",
+  ];
+  if (simpleMatches.includes(artistValue)) return true;
+
+  if (
+    artistValue.includes("group exhibition") ||
+    artistValue.includes("group show")
+  )
+    return true;
+
+  const multiArtistSeparators = [", ", " & ", " and ", " / ", "+", "/"];
+  if (
+    multiArtistSeparators.some((sep) => {
+      if (!artistValue.includes(sep)) return false;
+      const parts = artistValue.split(sep).map((part) => part.trim());
+      return parts.filter(Boolean).length >= 2;
+    })
+  )
+    return true;
+
+  return false;
 }
 
 export function headingParts(
-  ex: Pick<ExhibitionCard, "title" | "artist" | "isGroup">
+  ex: Pick<ExhibitionCard, "title" | "artist" | "isGroup" | "variant">
 ): { primary: string; secondary?: string; isGroup: boolean } {
   const group = isGroupShow(ex);
   const primary = group ? (ex.title || ex.artist || "") : (ex.artist || ex.title || "");

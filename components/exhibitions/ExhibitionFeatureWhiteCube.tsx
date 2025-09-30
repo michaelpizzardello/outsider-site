@@ -27,6 +27,7 @@ export default function ExhibitionFeatureWhiteCube({
     title: ex.title,
     artist: ex.artist,
     isGroup: ex.isGroup,
+    variant: ex.variant,
   });
 
   // Allow callers to pick the semantic heading level (h2/h3/etc.).

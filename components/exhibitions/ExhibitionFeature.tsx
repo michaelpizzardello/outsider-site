@@ -25,6 +25,7 @@ export default function ExhibitionFeature({
     title: ex.title,
     artist: ex.artist,
     isGroup: ex.isGroup,
+    variant: ex.variant,
   });
 
   const HeadingTag = headingLevel;

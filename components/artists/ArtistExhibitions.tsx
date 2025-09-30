@@ -224,6 +224,7 @@ export default async function ArtistExhibitions({ artistHandle, artistName }: Pr
               title: ex.title,
               artist: ex.artist,
               isGroup: ex.isGroup,
+              variant: ex.variant,
             });
             return (
               <article key={ex.handle} className="group">

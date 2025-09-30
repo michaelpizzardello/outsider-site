@@ -220,33 +220,44 @@ function CardText({
   buttonLabel: string;
 }) {
   // Split title/artist for two-line lockup
-  const { primary, secondary } = headingParts({
+  const { primary, secondary, isGroup } = headingParts({
     title: ex.title,
     artist: ex.artist,
     isGroup: ex.isGroup,
+    variant: ex.variant,
   });
 
   return (
-    <div className="mt-4 ">
+    <div className="mt-4">
       {/* Micro top label (CURRENT / UPCOMING / PAST EXHIBITION) */}
       {topLabel ? <ExhibitionLabel as="p">{topLabel}</ExhibitionLabel> : null}
 
       {/* Title lockup */}
-      <h3 className="mt-2 text-base font-medium leading-snug">
-        <span className="text-xl block">{primary}</span>
+      <h3 className="mt-6 text-base font-medium leading-snug">
+        <span className={clsx("block text-2xl", isGroup && "italic")}>
+          {primary}
+        </span>
         {secondary && (
-          <span className="block font-light text-lg">{secondary}</span>
+          <span
+            className={clsx("block text-lg font-normal", !isGroup && "italic")}
+          >
+            {secondary}
+          </span>
         )}
       </h3>
 
       {/* Dates preferred; summary fallback; optional location */}
-      <p className="mt-2 text-sm text-neutral-600">
+      <p className="mt-1 text-md">
         {ex.start ? formatDates(ex.start, ex.end) : ex.summary ?? ""}
       </p>
       {/* {ex.location && <p className="text-sm text-neutral-500">{ex.location}</p>} */}
 
       {/* CTA (arrow + underline on hover) */}
-      <ArrowCtaInline label={buttonLabel} className="mt-4" underline={false} />
+      <ArrowCtaInline
+        label={buttonLabel}
+        className="mt-6 mb-10"
+        underline={false}
+      />
     </div>
   );
 }

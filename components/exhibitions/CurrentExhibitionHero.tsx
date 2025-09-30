@@ -25,6 +25,7 @@ export default function CurrentExhibitionHero({
     title,
     artist,
     isGroup: ex?.isGroup,
+    variant: ex?.variant,
   });
 
   return (
