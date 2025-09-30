@@ -23,6 +23,7 @@ export type ExhibitionCard = {
   start?: Date;
   end?: Date;
   hero?: { url: string; width?: number; height?: number; alt?: string };
+  banner?: { url: string; width?: number; height?: number; alt?: string };
   summary?: string; // normalised from short_text / short-text / etc.
   isGroup?: boolean; // optional future flag from Shopify if you add one
   variant?: string; // exhibition template variant (minimal/standard/feature/announcement)
@@ -165,6 +166,10 @@ function mapNode(n: Node): ExhibitionCard {
       img(n.fields, "heroimage") ??
       img(n.fields, "coverimage") ??
       img(n.fields, "coverImage"),
+    banner:
+      img(n.fields, "banner_image") ??
+      img(n.fields, "bannerImage") ??
+      img(n.fields, "bannerimage"),
     variant: text(n.fields, "variant"),
     // if you later add a boolean field, map it here:
     // isGroup: text(n.fields, "is_group", "isGroup") === "true",

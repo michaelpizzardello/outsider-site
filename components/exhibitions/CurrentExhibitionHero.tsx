@@ -15,9 +15,11 @@ export default function CurrentExhibitionHero({
   topLabel?: string;
   buttonLabel?: string;
 }) {
-  const imgSrc = ex?.hero?.url ?? "";
+  const bannerImage = ex?.banner ?? ex?.hero;
+  const imgSrc = bannerImage?.url ?? "";
   const title = ex?.title ?? "";
   const artist = ex?.artist?.trim() ?? "";
+  const imgAlt = bannerImage?.alt ?? ex?.hero?.alt ?? (title || "Exhibition");
 
   const dateText = formatDates(ex?.start, ex?.end) || "Details to be announced";
 
@@ -33,7 +35,7 @@ export default function CurrentExhibitionHero({
       {imgSrc ? (
         <Image
           src={imgSrc}
-          alt={title || "Exhibition"}
+          alt={imgAlt}
           fill
           priority
           sizes="100vw"
