@@ -10,7 +10,7 @@ import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 
 type Props = {
   ex: ExhibitionCard;
-  label: string;
+  label?: string;
   ctaText: string;
   className?: string;
   headingLevel?: keyof JSX.IntrinsicElements;
@@ -38,12 +38,16 @@ export default function ExhibitionFeatureWhiteCube({
       <div className="mt-4 grid grid-cols-1 gap-y-6 lg:grid-cols-12 lg:gap-x-14 xl:gap-x-20">
         {/* Text column */}
         <div className="order-2 flex flex-col lg:order-1 lg:col-span-5 2xl:col-span-5">
-          <ExhibitionLabel as="p">{label}</ExhibitionLabel>
+          {label ? <ExhibitionLabel as="p">{label}</ExhibitionLabel> : null}
 
           {/* Headline + optional supporting line */}
           <div className=" ">
             <HeadingTag
-              className={clsx("mt-2 text-3xl font-normal", isGroup && "italic")}
+              className={clsx(
+                label ? "mt-2" : "mt-0",
+                "text-3xl font-normal",
+                isGroup && "italic"
+              )}
             >
               <Link
                 href={`/exhibitions/${ex.handle}`}
