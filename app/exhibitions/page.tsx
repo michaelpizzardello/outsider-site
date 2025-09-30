@@ -132,7 +132,9 @@ export default async function ExhibitionsPage() {
                 )}
                 {/* Section heading (full-width divider rendered above) */}
                 {showHeading && (
-                  <h2 className="mb-12 text-3xl font-normal">{s.label}</h2>
+                  <h2 className="mb-12 text-3xl xl:text-4xl font-medium">
+                    {s.label}
+                  </h2>
                 )}
 
                 {useFeatureLayout ? (
@@ -145,12 +147,12 @@ export default async function ExhibitionsPage() {
                     />
                   </div>
                 ) : (
-                <div
-                  className={clsx(
-                    bodyOffsetClass,
-                    "grid grid-cols-1 gap-x-16 gap-y-14 md:grid-cols-2 md:gap-x-20 md:gap-y-18 lg:gap-x-24 lg:gap-y-20 xl:gap-x-32 xl:gap-y-28"
-                  )}
-                >
+                  <div
+                    className={clsx(
+                      bodyOffsetClass,
+                      "grid grid-cols-1 gap-x-16 gap-y-14 md:grid-cols-2 md:gap-x-20 md:gap-y-18 lg:gap-x-24 lg:gap-y-20 xl:gap-x-32 xl:gap-y-28"
+                    )}
+                  >
                     {s.items.map((ex) => (
                       <article key={ex.handle} className="group">
                         {/* Full-card link to detail route */}
@@ -227,13 +229,17 @@ function CardText({
   return (
     <div className="mt-4">
       {/* Micro top label (CURRENT / UPCOMING / PAST EXHIBITION) */}
-      {topLabel ? <ExhibitionLabel as="p">{topLabel}</ExhibitionLabel> : null}
+      {topLabel ? (
+        <ExhibitionLabel as="p" className="mb-3 xl:mb-4">
+          {topLabel}
+        </ExhibitionLabel>
+      ) : null}
 
       {/* Title lockup */}
-      <h3 className="mt-6 text-base font-medium leading-snug xl:text-lg">
+      <h3 className="mt-5 text-base font-medium leading-snug xl:text-lg">
         <span
           className={clsx(
-            "block text-2xl xl:text-4xl",
+            "block text-[1.7rem] xl:text-[2rem]",
             isGroup && "italic"
           )}
         >
@@ -242,7 +248,7 @@ function CardText({
         {secondary && (
           <span
             className={clsx(
-              "block text-lg font-normal xl:text-2xl",
+              "block text-base font-normal xl:text-[1.5rem]",
               !isGroup && "italic"
             )}
           >
@@ -252,7 +258,7 @@ function CardText({
       </h3>
 
       {/* Dates preferred; summary fallback; optional location */}
-      <p className="mt-1 text-md xl:text-xl">
+      <p className="mt-2 text-[0.95rem] xl:text-lg">
         {ex.start ? formatDates(ex.start, ex.end) : ex.summary ?? ""}
       </p>
       {/* {ex.location && <p className="text-sm text-neutral-500">{ex.location}</p>} */}
