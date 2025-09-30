@@ -58,7 +58,7 @@ export default function SiteFooter({
   }
 
   return (
-    <footer className="mt-16 border-t border-neutral-200 bg-white">
+    <footer className="border-t border-neutral-200 bg-white">
       <Container>
         <div className="py-10 md:py-14">
           {/* --- Newsletter (single section) --- */}

@@ -193,7 +193,6 @@ export default async function ArtistsPage() {
 
   return (
     <main
-      className="pb-16 sm:pb-20"
       style={{ paddingTop: "var(--header-h, 76px)" }} // respect dynamic header height variable
     >
       {/* Section header reuses the shared subheader component */}
