@@ -87,10 +87,7 @@ export default async function ExhibitionsPage() {
      - Top padding respects sticky header height via CSS var from <Header/>
      - Shared PageSubheader handles the consistent page title band */
   return (
-    <main
-      className="pb-10 sm:pb-12"
-      style={{ paddingTop: "var(--header-h, 76px)" }}
-    >
+    <main style={{ paddingTop: "var(--header-h, 76px)" }}>
       <PageSubheader title="Exhibitions" />
 
       <div className="bg-neutral-100 pt-12 pb-10 sm:pt-16 sm:pb-12">
@@ -135,7 +132,7 @@ export default async function ExhibitionsPage() {
                 )}
                 {/* Section heading (full-width divider rendered above) */}
                 {showHeading && (
-                  <h2 className="mb-12 text-3xl font-NORMAL">{s.label}</h2>
+                  <h2 className="mb-12 text-3xl font-normal">{s.label}</h2>
                 )}
 
                 {useFeatureLayout ? (
@@ -148,12 +145,12 @@ export default async function ExhibitionsPage() {
                     />
                   </div>
                 ) : (
-                  <div
-                    className={clsx(
-                      bodyOffsetClass,
-                      "grid grid-cols-1 gap-10 md:grid-cols-2"
-                    )}
-                  >
+                <div
+                  className={clsx(
+                    bodyOffsetClass,
+                    "grid grid-cols-1 gap-x-16 gap-y-14 md:grid-cols-2 md:gap-x-20 md:gap-y-18 lg:gap-x-24 lg:gap-y-20 xl:gap-x-32 xl:gap-y-28"
+                  )}
+                >
                     {s.items.map((ex) => (
                       <article key={ex.handle} className="group">
                         {/* Full-card link to detail route */}
@@ -233,13 +230,21 @@ function CardText({
       {topLabel ? <ExhibitionLabel as="p">{topLabel}</ExhibitionLabel> : null}
 
       {/* Title lockup */}
-      <h3 className="mt-6 text-base font-medium leading-snug">
-        <span className={clsx("block text-2xl", isGroup && "italic")}>
+      <h3 className="mt-6 text-base font-medium leading-snug xl:text-lg">
+        <span
+          className={clsx(
+            "block text-2xl xl:text-4xl",
+            isGroup && "italic"
+          )}
+        >
           {primary}
         </span>
         {secondary && (
           <span
-            className={clsx("block text-lg font-normal", !isGroup && "italic")}
+            className={clsx(
+              "block text-lg font-normal xl:text-2xl",
+              !isGroup && "italic"
+            )}
           >
             {secondary}
           </span>
@@ -247,7 +252,7 @@ function CardText({
       </h3>
 
       {/* Dates preferred; summary fallback; optional location */}
-      <p className="mt-1 text-md">
+      <p className="mt-1 text-md xl:text-xl">
         {ex.start ? formatDates(ex.start, ex.end) : ex.summary ?? ""}
       </p>
       {/* {ex.location && <p className="text-sm text-neutral-500">{ex.location}</p>} */}

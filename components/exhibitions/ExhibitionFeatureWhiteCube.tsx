@@ -42,11 +42,11 @@ export default function ExhibitionFeatureWhiteCube({
           {label ? <ExhibitionLabel as="p">{label}</ExhibitionLabel> : null}
 
           {/* Headline + optional supporting line */}
-          <div className=" ">
+          <div className="">
             <HeadingTag
               className={clsx(
                 label ? "mt-2" : "mt-0",
-                "text-3xl font-normal",
+                "text-3xl font-normal xl:text-5xl",
                 isGroup && "italic"
               )}
             >
@@ -62,7 +62,7 @@ export default function ExhibitionFeatureWhiteCube({
             {secondary ? (
               <div
                 className={clsx(
-                  "text-xl font-regular leading-tight",
+                  "text-xl font-regular leading-tight xl:text-3xl",
                   !isGroup && "italic"
                 )}
               >
@@ -72,11 +72,8 @@ export default function ExhibitionFeatureWhiteCube({
           </div>
 
           {/* Supporting meta (dates / location) */}
-          <div className="mt-4  text-[0.95rem] sm:text-base">
+          <div className="mt-4 text-[0.95rem] sm:text-base xl:text-xl">
             <div>{hasDates ? formatDates(ex.start, ex.end) : null}</div>
-            {ex.location ? (
-              <div className="font-medium">{ex.location}</div>
-            ) : null}
           </div>
 
           {/* Optional summary paragraph */}
