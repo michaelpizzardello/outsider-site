@@ -107,7 +107,8 @@ export default async function ExhibitionsPage() {
           const { top, button } = heroLabels(labelKey);
 
           const useFeatureLayout =
-            (s.key === "current" || s.key === "upcoming") && s.items.length === 1;
+            (s.key === "current" || s.key === "upcoming") &&
+            s.items.length === 1;
 
           return (
             <section
@@ -134,7 +135,10 @@ export default async function ExhibitionsPage() {
                   {s.items.map((ex) => (
                     <article key={ex.handle} className="group">
                       {/* Full-card link to detail route */}
-                      <Link href={`/exhibitions/${ex.handle}`} className="block">
+                      <Link
+                        href={`/exhibitions/${ex.handle}`}
+                        className="block"
+                      >
                         {/* Media (4:3). Hover: subtle zoom */}
                         {ex.hero?.url && (
                           <div className="relative aspect-[4/3] overflow-hidden">
@@ -215,11 +219,7 @@ function CardText({
       {ex.location && <p className="text-sm text-neutral-500">{ex.location}</p>}
 
       {/* CTA (arrow + underline on hover) */}
-      <ArrowCtaInline
-        label={buttonLabel}
-        className="mt-4"
-        underline={false}
-      />
+      <ArrowCtaInline label={buttonLabel} className="mt-4" underline={false} />
     </div>
   );
 }
