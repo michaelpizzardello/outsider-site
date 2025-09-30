@@ -43,7 +43,7 @@ export default function ExhibitionFeatureWhiteCube({
           {/* Headline + optional supporting line */}
           <div className=" ">
             <HeadingTag
-              className={clsx("text-2xl font-normal", isGroup && "italic")}
+              className={clsx("mt-2 text-3xl font-normal", isGroup && "italic")}
             >
               <Link
                 href={`/exhibitions/${ex.handle}`}
@@ -57,7 +57,7 @@ export default function ExhibitionFeatureWhiteCube({
             {secondary ? (
               <div
                 className={clsx(
-                  "text-xl font-normal leading-tight",
+                  "text-xl font-regular leading-tight",
                   !isGroup && "italic"
                 )}
               >
@@ -67,7 +67,7 @@ export default function ExhibitionFeatureWhiteCube({
           </div>
 
           {/* Supporting meta (dates / location) */}
-          <div className="mt-2.5  text-[0.95rem] sm:text-base">
+          <div className="mt-4  text-[0.95rem] sm:text-base">
             <div>{hasDates ? formatDates(ex.start, ex.end) : null}</div>
             {ex.location ? (
               <div className="font-medium">{ex.location}</div>
@@ -76,7 +76,7 @@ export default function ExhibitionFeatureWhiteCube({
 
           {/* Optional summary paragraph */}
           {ex.summary ? (
-            <p className="mt-8 hidden max-w-[62ch] text-sm leading-relaxed text-neutral-800 md:block">
+            <p className="mt-8 hidden max-w-[62ch] text-md leading-relaxed text-neutral-800 md:block">
               {ex.summary}
             </p>
           ) : null}
@@ -85,7 +85,7 @@ export default function ExhibitionFeatureWhiteCube({
           <ArrowCtaLink
             href={`/exhibitions/${ex.handle}`}
             label={ctaText}
-            className="mt-5 text-neutral-900"
+            className="mt-8 text-neutral-900"
             aria-label={`${ctaText}: ${ex.artist ? `${ex.artist} — ` : ""}${
               ex.title
             }`}

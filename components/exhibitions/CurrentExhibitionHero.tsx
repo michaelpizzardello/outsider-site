@@ -77,9 +77,7 @@ export default function CurrentExhibitionHero({
           ) : null}
 
           {/* Dates + location */}
-          <p className="mt-10 text-lg opacity-90 sm:text-lg md:text-2xl xl:text-3xl">
-            {dateText}
-          </p>
+          <p className="mt-10 text-display-3 opacity-90 ">{dateText}</p>
 
           {/* Call to action button */}
           <ArrowCtaLink

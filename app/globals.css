@@ -47,7 +47,7 @@ body {
     font-weight: 400;
     line-height: 1.25;
     letter-spacing: -0.025em;
-    font-size: clamp(1rem, 1rem + 5vw, 5.25rem);
+    font-size: clamp(1rem, 1.4rem + 3.5vw, 5.25rem);
   }
 
   .text-display-2 {
@@ -55,30 +55,30 @@ body {
     font-weight: 300;
     line-height: 0.5;
     letter-spacing: -0.02em;
-    font-size: clamp(0.5rem, 0.8rem + 3.5vw, 3.75rem);
+    font-size: clamp(0.6rem, 0.8rem + 2.5vw, 3.25rem);
   }
 
   .text-display-3 {
     margin-top: 40px;
     font-weight: 500;
-    line-height: 1.15;
+    line-height: 2.5;
     letter-spacing: -0.015em;
-    font-size: clamp(2rem);
+    font-size: clamp(0.5rem, 0.8rem + 0.8vw, 1.5rem);
   }
 }
 
 @media (min-width: 1536px) {
   @layer utilities {
-    .text-display-1 {
+    /* .text-display-1 {
       font-size: clamp(2.75rem, 2.3rem + 3vw, 6rem);
-    }
+    } */
 
-    .text-display-2 {
+    /* .text-display-2 {
       font-size: clamp(2.25rem, 1.8rem + 2.2vw, 4.5rem);
-    }
+    } */
 
-    .text-display-3 {
+    /* .text-display-3 {
       font-size: clamp(1.75rem, 1.45rem + 1.4vw, 3.1rem);
-    }
+    } */
   }
 }
