@@ -634,7 +634,12 @@ export default async function ExhibitionPage({
   // 4) Render page blocks
   return (
     <>
-      <CurrentExhibitionHero ex={ex} topLabel={top} buttonLabel={button} />
+      <CurrentExhibitionHero
+        ex={ex}
+        topLabel={top}
+        buttonLabel={button}
+        showCta={false}
+      />
 
       <Details
         startDate={ex.start}

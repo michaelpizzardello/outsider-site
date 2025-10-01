@@ -10,10 +10,12 @@ export default function CurrentExhibitionHero({
   ex,
   topLabel = HERO_LABELS.top,
   buttonLabel = HERO_LABELS.button,
+  showCta = true,
 }: {
   ex: ExhibitionCard | null;
   topLabel?: string;
   buttonLabel?: string;
+  showCta?: boolean;
 }) {
   const bannerImage = ex?.banner ?? ex?.hero;
   const imgSrc = bannerImage?.url ?? "";
@@ -83,12 +85,14 @@ export default function CurrentExhibitionHero({
           <p className="mt-10 text-display-3 opacity-90 ">{dateText}</p>
 
           {/* Call to action button */}
-          <ArrowCtaLink
-            href={ex ? `/exhibitions/${ex.handle}` : "/exhibitions"}
-            label={buttonLabel}
-            align="center"
-            className="mt-12 hover:opacity-85"
-          />
+          {showCta ? (
+            <ArrowCtaLink
+              href={ex ? `/exhibitions/${ex.handle}` : "/exhibitions"}
+              label={buttonLabel}
+              align="center"
+              className="mt-12 hover:opacity-85"
+            />
+          ) : null}
         </div>
       </div>
     </section>

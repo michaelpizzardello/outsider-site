@@ -1,4 +1,5 @@
 import Container from "@/components/layout/Container";
+import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
 import ShareButton from "./ShareButton";
 import ExpandableText from "./ExpandableText";
@@ -37,57 +38,57 @@ export default function Details({
           md:[grid-template-columns:minmax(220px,max-content)_minmax(0,0.80fr)]
           md:gap-x-[clamp(15px,2vw,20px)]
         "
-      >
-        {/* LEFT RAIL */}
-        <aside
-          className="
+        >
+          {/* LEFT RAIL */}
+          <aside
+            className="
             col-span-full
             md:col-span-1 md:col-start-1
             space-y-6 text-sm leading-relaxed
           "
-        >
-          {(startDate || endDate) && (
-            <div>
-              <div className="text-xs uppercase tracking-[0.18em] opacity-60">
-                Dates
+          >
+            {(startDate || endDate) && (
+              <div>
+                <ExhibitionLabel as="div">
+                  Dates
+                </ExhibitionLabel>
+                <div className="text-[1rem]">{dateRange}</div>
               </div>
-              <div className="mt-1">{dateRange}</div>
-            </div>
-          )}
+            )}
 
-          {location && location.trim() && (
-            <div>
-              <div className="text-xs uppercase tracking-[0.18em] opacity-60">
-                Location
+            {location && location.trim() && (
+              <div>
+                <ExhibitionLabel as="div">
+                  Location
+                </ExhibitionLabel>
+                <div className="whitespace-pre-wrap">{location}</div>
               </div>
-              <div className="mt-1 whitespace-pre-wrap">{location}</div>
-            </div>
-          )}
+            )}
 
-          <div>
-            <div className="text-xs uppercase tracking-[0.18em] opacity-60">
-              Share
+            <div>
+              <ExhibitionLabel as="div">
+                Share
+              </ExhibitionLabel>
+              <div>
+                <ShareButton url={shareUrl} />
+              </div>
             </div>
-            <div className="mt-1">
-              <ShareButton url={shareUrl} />
-            </div>
-          </div>
-        </aside>
+          </aside>
 
-        {/* BODY */}
-        {hasText && (
-          <div
-            className="
+          {/* BODY */}
+          {hasText && (
+            <div
+              className="
               col-span-full
               md:col-span-1 md:col-start-2 md:justify-self-center
             "
-          >
-            {/* Keep a steady reading measure; only shrink when forced by viewport */}
-            <div className="max-w-[60ch] w-full md:mx-auto">
-              <ExpandableText html={longTextHtml!} clampLines={12} />
+            >
+              {/* Keep a steady reading measure; only shrink when forced by viewport */}
+              <div className="max-w-[60ch] w-full md:mx-auto">
+                <ExpandableText html={longTextHtml!} clampLines={12} />
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </Container>
     </section>
