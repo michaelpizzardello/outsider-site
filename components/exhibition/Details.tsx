@@ -10,6 +10,7 @@ type Props = {
   startDate?: Dateish;
   endDate?: Dateish;
   location?: string | null;
+  shortText?: string | null;
   longTextHtml?: string | null; // HTML string
   shareUrl?: string;
 };
@@ -18,6 +19,7 @@ export default function Details({
   startDate,
   endDate,
   location,
+  shortText,
   longTextHtml,
   shareUrl,
 }: Props) {
@@ -25,7 +27,9 @@ export default function Details({
   const hasMeta = Boolean(
     startDate || endDate || (location && location.trim())
   );
-  const hasText = Boolean(longTextHtml && longTextHtml.trim());
+  const hasText = Boolean(
+    (shortText && shortText.trim()) || (longTextHtml && longTextHtml.trim())
+  );
   if (!hasMeta && !hasText) return null;
 
   return (
@@ -35,8 +39,8 @@ export default function Details({
         <div
           className="
           grid grid-cols-1 gap-y-10
-          md:[grid-template-columns:minmax(220px,max-content)_minmax(0,0.80fr)]
-          md:gap-x-[clamp(15px,2vw,20px)]
+          md:[grid-template-columns:minmax(240px,max-content)_minmax(0,0.78fr)]
+          md:gap-x-[clamp(32px,4vw,48px)]
         "
         >
           {/* LEFT RAIL */}
@@ -84,8 +88,12 @@ export default function Details({
             "
             >
               {/* Keep a steady reading measure; only shrink when forced by viewport */}
-              <div className="max-w-[60ch] w-full md:mx-auto">
-                <ExpandableText html={longTextHtml!} clampLines={12} />
+              <div className="max-w-[68ch] w-full md:ml-auto md:mr-0">
+                <ExpandableText
+                  shortText={shortText}
+                  longTextHtml={longTextHtml}
+                  clampLines={12}
+                />
               </div>
             </div>
           )}

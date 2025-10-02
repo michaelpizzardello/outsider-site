@@ -570,7 +570,23 @@ export default async function ExhibitionPage({
   //    - Else any HTML-like value
   //    - Else the longest multi-line field as paragraphs
   const longTextHtml = extractLongCopy(node.fields as any);
-  console.log("[exhibitions/[handle]] longTextHtml?", Boolean(longTextHtml), longTextHtml ? (longTextHtml.length + " chars") : "");
+  const richFieldsDebug = (node.fields as any[])
+    .filter((f) => typeof f?.type === "string" && /rich/i.test(f.type || ""))
+    .map((f) => ({
+      key: f?.key,
+      type: f?.type,
+      hasValue: Boolean(f?.value),
+    }));
+  console.log("[exhibitions/[handle]] copy debug", {
+    shortLen: ex.summary ? ex.summary.length : 0,
+    shortSample: ex.summary ? ex.summary.slice(0, 120) : null,
+    longLen: longTextHtml ? longTextHtml.length : 0,
+    longSample: longTextHtml ? longTextHtml.slice(0, 160) : null,
+    richFields: richFieldsDebug,
+  });
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[exhibitions/[handle]] longTextHtml raw ->", longTextHtml);
+  }
 
   // 3b) Additional sections
   const installationImages = collectInstallationImages(node.fields);
@@ -645,6 +661,7 @@ export default async function ExhibitionPage({
         startDate={ex.start}
         endDate={ex.end}
         location={ex.location}
+        shortText={ex.summary ?? null}
         longTextHtml={longTextHtml}
       />
 

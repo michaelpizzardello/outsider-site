@@ -49,7 +49,7 @@ export default function AboutArtist({
         >
           {bioHtml ? (
             <div className="max-w-[60ch] md:max-w-[59ch] xl:max-w-none">
-              <ExpandableText html={bioHtml} clampLines={12} />
+              <ExpandableText longTextHtml={bioHtml} clampLines={12} />
             </div>
           ) : null}
 
