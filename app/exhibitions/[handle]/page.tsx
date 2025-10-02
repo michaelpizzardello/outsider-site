@@ -234,7 +234,8 @@ function toCard(n: Node): ExhibitionCard {
     handle: n.handle,
     title: text(f, "title", "name") ?? n.handle,
     artist: text(f, "artist", "artists", "artistName"),
-    location: text(f, "location", "subtitle"),
+    location: text(f, "address", "location", "subtitle"),
+    openingInfo: text(f, "opening_info", "openinginfo", "openingInfo"),
     start: asDate(text(f, "startDate", "startdate", "start")),
     end: asDate(text(f, "endDate", "enddate", "end")),
     summary: text(
@@ -661,6 +662,7 @@ export default async function ExhibitionPage({
         startDate={ex.start}
         endDate={ex.end}
         location={ex.location}
+        openingInfo={ex.openingInfo ?? null}
         shortText={ex.summary ?? null}
         longTextHtml={longTextHtml}
       />

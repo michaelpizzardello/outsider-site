@@ -76,8 +76,11 @@ export default function ExhibitionFeatureWhiteCube({
           </div>
 
           {/* Supporting meta (dates / location) */}
-          <div className="mt-4 text-[0.95rem] sm:text-base xl:mt-6 xl:text-xl">
+          <div className="mt-4 space-y-1 text-[0.95rem] sm:text-base xl:mt-6 xl:text-xl">
             <div>{hasDates ? formatDates(ex.start, ex.end) : null}</div>
+            {ex.location ? (
+              <div className="whitespace-pre-wrap">{ex.location}</div>
+            ) : null}
           </div>
 
           {/* Optional summary paragraph */}

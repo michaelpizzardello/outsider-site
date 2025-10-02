@@ -155,7 +155,7 @@ export default function ExpandableText({
       {hasShort ? (
         <>
           <div
-            className="prose max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4"
+            className="prose prose-lg md:prose-xl max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4"
             dangerouslySetInnerHTML={{ __html: shortHtml! }}
           />
 

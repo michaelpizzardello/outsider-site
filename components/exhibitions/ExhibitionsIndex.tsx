@@ -133,7 +133,7 @@ export default function ExhibitionsIndex({
                       : ex.summary ?? ""}
                   </p>
                   {ex.location && (
-                    <p className="text-sm text-neutral-500">{ex.location}</p>
+                    <p className="mt-1 text-sm text-neutral-600 whitespace-pre-wrap">{ex.location}</p>
                   )}
                 </Link>
               </article>

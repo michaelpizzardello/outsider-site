@@ -90,9 +90,11 @@ export default function InstallationViews({
   );
 
   return (
-    <section className="w-full py-10 md:py-14">
+    <section className="w-full border-t border-neutral-200 pt-8 pb-16 md:pt-10 md:pb-20">
       <Container>
-        <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
+        <div className="pt-6 md:pt-8">
+          <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
+        </div>
       </Container>
 
       {/* Full-bleed carousel wrapper without causing page overflow */}
@@ -118,12 +120,11 @@ export default function InstallationViews({
                 className="
                   group relative shrink-0 text-left outline-none
                   basis-[92vw] sm:basis-[460px] md:basis-[600px] lg:basis-[720px] xl:basis-[940px] 2xl:basis-[1040px]
-                  xl:flex xl:min-h-[600px]
                 "
                 aria-label="View next installation image"
               >
                 {/* Image card */}
-                <div className="relative w-full bg-white p-2 xl:p-4 xl:flex-1 xl:flex xl:items-center xl:justify-center">
+                <div className="relative w-full bg-white p-2">
                   {img.width && img.height ? (
                     <Image
                       src={img.url}
@@ -131,12 +132,12 @@ export default function InstallationViews({
                       width={img.width}
                       height={img.height}
                       sizes="(min-width:1536px) 1040px, (min-width:1280px) 940px, (min-width:1024px) 720px, (min-width:768px) 560px, (min-width:640px) 420px, 320px"
-                      className="w-full h-auto object-contain xl:h-full xl:w-auto xl:max-h-full xl:max-w-full"
+                      className="w-full h-auto object-contain"
                       priority={idx === 0}
                     />
                   ) : (
-                    <div className="relative w-full xl:h-full">
-                      <div className="aspect-[4/3] w-full xl:hidden" />
+                    <div className="relative w-full">
+                      <div className="aspect-[4/3] w-full" />
                       <Image
                         src={img.url}
                         alt={img.alt || "Installation view"}

@@ -1,9 +1,6 @@
 import "server-only";
-import Image from "next/image";
-import Link from "next/link";
 
-import Container from "@/components/layout/Container";
-import { ArrowCtaLink } from "@/components/ui/ArrowCta";
+import FeaturedWorksClient from "./FeaturedWorksClient";
 import { shopifyFetch } from "@/lib/shopify";
 
 type Money = { amount: string; currencyCode: string };
@@ -121,6 +118,26 @@ function productMatchesExhibition(n: ProductNode, handle: string): boolean {
   return nodes?.some((r) => r?.__typename === "Metaobject" && r?.handle === handle) ?? false;
 }
 
+type ArtworkPayload = {
+  id: string;
+  handle: string;
+  title: string;
+  artist: string | null;
+  year: string | null;
+  priceLabel: string;
+  featureImage?: {
+    url: string;
+    width?: number | null;
+    height?: number | null;
+    altText?: string | null;
+  } | null;
+  aspectRatio?: string;
+  heightFactor: number;
+  type: "L" | "P" | "S";
+};
+
+type LayoutRow = { layout: "full" | "pair" | "triple"; indexes: number[] };
+
 export default async function FeaturedWorks({
   exhibitionHandle,
   fallbackArtist,
@@ -161,11 +178,9 @@ export default async function FeaturedWorks({
 
   if (items.length === 0) return null;
 
-  type Artwork = (typeof items)[number];
-  type Row = { layout: "full" | "pair" | "triple"; items: Artwork[] };
-
-  const rows: Row[] = [];
-  const normType = (t: Artwork["type"]) => (t === "P" ? "P" : "L");
+  type ArtworkInternal = (typeof items)[number];
+  const rows: LayoutRow[] = [];
+  const normType = (t: ArtworkInternal["type"]) => (t === "P" ? "P" : "L");
 
   for (let i = 0; i < items.length; ) {
     const remaining = items.length - i;
@@ -180,175 +195,65 @@ export default async function FeaturedWorks({
     };
 
     if (nextTypeMatches(4)) {
-      rows.push({ layout: "pair", items: [items[i], items[i + 1]] });
-      rows.push({ layout: "pair", items: [items[i + 2], items[i + 3]] });
+      rows.push({ layout: "pair", indexes: [i, i + 1] });
+      rows.push({ layout: "pair", indexes: [i + 2, i + 3] });
       i += 4;
       continue;
     }
 
     if (nextTypeMatches(3)) {
       if (currentType === "P") {
-        rows.push({ layout: "triple", items: [items[i], items[i + 1], items[i + 2]] });
+        rows.push({ layout: "triple", indexes: [i, i + 1, i + 2] });
       } else {
-        rows.push({ layout: "full", items: [items[i]] });
-        rows.push({ layout: "pair", items: [items[i + 1], items[i + 2]] });
+        rows.push({ layout: "full", indexes: [i] });
+        rows.push({ layout: "pair", indexes: [i + 1, i + 2] });
       }
       i += 3;
       continue;
     }
 
     if (nextTypeMatches(2)) {
-      rows.push({ layout: "pair", items: [items[i], items[i + 1]] });
+      rows.push({ layout: "pair", indexes: [i, i + 1] });
       i += 2;
       continue;
     }
 
-    rows.push({ layout: "full", items: [items[i]] });
+    rows.push({ layout: "full", indexes: [i] });
     i += 1;
   }
-
-  const renderArtwork = (
-    art: Artwork,
-    opts: { span: "full" | "half" | "third"; forcedAspectRatio?: number }
-  ) => {
-    const { product, aspectRatio } = art;
-    const href = `/exhibitions/${exhibitionHandle}/artworks/${product.handle}`;
-    const artist = getArtistName(product, fallbackArtist);
+  const artworks: ArtworkPayload[] = items.map((item) => {
+    const product = item.product;
     const price = product.priceRange?.minVariantPrice ?? undefined;
-    const label = priceLabel({
-      price,
-      status: product.status?.value,
-      availableForSale: product.availableForSale,
-    });
-    const img = product.featuredImage;
-
-    const sizeAttr =
-      opts.span === "full"
-        ? "(min-width:1024px) 100vw, 100vw"
-        : opts.span === "third"
-        ? "(min-width:1024px) 33vw, 100vw"
-        : "(min-width:1024px) 50vw, 100vw";
-
-    const wrapperAspect =
-      typeof opts.forcedAspectRatio === "number"
-        ? `${opts.forcedAspectRatio}`
-        : aspectRatio;
-
-    return (
-      <div key={product.id} className="group flex h-full flex-col gap-y-8 md:gap-y-10">
-        <Link
-          href={href}
-          className="block flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-        >
-          {img ? (
-            <div
-              className="relative w-full overflow-hidden bg-white"
-              style={
-                wrapperAspect
-                  ? { aspectRatio: wrapperAspect }
-                  : { aspectRatio: opts.span === "full" ? "4 / 3" : "4 / 5" }
-              }
-            >
-              <Image
-                src={img.url}
-                alt={img.altText || product.title}
-                fill
-                className="object-contain object-bottom transition duration-300 group-hover:scale-[1.01]"
-                sizes={sizeAttr}
-              />
-            </div>
-          ) : (
-            <div className="bg-neutral-100" style={{ aspectRatio: "4 / 5" }} />
-          )}
-        </Link>
-
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-8 gap-y-4 text-[15px] leading-snug">
-          <Link
-            href={href}
-            className="min-w-[200px] flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-          >
-            {artist && <p className="font-medium">{artist}</p>}
-            <p className="mt-1 break-words underline-offset-4 group-hover:underline">
-              <span className="italic">{product.title}</span>
-              {product.year?.value && <span>, {product.year.value}</span>}
-            </p>
-            <p className="mt-2 font-medium">{label}</p>
-          </Link>
-
-          <div className="flex shrink-0 items-center gap-x-6 text-[13px] uppercase tracking-[0.2em]">
-            <ArrowCtaLink
-              href={href}
-              label="View work"
-              className="hidden uppercase tracking-[0.2em] sm:inline-flex"
-              underline={false}
-            />
-            <Link
-              href={`/enquire?artwork=${encodeURIComponent(product.id)}`}
-              className="hover:underline"
-            >
-              Enquire
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  };
+    return {
+      id: product.id,
+      handle: product.handle,
+      title: product.title,
+      artist: getArtistName(product, fallbackArtist) ?? null,
+      year: product.year?.value ?? null,
+      priceLabel: priceLabel({
+        price,
+        status: product.status?.value,
+        availableForSale: product.availableForSale,
+      }),
+      featureImage: product.featuredImage
+        ? {
+            url: product.featuredImage.url,
+            width: product.featuredImage.width,
+            height: product.featuredImage.height,
+            altText: product.featuredImage.altText,
+          }
+        : null,
+      aspectRatio: item.aspectRatio,
+      heightFactor: item.heightFactor,
+      type: item.type,
+    };
+  });
 
   return (
-    <section className="w-full py-10 md:py-14">
-      <Container>
-        <h2 className="mb-8 text-2xl font-medium tracking-tight sm:text-3xl lg:mb-12 lg:text-4xl">Featured Works</h2>
-
-        <div className="flex flex-col gap-y-16">
-          {rows.map((row, idx) => {
-            const maxHeightFactor = Math.max(
-              ...row.items.map((item) => item.heightFactor || 1)
-            );
-            const forcedAspect = maxHeightFactor > 0 ? 1 / maxHeightFactor : undefined;
-
-            if (row.layout === "full") {
-              return (
-                <div key={`full-${idx}`} className="grid grid-cols-1">
-                  {renderArtwork(row.items[0], {
-                    span: "full",
-                    forcedAspectRatio: forcedAspect,
-                  })}
-                </div>
-              );
-            }
-
-            if (row.layout === "pair") {
-              return (
-                <div
-                  key={`pair-${idx}`}
-                  className="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:items-end sm:gap-x-[6.5rem] xl:gap-x-[8rem]"
-                >
-                  {row.items.map((item) =>
-                    renderArtwork(item, {
-                      span: "half",
-                      forcedAspectRatio: forcedAspect,
-                    })
-                  )}
-                </div>
-              );
-            }
-
-            return (
-              <div
-                key={`triple-${idx}`}
-                className="grid grid-cols-1 gap-y-12 sm:grid-cols-3 sm:items-end sm:gap-x-[5.5rem] xl:gap-x-[7rem]"
-              >
-                {row.items.map((item) =>
-                  renderArtwork(item, {
-                    span: "third",
-                    forcedAspectRatio: forcedAspect,
-                  })
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </Container>
-    </section>
+    <FeaturedWorksClient
+      exhibitionHandle={exhibitionHandle}
+      artworks={artworks}
+      rows={rows}
+    />
   );
 }

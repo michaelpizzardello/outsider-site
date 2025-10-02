@@ -1,7 +1,6 @@
 import Container from "@/components/layout/Container";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
-import ShareButton from "./ShareButton";
 import ExpandableText from "./ExpandableText";
 
 type Dateish = Date | string | null | undefined;
@@ -10,22 +9,22 @@ type Props = {
   startDate?: Dateish;
   endDate?: Dateish;
   location?: string | null;
+  openingInfo?: string | null;
   shortText?: string | null;
   longTextHtml?: string | null; // HTML string
-  shareUrl?: string;
 };
 
 export default function Details({
   startDate,
   endDate,
   location,
+  openingInfo,
   shortText,
   longTextHtml,
-  shareUrl,
 }: Props) {
   const dateRange = formatDates(startDate, endDate);
   const hasMeta = Boolean(
-    startDate || endDate || (location && location.trim())
+    startDate || endDate || (location && location.trim()) || (openingInfo && openingInfo.trim())
   );
   const hasText = Boolean(
     (shortText && shortText.trim()) || (longTextHtml && longTextHtml.trim())
@@ -48,35 +47,35 @@ export default function Details({
             className="
             col-span-full
             md:col-span-1 md:col-start-1
-            space-y-6 text-sm leading-relaxed
+            space-y-8 text-sm leading-relaxed
           "
           >
             {(startDate || endDate) && (
               <div>
-                <ExhibitionLabel as="div">
+                <ExhibitionLabel as="div" className="mb-[2px]">
                   Dates
                 </ExhibitionLabel>
                 <div className="text-[1rem]">{dateRange}</div>
               </div>
             )}
 
-            {location && location.trim() && (
+            {openingInfo && openingInfo.trim() && (
               <div>
-                <ExhibitionLabel as="div">
-                  Location
+                <ExhibitionLabel as="div" className="mb-[2px]">
+                  Opening Reception
                 </ExhibitionLabel>
-                <div className="whitespace-pre-wrap">{location}</div>
+                <div className="text-[1rem] whitespace-pre-wrap">{openingInfo}</div>
               </div>
             )}
 
-            <div>
-              <ExhibitionLabel as="div">
-                Share
-              </ExhibitionLabel>
+            {location && location.trim() && (
               <div>
-                <ShareButton url={shareUrl} />
+                <ExhibitionLabel as="div" className="mb-[2px]">
+                  Location
+                </ExhibitionLabel>
+                <div className="text-[1rem] whitespace-pre-wrap">{location}</div>
               </div>
-            </div>
+            )}
           </aside>
 
           {/* BODY */}
@@ -84,7 +83,8 @@ export default function Details({
             <div
               className="
               col-span-full
-              md:col-span-1 md:col-start-2 md:justify-self-center
+              mt-6
+              md:col-span-1 md:col-start-2 md:mt-0 md:justify-self-center
             "
             >
               {/* Keep a steady reading measure; only shrink when forced by viewport */}

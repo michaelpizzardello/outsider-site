@@ -126,7 +126,7 @@ function mapNode(node: Node): ExhibitionWithRefs {
   const fields = node.fields;
   const title = text(fields, "title", "name") ?? node.handle;
   const artist = text(fields, "artist", "artists", "artistName");
-  const location = text(fields, "location", "subtitle");
+  const location = text(fields, "address", "location", "subtitle");
   const summary = text(fields, "short_text", "short-text", "shortText", "summary", "teaser");
   const start = toDate(text(fields, "startDate", "startdate", "start"));
   const end = toDate(text(fields, "endDate", "enddate", "end"));
@@ -255,7 +255,7 @@ export default async function ArtistExhibitions({ artistHandle, artistName }: Pr
                       {ex.start ? formatDates(ex.start, ex.end) : ex.summary ?? ""}
                     </p>
                     {ex.location ? (
-                      <p className="text-sm text-neutral-500">{ex.location}</p>
+                      <p className="mt-1 text-sm text-neutral-600 whitespace-pre-wrap">{ex.location}</p>
                     ) : null}
                     <ArrowCtaInline
                       label={labels.button}

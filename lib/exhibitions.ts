@@ -20,6 +20,7 @@ export type ExhibitionCard = {
   title: string;
   artist?: string;
   location?: string;
+  openingInfo?: string;
   start?: Date;
   end?: Date;
   hero?: { url: string; width?: number; height?: number; alt?: string };
@@ -156,7 +157,8 @@ function mapNode(n: Node): ExhibitionCard {
     handle: n.handle,
     title: text(n.fields, "title", "name") ?? n.handle,
     artist: text(n.fields, "artist", "artists", "artistName"),
-    location: text(n.fields, "location", "subtitle"),
+    location: text(n.fields, "address", "location", "subtitle"),
+    openingInfo: text(n.fields, "opening_info", "openinginfo", "openingInfo"),
     start: asDate(text(n.fields, "startDate", "startdate", "start")),
     end: asDate(text(n.fields, "endDate", "enddate", "end")),
     // normalise short text variants into one field
