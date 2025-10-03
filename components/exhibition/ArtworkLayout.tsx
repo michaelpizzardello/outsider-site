@@ -73,9 +73,13 @@ export default function ArtworkLayout({
   const hasMetaList = Boolean(medium || dimensionsLabel || additionalInfoHtml);
 
   const renderHeading = (className = "") => (
-    <div className={`space-y-1 ${className}`.trim()}>
-      {artist && <p className="text-base font-medium leading-relaxed">{artist}</p>}
-      <p className="text-base leading-relaxed italic">{title}</p>
+    <div className={`space-y-2 xl:space-y-3 ${className}`.trim()}>
+      {artist && (
+        <p className="mt-2 text-3xl font-normal leading-tight text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-5xl xl:leading-[1.12]">
+          {artist}
+        </p>
+      )}
+      <p className="text-xl leading-tight italic text-neutral-900 xl:text-3xl xl:leading-snug">{title}</p>
       {year && <p className="text-base leading-relaxed">{year}</p>}
       {priceLabel && <p className="text-sm font-medium leading-relaxed text-neutral-600">{priceLabel}</p>}
     </div>
@@ -125,10 +129,10 @@ export default function ArtworkLayout({
   return (
     <main className="flex min-h-screen flex-col bg-white text-neutral-900 lg:flex-row">
       {/* Mobile info rail */}
-      <section className="relative w-full bg-white px-4 pb-8 pt-14 sm:px-6 md:px-10 lg:hidden">
+      <section className="relative w-full bg-neutral-100 px-4 pb-8 pt-14 sm:px-6 md:px-10 lg:hidden">
         <CloseArtworkButton
           fallbackHref={`/exhibitions/${exhibitionHandle}`}
-          className="absolute right-4 top-4 text-3xl text-neutral-500 transition hover:text-neutral-900 sm:right-6 sm:top-6"
+          className="absolute right-4 top-4 text-[2.5rem] leading-none text-neutral-900 font-light transition sm:right-6 sm:top-6"
         />
         {hasHeading && (
           <>{renderHeading("mt-2")}</>
@@ -190,7 +194,7 @@ export default function ArtworkLayout({
       </section>
 
       {/* Mobile detail info below carousel */}
-      <section className="bg-white px-4 pb-12 pt-6 sm:px-6 md:px-10 lg:hidden">
+      <section className="bg-neutral-100 px-4 pb-12 pt-6 sm:px-6 md:px-10 lg:hidden">
         {renderDetails("", { leadDivider: false, onEnquire: openEnquire })}
       </section>
 
@@ -213,20 +217,20 @@ export default function ArtworkLayout({
       </section>
 
       {/* Right column: artwork info */}
-      <aside className="relative hidden w-full max-w-md shrink-0 flex-col border-t border-neutral-200 bg-white px-6 pb-12 pt-10 sm:px-8 lg:flex lg:border-t-0 lg:border-l lg:px-8 lg:py-12 lg:h-screen lg:max-w-[360px] lg:overflow-y-auto xl:max-w-[400px] xl:px-10">
+      <aside className="relative hidden w-full max-w-md shrink-0 flex-col border-t border-neutral-200 bg-neutral-100 px-6 pb-12 pt-10 sm:px-8 lg:flex lg:border-t-0 lg:border-l lg:px-[clamp(2.5rem,3vw,3.5rem)] lg:py-12 lg:h-screen lg:max-w-none lg:flex-[0_0_clamp(380px,34vw,680px)] lg:overflow-y-auto xl:flex-[0_0_clamp(440px,38vw,780px)] xl:px-[clamp(3rem,3.2vw,4rem)] 2xl:flex-[0_0_clamp(500px,34vw,840px)] 2xl:px-[clamp(3.5rem,2.8vw,4.5rem)]">
         <CloseArtworkButton
           fallbackHref={`/exhibitions/${exhibitionHandle}`}
-          className="absolute right-6 top-6 hidden text-2xl text-neutral-500 transition hover:text-neutral-900 lg:right-8 lg:top-8 lg:block"
+          className="absolute right-6 top-6 hidden text-[2.5rem] leading-none text-neutral-900 font-light transition lg:right-8 lg:top-8 lg:block xl:text-[2.75rem]"
         />
 
         {hasHeading && (
           <>
-            {renderHeading("mt-4 pr-2 sm:pr-4 lg:mt-6 lg:pr-6")}
+            {renderHeading("mt-4 pr-2 sm:pr-4 lg:mt-6 lg:pr-4")}
             <div className="mt-5 h-px bg-neutral-300" />
           </>
         )}
 
-        {renderDetails("mt-5 pr-2 sm:pr-4 lg:pr-6", { leadDivider: true, onEnquire: openEnquire })}
+        {renderDetails("mt-5 pr-2 sm:pr-4 lg:pr-4", { leadDivider: true, onEnquire: openEnquire })}
 
         {gallery.length > 1 && (
           <section className="hidden space-y-3 lg:block">

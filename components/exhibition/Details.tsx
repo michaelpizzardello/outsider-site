@@ -6,6 +6,7 @@ import ExpandableText from "./ExpandableText";
 type Dateish = Date | string | null | undefined;
 
 type Props = {
+  id?: string;
   startDate?: Dateish;
   endDate?: Dateish;
   location?: string | null;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export default function Details({
+  id,
   startDate,
   endDate,
   location,
@@ -32,7 +34,11 @@ export default function Details({
   if (!hasMeta && !hasText) return null;
 
   return (
-    <section className="py-12 md:py-16">
+    <section
+      id={id}
+      className="py-12 md:py-16"
+      style={{ scrollMarginTop: "var(--header-tight-h, 64px)" }}
+    >
       <Container>
         {/* 1 col on mobile → fixed left rail + fluid body at md+ */}
         <div

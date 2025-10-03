@@ -86,21 +86,53 @@ export default function Header({
     if (hideHeader) return;
     const el = headerRef.current;
     if (!el || typeof window === "undefined") return;
-    const setVar = () => {
-      document.documentElement.style.setProperty(
-        "--header-h",
-        `${el.offsetHeight}px`
-      );
+
+    const root = document.documentElement;
+
+    const measureTightHeight = () => {
+      if (!el) return;
+      const remToPx = (rem: number) => {
+        const base = parseFloat(getComputedStyle(root).fontSize || "16");
+        return rem * (Number.isNaN(base) ? 16 : base);
+      };
+
+      let maxHeight = 0;
+      const measureRow = (selector: string, paddingRem: number) => {
+        const row = el.querySelector<HTMLElement>(selector);
+        if (!row) return;
+        const styles = window.getComputedStyle(row);
+        const paddingTop = parseFloat(styles.paddingTop) || 0;
+        const paddingBottom = parseFloat(styles.paddingBottom) || 0;
+        const contentHeight = row.clientHeight - paddingTop - paddingBottom;
+        if (contentHeight <= 0) return;
+        const tightPadding = remToPx(paddingRem);
+        const total = contentHeight + tightPadding * 2;
+        if (total > maxHeight) maxHeight = total;
+      };
+
+      measureRow('[data-header-row="mobile"]', 0.75);
+      measureRow('[data-header-row="desktop"]', 1.25);
+
+      if (maxHeight > 0) {
+        root.style.setProperty("--header-tight-h", `${Math.round(maxHeight)}px`);
+      }
     };
-    const raf = requestAnimationFrame(setVar);
+
+    const setVars = () => {
+      if (!el) return;
+      root.style.setProperty("--header-h", `${el.offsetHeight}px`);
+      measureTightHeight();
+    };
+
+    const raf = requestAnimationFrame(setVars);
     const ro =
-      typeof ResizeObserver !== "undefined" ? new ResizeObserver(setVar) : null;
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(setVars) : null;
     ro?.observe(el);
-    window.addEventListener("resize", setVar);
+    window.addEventListener("resize", setVars);
     return () => {
       cancelAnimationFrame(raf);
       ro?.disconnect();
-      window.removeEventListener("resize", setVar);
+      window.removeEventListener("resize", setVars);
     };
   }, [hideHeader, scrolled, open, solid]);
 
@@ -136,6 +168,7 @@ export default function Header({
               headerPaddingDesktop,
               transitionSmooth
             )}
+            data-header-row="desktop"
           >
             {/* Left column: primary navigation links */}
             <nav
@@ -183,6 +216,7 @@ export default function Header({
               headerPaddingMobile,
               transitionSmooth
             )}
+            data-header-row="mobile"
           >
             <Logo
               darkSrc={logoDarkSrc}

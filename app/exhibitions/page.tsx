@@ -122,7 +122,7 @@ export default async function ExhibitionsPage() {
                   idx === 0 && "pt-0 sm:pt-0",
                   idx > 0 && "pt-10 sm:pt-12"
                 )}
-                style={{ scrollMarginTop: "var(--header-h, 76px)" }} // anchor offset
+                style={{ scrollMarginTop: "var(--header-tight-h, 64px)" }} // anchor offset
               >
                 {idx > 0 && (
                   <div

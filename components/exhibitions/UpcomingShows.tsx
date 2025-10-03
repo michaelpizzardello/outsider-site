@@ -21,8 +21,10 @@ export default function UpcomingShows({
 }: Props) {
   if (!items?.length) return null;
 
+  const sectionStyle = id ? { scrollMarginTop: "var(--header-tight-h, 64px)" } : undefined;
+
   return (
-    <section id={id} className={className}>
+    <section id={id} className={className} style={sectionStyle}>
       <Container>
         <div className="flex flex-col divide-y divide-neutral-200">
           {items.map((ex) => (

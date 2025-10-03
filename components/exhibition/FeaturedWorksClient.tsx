@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import Container from "@/components/layout/Container";
 import { ArrowCtaLink } from "@/components/ui/ArrowCta";
+import ArtworkEnquiryModal from "./ArtworkEnquiryModal";
 
 type ArtworkPayload = {
   id: string;
@@ -44,10 +45,12 @@ function ArtworkCard({
   artwork,
   exhibitionHandle,
   options,
+  onEnquire,
 }: {
   artwork: ArtworkPayload;
   exhibitionHandle: string;
   options: RenderOptions;
+  onEnquire: (artwork: ArtworkPayload) => void;
 }) {
   const href = `/exhibitions/${exhibitionHandle}/artworks/${artwork.handle}`;
   const enquireHref = `/enquire?artwork=${encodeURIComponent(artwork.id)}`;
@@ -67,10 +70,11 @@ function ArtworkCard({
       : artwork.aspectRatio ?? undefined;
 
   return (
-    <div className="group flex h-full flex-col justify-end gap-y-8 md:gap-y-10">
+    <div className="artwork-card flex h-full flex-col justify-end gap-y-8 md:gap-y-10">
       <Link
         href={href}
-        className="block flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+        data-artwork-link="image"
+        className="group block flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
       >
         {image ? (
           <div
@@ -99,10 +103,11 @@ function ArtworkCard({
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 text-[15px] leading-snug">
         <Link
           href={href}
+          data-artwork-link="title"
           className="min-w-[200px] flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
         >
           {artwork.artist && <p className="font-medium">{artwork.artist}</p>}
-          <p className="mt-1 break-words underline-offset-4 group-hover:underline">
+          <p className="artwork-card__title mt-1 break-words underline-offset-4">
             <span className="italic">{artwork.title}</span>
             {artwork.year && <span>, {artwork.year}</span>}
           </p>
@@ -119,6 +124,12 @@ function ArtworkCard({
           <Link
             href={enquireHref}
             className="group inline-flex items-center gap-4 text-sm font-medium md:text-base hover:opacity-85 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+            onClick={(event) => {
+              if (event.defaultPrevented) return;
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+              event.preventDefault();
+              onEnquire(artwork);
+            }}
           >
             <span className="underline-offset-[6px] group-hover:underline group-focus-visible:underline">
               Enquire
@@ -133,6 +144,7 @@ function ArtworkCard({
 export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }: Props) {
   const [viewAll, setViewAll] = React.useState(false);
   const [isBelowMd, setIsBelowMd] = React.useState(false);
+  const [enquiryArtwork, setEnquiryArtwork] = React.useState<ArtworkPayload | null>(null);
 
   React.useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -149,6 +161,7 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
   }, [isBelowMd, viewAll]);
 
   const handleToggle = () => setViewAll((prev) => !prev);
+  const closeEnquiry = () => setEnquiryArtwork(null);
 
   const headingClasses = "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between";
 
@@ -211,6 +224,7 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                     sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
                     centerImage: true,
                   }}
+                  onEnquire={(selected) => setEnquiryArtwork(selected)}
                 />
               ))}
             </div>
@@ -233,6 +247,7 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                           artwork={artwork}
                           exhibitionHandle={exhibitionHandle}
                           options={{ span: "full", forcedAspectRatio: forcedAspect }}
+                          onEnquire={(selected) => setEnquiryArtwork(selected)}
                         />
                       )}
                     </div>
@@ -253,6 +268,7 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                             artwork={artwork}
                             exhibitionHandle={exhibitionHandle}
                             options={{ span: "half", forcedAspectRatio: forcedAspect }}
+                            onEnquire={(selected) => setEnquiryArtwork(selected)}
                           />
                         ) : null;
                       })}
@@ -273,6 +289,7 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                           artwork={artwork}
                           exhibitionHandle={exhibitionHandle}
                           options={{ span: "third", forcedAspectRatio: forcedAspect }}
+                          onEnquire={(selected) => setEnquiryArtwork(selected)}
                         />
                       ) : null;
                     })}
@@ -300,6 +317,22 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
           ) : null}
         </div>
       </Container>
+      <ArtworkEnquiryModal
+        open={Boolean(enquiryArtwork)}
+        onClose={closeEnquiry}
+        artwork={{
+          title: enquiryArtwork?.title ?? "",
+          artist: enquiryArtwork?.artist ?? undefined,
+          year: enquiryArtwork?.year ?? undefined,
+          price: enquiryArtwork?.priceLabel,
+          image: enquiryArtwork?.featureImage
+            ? {
+                url: enquiryArtwork.featureImage.url,
+                alt: enquiryArtwork.featureImage.altText || enquiryArtwork.title,
+              }
+            : undefined,
+        }}
+      />
     </section>
   );
 }

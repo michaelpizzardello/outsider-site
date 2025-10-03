@@ -5,6 +5,7 @@ import { formatDates } from "@/lib/formatDates";
 import { ExhibitionCard, headingParts } from "@/lib/exhibitions";
 import { HERO_LABELS } from "@/lib/labels";
 import { ArrowCtaLink } from "@/components/ui/ArrowCta";
+import HeroScrollArrow from "@/components/exhibitions/HeroScrollArrow";
 
 export default function CurrentExhibitionHero({
   ex,
@@ -35,7 +36,7 @@ export default function CurrentExhibitionHero({
   });
 
   return (
-    <section className="relative isolate min-h-[100svh] w-full overflow-hidden">
+    <section className="current-exhibition-hero relative isolate min-h-[100svh] w-full overflow-hidden">
       {imgSrc ? (
         <Image
           src={imgSrc}
@@ -51,8 +52,8 @@ export default function CurrentExhibitionHero({
 
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
-      <div className="absolute inset-0 grid place-items-center px-4 text-center sm:px-6 lg:px-8">
-        <div className="z-10 max-w-[80ch] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
+      <div className="short-hero-content absolute inset-0 grid place-items-center px-4 text-center sm:px-6 lg:px-8">
+        <div className="short-hero-main z-10 max-w-[80ch] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
           <ExhibitionLabel
             as="p"
             className="mb-6 md:text-[1rem] lg:text-[1.15rem] opacity-80 text-white"
@@ -99,10 +100,9 @@ export default function CurrentExhibitionHero({
       </div>
 
       {scrollTargetId ? (
-        <a
-          href={`#${scrollTargetId}`}
-          className="group absolute bottom-16 left-1/2 z-20 -translate-x-1/2 px-3 py-2 text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
-          aria-label="Scroll to next section"
+        <HeroScrollArrow
+          targetId={scrollTargetId}
+          className="short-hero-arrow group absolute bottom-16 left-1/2 z-20 -translate-x-1/2 px-3 py-2 text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@ export default function CurrentExhibitionHero({
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m0 0-5-5m5 5 5-5" />
           </svg>
-        </a>
+        </HeroScrollArrow>
       ) : null}
     </section>
   );

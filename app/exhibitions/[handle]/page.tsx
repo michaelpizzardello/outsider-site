@@ -648,6 +648,8 @@ export default async function ExhibitionPage({
     { artistHandle, artistName, hasPortrait: Boolean(portrait), hasBio: Boolean(artistBioHtml), bioLen: artistBioHtml?.length }
   );
 
+  const detailsSectionId = "exhibition-details";
+
   // 4) Render page blocks
   return (
     <>
@@ -656,9 +658,11 @@ export default async function ExhibitionPage({
         topLabel={top}
         buttonLabel={button}
         showCta={false}
+        scrollTargetId={detailsSectionId}
       />
 
       <Details
+        id={detailsSectionId}
         startDate={ex.start}
         endDate={ex.end}
         location={ex.location}
