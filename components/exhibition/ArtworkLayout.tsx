@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -69,9 +70,22 @@ export default function ArtworkLayout({
     }
   }, [activeIndex, embla]);
 
+  const normalizePriceLabel = (label: string) => {
+    if (!label) return "";
+    if (/^A\$/i.test(label)) {
+      return `$${label.slice(2).trimStart()}`;
+    }
+    if (/^A\s+/i.test(label)) {
+      return label.replace(/^A\s+/i, "");
+    }
+    return label;
+  };
+
+  const displayPriceLabel = priceLabel ? normalizePriceLabel(priceLabel) : undefined;
+
   const hasHeading = Boolean(artist || title || year);
   const hasCaption = Boolean(captionHtml);
-  const hasPrice = Boolean(priceLabel);
+  const hasPrice = Boolean(displayPriceLabel);
   const hasMetaList = Boolean(medium || dimensionsLabel || additionalInfoHtml || hasPrice);
 
   const renderHeading = (className = "") => (
@@ -82,8 +96,11 @@ export default function ArtworkLayout({
     </div>
   );
 
-  const renderDetails = (className = "", { onEnquire }: { onEnquire?: () => void } = {}) => {
-    const showDividerAfterButton = hasCaption || hasMetaList;
+  const renderDetails = (
+    className = "",
+    { onEnquire, showDivider = true }: { onEnquire?: () => void; showDivider?: boolean } = {}
+  ) => {
+    const showDividerAfterButton = showDivider && (hasCaption || hasMetaList);
 
     return (
       <div className={`space-y-6 ${className}`.trim()}>
@@ -110,7 +127,7 @@ export default function ArtworkLayout({
                 dangerouslySetInnerHTML={{ __html: additionalInfoHtml }}
               />
             )}
-            {priceLabel && <p className="artwork-meta-text font-medium text-neutral-900">{priceLabel}</p>}
+            {displayPriceLabel && <p className="artwork-meta-text font-medium text-neutral-900">{displayPriceLabel}</p>}
           </div>
         )}
       </div>
@@ -143,45 +160,36 @@ export default function ArtworkLayout({
                 {gallery.map((img, idx) => {
                   const width = img.width ?? 1600;
                   const height = img.height ?? 1600;
-                  const aspect = width > 0 && height > 0 ? `${width} / ${height}` : undefined;
+                  const aspectValue = width > 0 && height > 0 ? width / height : 1;
+                  const slideStyle: CSSProperties = {
+                    "--slide-aspect": Number.isFinite(aspectValue) && aspectValue > 0 ? aspectValue : 1,
+                  };
                   const isActiveSlide = idx === activeIndex;
 
                   return (
                     <div
                       key={img.id ?? img.url ?? idx}
-                      className={`relative shrink-0 ${
+                      className={`artwork-slider-item relative shrink-0 overflow-hidden bg-white ${
                         isActiveSlide ? "cursor-default" : "cursor-pointer"
                       }`}
-                      style={{ width: "min(92vw, 620px)" }}
+                      style={slideStyle}
                       onClick={() => {
                         if (!embla || idx === activeIndex) return;
                         embla.scrollTo(idx);
                       }}
                     >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden bg-white"
-                        style={{
-                          height: "clamp(280px, 58vh, 520px)",
-                        }}
-                      >
-                        <div
-                          className="relative h-full w-full"
-                          style={{
-                            aspectRatio: aspect,
-                          }}
-                        >
-                          <Image
-                            src={img.url}
-                            alt={img.altText || title}
-                            fill
-                            sizes="100vw"
-                            className="object-contain"
-                            priority={idx === 0}
-                          />
-                          {!isActiveSlide && (
-                            <div className="pointer-events-none absolute inset-0 bg-white/70 transition-opacity duration-300" />
-                          )}
-                        </div>
+                      <div className="artwork-slider-frame relative">
+                        <Image
+                          src={img.url}
+                          alt={img.altText || title}
+                          fill
+                          sizes="100vw"
+                          className="object-contain"
+                          priority={idx === 0}
+                        />
+                        {!isActiveSlide && (
+                          <div className="pointer-events-none absolute inset-0 bg-white/70 transition-opacity duration-300" />
+                        )}
                       </div>
                     </div>
                   );
@@ -194,7 +202,7 @@ export default function ArtworkLayout({
 
       {/* Mobile detail info below carousel */}
       <section className="bg-white px-4 pb-12 pt-6 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
-        {renderDetails("", { onEnquire: openEnquire })}
+        {renderDetails("", { onEnquire: openEnquire, showDivider: false })}
       </section>
 
       {/* Left column: desktop main artwork image */}
@@ -271,7 +279,7 @@ export default function ArtworkLayout({
           year,
           medium,
           dimensions: dimensionsLabel,
-          price: priceLabel,
+          price: displayPriceLabel,
           additionalHtml: additionalInfoHtml,
           image: gallery[0] ? { url: gallery[0].url, alt: gallery[0].altText || title } : undefined,
         }}

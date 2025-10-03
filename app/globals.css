@@ -48,11 +48,22 @@ body {
   }
 
   .artwork-meta-text {
-    @apply text-[0.95rem] leading-relaxed text-neutral-900 xl:text-lg xl:leading-[1.6];
+    @apply text-base leading-snug text-neutral-900 xl:text-xl xl:leading-snug;
   }
 
   .artwork-meta-muted {
-    @apply text-sm leading-relaxed text-neutral-700 xl:text-base xl:leading-[1.6];
+    @apply text-sm leading-snug text-neutral-700 xl:text-base xl:leading-snug;
+  }
+
+  .artwork-slider-item {
+    --slide-height: clamp(220px, 58vh, 520px);
+    width: min(92vw, calc(var(--slide-aspect, 1) * var(--slide-height)));
+    height: min(var(--slide-height), calc(92vw / var(--slide-aspect, 1)));
+  }
+
+  .artwork-slider-frame {
+    width: 100%;
+    height: 100%;
   }
 }
 
