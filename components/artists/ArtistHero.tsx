@@ -57,21 +57,19 @@ export default function ArtistHero({
         </div>
 
         {cover?.url ? (
-          <figure className="relative flex w-full max-w-[560px] flex-col items-center self-center overflow-hidden text-center sm:max-w-none lg:max-h-[560px]">
-            <div className="relative mx-auto flex w-full max-w-[560px] items-center justify-center overflow-hidden border border-[var(--colors-grey-dark,#e0e0e0)] bg-white sm:max-w-none lg:max-h-[560px]">
-              <div
-                className="relative w-full overflow-hidden lg:max-h-[560px]"
-                style={{ aspectRatio: aspectRatio ?? "4 / 5" }}
-              >
-                <Image
-                  src={cover.url}
-                  alt={cover.alt || `${displayName} — artwork`}
-                  fill
-                  sizes="(max-width: 1024px) 90vw, (max-width: 1440px) 42vw, 38vw"
-                  className="h-full w-full object-contain object-center"
-                  priority
-                />
-              </div>
+          <figure className="relative flex w-full max-w-[560px] flex-col items-center self-center text-center sm:max-w-none">
+            <div
+              className="relative w-full"
+              style={{ aspectRatio: aspectRatio ?? "4 / 5" }}
+            >
+              <Image
+                src={cover.url}
+                alt={cover.alt || `${displayName} — artwork`}
+                fill
+                sizes="(max-width: 1024px) 90vw, (max-width: 1440px) 42vw, 38vw"
+                className="h-full w-full object-contain object-center"
+                priority
+              />
             </div>
             {cover.alt ? (
               <figcaption

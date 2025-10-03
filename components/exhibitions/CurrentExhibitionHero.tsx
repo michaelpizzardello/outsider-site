@@ -11,11 +11,13 @@ export default function CurrentExhibitionHero({
   topLabel = HERO_LABELS.top,
   buttonLabel = HERO_LABELS.button,
   showCta = true,
+  scrollTargetId,
 }: {
   ex: ExhibitionCard | null;
   topLabel?: string;
   buttonLabel?: string;
   showCta?: boolean;
+  scrollTargetId?: string;
 }) {
   const bannerImage = ex?.banner ?? ex?.hero;
   const imgSrc = bannerImage?.url ?? "";
@@ -95,6 +97,26 @@ export default function CurrentExhibitionHero({
           ) : null}
         </div>
       </div>
+
+      {scrollTargetId ? (
+        <a
+          href={`#${scrollTargetId}`}
+          className="group absolute bottom-16 left-1/2 z-20 -translate-x-1/2 px-3 py-2 text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
+          aria-label="Scroll to next section"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            className="h-10 w-10 transition-transform group-hover:translate-y-1"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            aria-hidden="true"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m0 0-5-5m5 5 5-5" />
+          </svg>
+        </a>
+      ) : null}
     </section>
   );
 }

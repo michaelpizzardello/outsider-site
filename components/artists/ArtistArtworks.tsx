@@ -1,14 +1,9 @@
 import "server-only";
 
-import Image from "next/image";
-import Link from "next/link";
-
-import Container from "@/components/layout/Container";
+import ArtistArtworksClient from "./ArtistArtworksClient";
 import { shopifyFetch } from "@/lib/shopify";
 
-// -----------------------------------------------------------------------------
-// Type shapes and GraphQL query fragments
-// -----------------------------------------------------------------------------
+// Data shapes ---------------------------------------------------------------
 
 type Money = { amount: string; currencyCode: string };
 
@@ -26,7 +21,6 @@ type ProductNode = {
   } | null;
   priceRange?: { minVariantPrice?: Money | null } | null;
   year?: { value?: string | null } | null;
-  medium?: { value?: string | null } | null;
   artistMeta?: {
     value?: string | null;
     reference?: {
@@ -55,7 +49,28 @@ type Props = {
   artistName: string;
 };
 
-// Pull every actively available product alongside rich metafield content.
+type ArtworkPayload = {
+  id: string;
+  title: string;
+  year: string | null;
+  priceLabel: string;
+  featureImage?: {
+    url: string;
+    width?: number | null;
+    height?: number | null;
+    altText?: string | null;
+  } | null;
+  aspectRatio?: string;
+  heightFactor: number;
+  type: "L" | "P" | "S";
+  href?: string | null;
+  enquireHref: string;
+};
+
+type LayoutRow = { layout: "full" | "pair" | "triple"; indexes: number[] };
+
+// GraphQL -------------------------------------------------------------------
+
 const QUERY = /* GraphQL */ `
   query ArtistArtworks(
     $first: Int = 80
@@ -81,12 +96,7 @@ const QUERY = /* GraphQL */ `
             currencyCode
           }
         }
-        year: metafield(namespace: $ns, key: "year") {
-          value
-        }
-        medium: metafield(namespace: $ns, key: "medium") {
-          value
-        }
+        year: metafield(namespace: $ns, key: "year") { value }
         artistMeta: metafield(namespace: $ns, key: $artistKey) {
           value
           reference {
@@ -120,9 +130,7 @@ const QUERY = /* GraphQL */ `
   }
 `;
 
-// -----------------------------------------------------------------------------
-// Helper utilities (formatting + filtering + linking)
-// -----------------------------------------------------------------------------
+// Helpers -------------------------------------------------------------------
 
 function priceLabel({
   price,
@@ -131,43 +139,29 @@ function priceLabel({
   price?: Money | null;
   availableForSale: boolean;
 }): string {
-  // Sold works skip pricing entirely.
   if (!availableForSale) return "Sold";
-
   if (price) {
     const amount = Number(price.amount);
-
     try {
-      // Rely on Intl for currency formatting when possible.
       return new Intl.NumberFormat("en-GB", {
         style: "currency",
         currency: price.currencyCode,
         maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
       }).format(amount);
     } catch {
-      // Fallback keeps the currency visible if Intl fails.
       return `${price.currencyCode} ${amount.toLocaleString("en-GB")}`;
     }
   }
-
   return "Price on request";
 }
 
-function matchesArtist(
-  node: ProductNode,
-  handle: string,
-  artistName: string
-): boolean {
-  // 1) Exact metaobject reference match (preferred).
+function matchesArtist(node: ProductNode, handle: string, artistName: string): boolean {
   const refHandle = node.artistMeta?.reference?.handle;
-  if (refHandle && refHandle.toLowerCase() === handle.toLowerCase())
-    return true;
+  if (refHandle && refHandle.toLowerCase() === handle.toLowerCase()) return true;
 
-  // 2) Raw metafield string fallback.
   const metaValue = node.artistMeta?.value?.trim().toLowerCase();
   if (metaValue && metaValue === artistName.trim().toLowerCase()) return true;
 
-  // 3) Vendor-as-artist final fallback.
   const vendorName = node.vendor?.trim().toLowerCase();
   if (vendorName && vendorName === artistName.trim().toLowerCase()) return true;
 
@@ -175,7 +169,6 @@ function matchesArtist(
 }
 
 function firstExhibitionHandle(node: ProductNode): string | null {
-  // Priority: single reference metafield, then the references array.
   const ref = node.exhibitions?.reference;
   if (ref?.__typename === "Metaobject" && ref.handle) return ref.handle;
 
@@ -184,129 +177,106 @@ function firstExhibitionHandle(node: ProductNode): string | null {
   return found?.handle ?? null;
 }
 
-// -----------------------------------------------------------------------------
-// Presentational leaf component – renders a single artwork card
-// -----------------------------------------------------------------------------
-
-function ArtworkCard({
-  product,
-  href,
-}: {
-  product: ProductNode;
-  href?: string | null;
-}) {
-  const img = product.featuredImage;
-  const showLink = Boolean(href);
-  const Wrapper = showLink ? Link : ("div" as const);
-  const wrapperProps = showLink
-    ? {
-        href: href!,
-        className:
-          "block focus:outline-none focus-visible:ring-2 focus-visible:ring-black",
-      }
-    : { className: "block" };
-
-  return (
-    <article className="group">
-      <Wrapper {...(wrapperProps as any)}>
-        {img ? (
-          <div
-            className="relative bg-neutral-400"
-            style={{
-              aspectRatio:
-                img.width && img.height ? `${img.width}/${img.height}` : "4/5",
-            }}
-          >
-            <Image
-              src={img.url}
-              alt={img.altText || product.title}
-              fill
-              sizes="(min-width:768px) 50vw, 100vw"
-              className="object-contain"
-            />
-          </div>
-        ) : (
-          <div className="bg-neutral-400" style={{ aspectRatio: "4/5" }} />
-        )}
-      </Wrapper>
-
-      <div className="mt-4 flex flex-col gap-2">
-        <div>
-          {product.medium?.value ? (
-            <p className="text-xs uppercase tracking-[0.18em] text-neutral-500">
-              {product.medium.value}
-            </p>
-          ) : null}
-
-          <p className="mt-2 text-base font-medium leading-relaxed">
-            <span className="italic">{product.title}</span>
-            {product.year?.value ? <span>, {product.year.value}</span> : null}
-          </p>
-        </div>
-
-        <div className="text-sm leading-relaxed text-neutral-600">
-          {priceLabel({
-            price: product.priceRange?.minVariantPrice ?? null,
-            availableForSale: product.availableForSale,
-          })}
-        </div>
-
-        <div className="pt-2">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center border border-neutral-300 px-4 py-2 text-sm uppercase tracking-[0.14em] transition hover:border-neutral-900"
-          >
-            Enquire
-          </button>
-        </div>
-      </div>
-    </article>
-  );
+function classifyType(width?: number | null, height?: number | null): {
+  aspectRatio?: string;
+  heightFactor: number;
+  type: "L" | "P" | "S";
+} {
+  if (!width || !height) return { aspectRatio: undefined, heightFactor: 1, type: "S" };
+  const ratio = width / height;
+  let type: "L" | "P" | "S" = "S";
+  if (ratio > 1.05) type = "L";
+  else if (ratio < 0.95) type = "P";
+  return {
+    aspectRatio: `${width}/${height}`,
+    heightFactor: ratio !== 0 ? 1 / ratio : 1,
+    type,
+  };
 }
 
-// -----------------------------------------------------------------------------
-// Entry point – fetch data and render the artwork grid for an artist
-// -----------------------------------------------------------------------------
+function buildRows(items: ArtworkPayload[]): LayoutRow[] {
+  if (!items.length) return [];
+  const rows: LayoutRow[] = [];
+  const normType = (t: ArtworkPayload["type"]) => (t === "P" ? "P" : "L");
 
-export default async function ArtistArtworks({
-  artistHandle,
-  artistName,
-}: Props) {
-  // Fetch the raw catalogue with Shopify metafields needed for filtering.
+  for (let i = 0; i < items.length; ) {
+    const remaining = items.length - i;
+    const currentType = normType(items[i].type);
+    const nextTypeMatches = (count: number) => {
+      if (remaining < count) return false;
+      for (let j = 0; j < count; j++) {
+        if (normType(items[i + j].type) !== currentType) return false;
+      }
+      return true;
+    };
+
+    if (nextTypeMatches(4)) {
+      rows.push({ layout: "pair", indexes: [i, i + 1] });
+      rows.push({ layout: "pair", indexes: [i + 2, i + 3] });
+      i += 4;
+      continue;
+    }
+
+    if (nextTypeMatches(3)) {
+      rows.push({ layout: "triple", indexes: [i, i + 1, i + 2] });
+      i += 3;
+      continue;
+    }
+
+    if (nextTypeMatches(2)) {
+      rows.push({ layout: "pair", indexes: [i, i + 1] });
+      i += 2;
+      continue;
+    }
+
+    rows.push({ layout: "full", indexes: [i] });
+    i += 1;
+  }
+
+  return rows;
+}
+
+// Component -----------------------------------------------------------------
+
+export default async function ArtistArtworks({ artistHandle, artistName }: Props) {
   const data = await shopifyFetch<QueryResult>(QUERY, {
     first: 80,
     ns: "custom",
     artistKey: "artist",
   });
 
-  // Filter the returned products down to this artist via various fallbacks.
   const products = data?.products?.nodes ?? [];
-  const filtered = products.filter((node) =>
-    matchesArtist(node, artistHandle, artistName)
-  );
-
+  const filtered = products.filter((node) => matchesArtist(node, artistHandle, artistName));
   if (!filtered.length) return null;
 
-  return (
-    <section className="w-full py-12 md:py-16">
-      <Container>
-        <h2 className="mb-8 text-2xl font-medium tracking-tight sm:text-3xl lg:mb-12 lg:text-4xl">
-          Artworks
-        </h2>
+  const artworks: ArtworkPayload[] = filtered.map((product) => {
+    const pricing = priceLabel({
+      price: product.priceRange?.minVariantPrice ?? null,
+      availableForSale: product.availableForSale,
+    });
+    const exhibitionHandle = firstExhibitionHandle(product);
+    const { aspectRatio, heightFactor, type } = classifyType(
+      product.featuredImage?.width ?? undefined,
+      product.featuredImage?.height ?? undefined
+    );
 
-        <div className="grid grid-cols-1 gap-y-12 gap-x-10 md:grid-cols-2 md:gap-y-16 md:gap-x-14">
-          {filtered.map((product) => {
-            const exhibitionHandle = firstExhibitionHandle(product);
-            const href = exhibitionHandle
-              ? `/exhibitions/${exhibitionHandle}/artworks/${product.handle}`
-              : null;
+    return {
+      id: product.id,
+      title: product.title,
+      year: product.year?.value ?? null,
+      priceLabel: pricing,
+      featureImage: product.featuredImage ?? undefined,
+      aspectRatio,
+      heightFactor,
+      type,
+      href: exhibitionHandle
+        ? `/exhibitions/${exhibitionHandle}/artworks/${product.handle}`
+        : null,
+      enquireHref: `/enquire?artwork=${encodeURIComponent(product.id)}`,
+    };
+  });
 
-            return (
-              <ArtworkCard key={product.id} product={product} href={href} />
-            );
-          })}
-        </div>
-      </Container>
-    </section>
-  );
+  const rows = buildRows(artworks);
+
+  return <ArtistArtworksClient artworks={artworks} rows={rows} />;
 }

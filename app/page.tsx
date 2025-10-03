@@ -41,6 +41,10 @@ export default async function HomePage() {
   // 4) Hero copy from central labels helper
   const { top, button } = heroLabels(heroLabel);
 
+  const hasFollowupSection =
+    upcomingAfterHero.length > 0 || pastAfterHero.length > 0;
+  const nextSectionId = hasFollowupSection ? "home-next-section" : undefined;
+
   return (
     <main className="bg-white text-neutral-900">
       {/* Optional site-wide banner
@@ -60,6 +64,7 @@ export default async function HomePage() {
             ex={hero}
             topLabel={top}
             buttonLabel={button}
+            scrollTargetId={nextSectionId}
           />
         ) : (
           <section className="py-14 text-center text-neutral-500">
@@ -73,11 +78,16 @@ export default async function HomePage() {
       {/* After hero: show ONE list only */}
       {upcomingAfterHero.length > 0 ? (
         <UpcomingShows
+          id={nextSectionId}
           items={upcomingAfterHero}
           labelKey="upcomingExhibition"
         />
       ) : pastAfterHero.length > 0 ? (
-        <UpcomingShows items={pastAfterHero} labelKey="pastExhibition" />
+        <UpcomingShows
+          id={nextSectionId}
+          items={pastAfterHero}
+          labelKey="pastExhibition"
+        />
       ) : null}
     </main>
   );

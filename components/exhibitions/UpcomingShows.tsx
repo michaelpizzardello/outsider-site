@@ -9,6 +9,7 @@ type Props = {
   labelKey?: LabelKey;
   ctaText?: string;
   className?: string;
+  id?: string;
 };
 
 export default function UpcomingShows({
@@ -16,11 +17,12 @@ export default function UpcomingShows({
   labelKey = "galleryExhibition",
   ctaText = "Visit Exhibition",
   className = "",
+  id,
 }: Props) {
   if (!items?.length) return null;
 
   return (
-    <section className={className}>
+    <section id={id} className={className}>
       <Container>
         <div className="flex flex-col divide-y divide-neutral-200">
           {items.map((ex) => (
