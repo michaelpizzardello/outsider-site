@@ -6,6 +6,7 @@ import useEmblaCarousel from "embla-carousel-react";
 
 import CloseArtworkButton from "@/components/exhibition/CloseArtworkButton";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
+import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 
 type GalleryImage = {
   id?: string | null;
@@ -68,59 +69,53 @@ export default function ArtworkLayout({
     }
   }, [activeIndex, embla]);
 
-  const hasHeading = Boolean(artist || title || year || priceLabel);
+  const hasHeading = Boolean(artist || title || year);
   const hasCaption = Boolean(captionHtml);
-  const hasMetaList = Boolean(medium || dimensionsLabel || additionalInfoHtml);
+  const hasPrice = Boolean(priceLabel);
+  const hasMetaList = Boolean(medium || dimensionsLabel || additionalInfoHtml || hasPrice);
 
   const renderHeading = (className = "") => (
-    <div className={`space-y-2 xl:space-y-3 ${className}`.trim()}>
-      {artist && (
-        <p className="mt-2 text-3xl font-normal leading-tight text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-5xl xl:leading-[1.12]">
-          {artist}
-        </p>
-      )}
-      <p className="text-xl leading-tight italic text-neutral-900 xl:text-3xl xl:leading-snug">{title}</p>
-      {year && <p className="text-base leading-relaxed">{year}</p>}
-      {priceLabel && <p className="text-sm font-medium leading-relaxed text-neutral-600">{priceLabel}</p>}
+    <div className={`space-y-2 xl:space-y-4 ${className}`.trim()}>
+      {artist && <p className="artwork-heading-artist">{artist}</p>}
+      <p className="artwork-heading-title">{title}</p>
+      {year && <p className="artwork-heading-year">{year}</p>}
     </div>
   );
 
-  const renderDetails = (
-    className = "",
-    { leadDivider = false, onEnquire }: { leadDivider?: boolean; onEnquire?: () => void } = {}
-  ) => (
-    <div className={`space-y-5 ${className}`.trim()}>
-      <div className="space-y-2">
-        {leadDivider && <div className="h-px bg-neutral-300" />}
-        <button
-          type="button"
-          className="inline-flex h-11 items-center justify-center border border-neutral-300 bg-white px-6 text-xs font-medium uppercase tracking-[0.2em] transition hover:border-black hover:text-black"
-          onClick={onEnquire}
-        >
+  const renderDetails = (className = "", { onEnquire }: { onEnquire?: () => void } = {}) => {
+    const showDividerAfterButton = hasCaption || hasMetaList;
+
+    return (
+      <div className={`space-y-6 ${className}`.trim()}>
+        <OutlineLabelButton onClick={onEnquire} className="tracking-[0.28em]">
           Enquire
-        </button>
+        </OutlineLabelButton>
+
+        {showDividerAfterButton && <div className="h-px bg-neutral-300" />}
+
+        {hasCaption && (
+          <div
+            className="artwork-meta-text space-y-4 text-neutral-800 [&_p]:artwork-meta-text [&_p]:text-neutral-800"
+            dangerouslySetInnerHTML={{ __html: captionHtml! }}
+          />
+        )}
+
+        {hasMetaList && (
+          <div className="space-y-2">
+            {medium && <p className="artwork-meta-text">{medium}</p>}
+            {dimensionsLabel && <p className="artwork-meta-text">{dimensionsLabel}</p>}
+            {additionalInfoHtml && (
+              <div
+                className="artwork-meta-text space-y-2 text-neutral-800 [&_p]:artwork-meta-text"
+                dangerouslySetInnerHTML={{ __html: additionalInfoHtml }}
+              />
+            )}
+            {priceLabel && <p className="artwork-meta-text font-medium text-neutral-900">{priceLabel}</p>}
+          </div>
+        )}
       </div>
-
-      {(hasCaption || hasMetaList) && (
-        <div className={leadDivider ? "h-px bg-neutral-300" : "lg:h-px lg:bg-neutral-300"} />
-      )}
-
-      {hasCaption && (
-        <div
-          className="space-y-3 text-sm leading-relaxed text-neutral-800"
-          dangerouslySetInnerHTML={{ __html: captionHtml! }}
-        />
-      )}
-
-      {hasMetaList && (
-        <div className="space-y-1 text-sm leading-relaxed text-neutral-800">
-          {medium && <p>{medium}</p>}
-          {dimensionsLabel && <p>{dimensionsLabel}</p>}
-          {additionalInfoHtml && <div dangerouslySetInnerHTML={{ __html: additionalInfoHtml }} />}
-        </div>
-      )}
-    </div>
-  );
+    );
+  };
 
   const [isEnquireOpen, setIsEnquireOpen] = useState(false);
   const openEnquire = () => setIsEnquireOpen(true);
@@ -129,7 +124,7 @@ export default function ArtworkLayout({
   return (
     <main className="flex min-h-screen flex-col bg-white text-neutral-900 lg:flex-row">
       {/* Mobile info rail */}
-      <section className="relative w-full bg-neutral-100 px-4 pb-8 pt-14 sm:px-6 md:px-10 lg:hidden">
+      <section className="relative w-full bg-white px-4 pb-8 pt-14 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
         <CloseArtworkButton
           fallbackHref={`/exhibitions/${exhibitionHandle}`}
           className="absolute right-4 top-4 text-[2.5rem] leading-none text-neutral-900 font-light transition sm:right-6 sm:top-6"
@@ -144,7 +139,7 @@ export default function ArtworkLayout({
         <div className="px-4 pb-8 pt-6 sm:px-6 md:px-10">
           <div className="relative">
             <div ref={viewportRef} className="overflow-hidden">
-              <div className="flex items-center gap-4 sm:gap-6">
+              <div className="flex items-center gap-3 sm:gap-4">
                 {gallery.map((img, idx) => {
                   const width = img.width ?? 1600;
                   const height = img.height ?? 1600;
@@ -154,21 +149,25 @@ export default function ArtworkLayout({
                   return (
                     <div
                       key={img.id ?? img.url ?? idx}
-                      className="relative shrink-0"
+                      className={`relative shrink-0 ${
+                        isActiveSlide ? "cursor-default" : "cursor-pointer"
+                      }`}
+                      style={{ width: "min(92vw, 620px)" }}
+                      onClick={() => {
+                        if (!embla || idx === activeIndex) return;
+                        embla.scrollTo(idx);
+                      }}
                     >
                       <div
-                        className="relative flex items-center justify-center overflow-visible bg-white"
+                        className="relative flex items-center justify-center overflow-hidden bg-white"
                         style={{
-                          height: "clamp(220px, 50vh, 360px)",
-                          minHeight: "220px",
-                          maxHeight: "360px",
+                          height: "clamp(280px, 58vh, 520px)",
                         }}
                       >
                         <div
-                          className="relative h-full"
+                          className="relative h-full w-full"
                           style={{
                             aspectRatio: aspect,
-                            minWidth: aspect ? undefined : "82vw",
                           }}
                         >
                           <Image
@@ -194,8 +193,8 @@ export default function ArtworkLayout({
       </section>
 
       {/* Mobile detail info below carousel */}
-      <section className="bg-neutral-100 px-4 pb-12 pt-6 sm:px-6 md:px-10 lg:hidden">
-        {renderDetails("", { leadDivider: false, onEnquire: openEnquire })}
+      <section className="bg-white px-4 pb-12 pt-6 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
+        {renderDetails("", { onEnquire: openEnquire })}
       </section>
 
       {/* Left column: desktop main artwork image */}
@@ -230,7 +229,7 @@ export default function ArtworkLayout({
           </>
         )}
 
-        {renderDetails("mt-5 pr-2 sm:pr-4 lg:pr-4", { leadDivider: true, onEnquire: openEnquire })}
+        {renderDetails("mt-5 pr-2 sm:pr-4 lg:pr-4", { onEnquire: openEnquire })}
 
         {gallery.length > 1 && (
           <section className="hidden space-y-3 lg:block">

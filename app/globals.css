@@ -34,6 +34,28 @@ body {
   max-width: 1740px;
 }
 
+@layer components {
+  .artwork-heading-artist {
+    @apply mt-2 text-3xl font-normal leading-tight text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-5xl xl:leading-[1.12];
+  }
+
+  .artwork-heading-title {
+    @apply text-xl leading-tight italic text-neutral-900 xl:text-3xl xl:leading-snug;
+  }
+
+  .artwork-heading-year {
+    @apply text-lg font-medium uppercase tracking-[0.18em] text-neutral-900 xl:text-2xl xl:tracking-[0.24em];
+  }
+
+  .artwork-meta-text {
+    @apply text-[0.95rem] leading-relaxed text-neutral-900 xl:text-lg xl:leading-[1.6];
+  }
+
+  .artwork-meta-muted {
+    @apply text-sm leading-relaxed text-neutral-700 xl:text-base xl:leading-[1.6];
+  }
+}
+
 @media (min-width: 640px) {
   .site-container {
     margin-left: auto;
