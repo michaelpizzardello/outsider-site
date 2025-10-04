@@ -119,7 +119,7 @@ export default function InstallationViews({
                 onClick={scrollNext}
                 className="
                   group relative shrink-0 text-left outline-none
-                  basis-[92vw] sm:basis-[460px] md:basis-[600px] lg:basis-[720px] xl:basis-[940px] 2xl:basis-[1040px]
+                  basis-[92vw] sm:basis-[520px] md:basis-[600px] lg:basis-[720px] xl:basis-[940px] 2xl:basis-[1040px]
                 "
                 aria-label="View next installation image"
               >
@@ -131,7 +131,7 @@ export default function InstallationViews({
                       alt={img.alt || "Installation view"}
                       width={img.width}
                       height={img.height}
-                      sizes="(min-width:1536px) 1040px, (min-width:1280px) 940px, (min-width:1024px) 720px, (min-width:768px) 560px, (min-width:640px) 420px, 320px"
+                      sizes="(min-width:1536px) 1040px, (min-width:1280px) 940px, (min-width:1024px) 720px, (min-width:768px) 560px, (min-width:640px) 520px, 320px"
                       className="w-full h-auto object-contain"
                       priority={idx === 0}
                     />
@@ -142,7 +142,7 @@ export default function InstallationViews({
                         src={img.url}
                         alt={img.alt || "Installation view"}
                         fill
-                        sizes="(min-width:1536px) 1040px, (min-width:1280px) 940px, (min-width:1024px) 720px, (min-width:768px) 560px, (min-width:640px) 420px, 320px"
+                        sizes="(min-width:1536px) 1040px, (min-width:1280px) 940px, (min-width:1024px) 720px, (min-width:768px) 560px, (min-width:640px) 520px, 320px"
                         className="object-contain"
                         priority={idx === 0}
                       />

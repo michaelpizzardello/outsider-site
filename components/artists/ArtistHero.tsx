@@ -1,5 +1,10 @@
 
 // components/artists/ArtistHero.tsx
+// ---------------------------------------------------------------------------
+// Artist detail heading: responsive two-column layout that stacks portrait and
+// metadata on compact screens, then splits to side-by-side at `lg`.
+// ---------------------------------------------------------------------------
+
 import Image from "next/image";
 
 import Container from "@/components/layout/Container";
@@ -23,12 +28,14 @@ export default function ArtistHero({
   birthYear,
   cover,
 }: ArtistHeroProps) {
+  // Normalise display strings so spacing/formatting is predictable.
   const displayName = name.trim();
   const trimmedNationality = nationality?.trim();
   const trimmedBirthYear = birthYear?.trim();
 
   const nationalityLine = trimmedNationality ?? null;
   const birthLine = (() => {
+    // Shopify sometimes stores birth year as "Born 1980" or "1980".
     if (!trimmedBirthYear) return null;
     const lower = trimmedBirthYear.toLowerCase();
     return lower.startsWith("b.") || lower.includes("born")
@@ -36,28 +43,19 @@ export default function ArtistHero({
       : `b. ${trimmedBirthYear}`;
   })();
 
+  // Preserve the uploaded artwork aspect ratio when available.
   const aspectRatio =
     cover?.width && cover?.height ? `${cover.width}/${cover.height}` : undefined;
 
   return (
-    <section className="relative border-b border-[var(--colors-grey-dark,#e0e0e0)] bg-[var(--colors-grey-default,#f6f6f5)]">
-      <Container className="grid items-center gap-y-12 py-24 sm:py-32 lg:grid-cols-2 lg:gap-x-20 lg:justify-items-center xl:gap-x-24">
-        <div className="flex w-full flex-col items-center">
-          <div className="mx-auto max-w-2xl text-center">
-            <h1 className="text-4xl font-light tracking-tight text-neutral-900 sm:text-5xl md:text-6xl">
-              {displayName}
-            </h1>
-            {(nationalityLine || birthLine) ? (
-              <div className="mt-4 space-y-2 text-base text-neutral-600 sm:text-lg">
-                {nationalityLine ? <p>{nationalityLine}</p> : null}
-                {birthLine ? <p>{birthLine}</p> : null}
-              </div>
-            ) : null}
-          </div>
-        </div>
-
+    // Background tone and padding mirror other hero bands across the site.
+    <section className="relative border-b border-[var(--colors-grey-dark,#e0e0e0)] bg-[var(--colors-grey-default,#f6f6f5)] py-8">
+      {/* Grid: single column until `lg`, then image/text columns. */}
+      <Container className="grid items-center gap-y-6 py-0 sm:gap-y-10 sm:py-24 lg:grid-cols-2 lg:gap-x-20 lg:justify-items-center xl:gap-x-24">
         {cover?.url ? (
-          <figure className="relative flex w-full max-w-[560px] flex-col items-center self-center text-center sm:max-w-none">
+          // Portrait block. Constrains max width on smaller breakpoints so the
+          // image doesn't overwhelm the viewport, but allows full bleed at `lg+`.
+          <figure className="relative flex w-full max-w-[360px] flex-col items-center self-center text-center sm:max-w-[460px] md:max-w-[560px] justify-self-center lg:max-w-none lg:order-2 lg:justify-self-end lg:my-auto">
             <div
               className="relative w-full"
               style={{ aspectRatio: aspectRatio ?? "4 / 5" }}
@@ -80,6 +78,22 @@ export default function ArtistHero({
             ) : null}
           </figure>
         ) : null}
+
+        {/* Text column: artist name, nationality and birth info. */}
+        <div className="flex w-full flex-col items-center lg:order-1 lg:justify-self-start lg:my-auto">
+          <div className="mx-auto max-w-2xl text-center">
+            {/* Responsive type scale to balance against the portrait sizing. */}
+            <h1 className="text-4xl font-light tracking-tight text-neutral-900 sm:text-[2.6rem] md:text-[2.9rem] lg:text-[3.1rem] xl:text-[3.8rem]">
+              {displayName}
+            </h1>
+            {(nationalityLine || birthLine) ? (
+              <div className="mt-4 space-y-2 text-base text-neutral-600 sm:text-lg lg:text-xl lg:space-y-3">
+                {nationalityLine ? <p>{nationalityLine}</p> : null}
+                {birthLine ? <p>{birthLine}</p> : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
       </Container>
     </section>
   );
