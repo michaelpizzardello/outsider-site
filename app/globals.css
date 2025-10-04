@@ -36,29 +36,31 @@ body {
 
 @layer components {
   .artwork-heading-artist {
-    @apply mt-2 text-3xl font-normal leading-tight text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-5xl xl:leading-[1.12];
+    @apply mt-2 text-3xl font-normal leading-[1.08] text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-5xl xl:leading-[1.12];
   }
 
   .artwork-heading-title {
-    @apply text-xl leading-tight italic text-neutral-900 xl:text-3xl xl:leading-snug;
+    @apply text-xl leading-[1.1] italic text-neutral-900 xl:text-3xl xl:leading-[1.18];
   }
 
   .artwork-heading-year {
-    @apply text-lg font-medium uppercase tracking-[0.18em] text-neutral-900 xl:text-2xl xl:tracking-[0.24em];
+    @apply text-lg font-medium uppercase leading-[1.15] tracking-[0.18em] text-neutral-900 xl:text-2xl xl:tracking-[0.24em] xl:leading-[1.18];
   }
 
   .artwork-meta-text {
-    @apply text-base leading-snug text-neutral-900 xl:text-xl xl:leading-snug;
+    @apply text-base leading-tight text-neutral-900 xl:text-xl xl:leading-[1.25];
   }
 
   .artwork-meta-muted {
-    @apply text-sm leading-snug text-neutral-700 xl:text-base xl:leading-snug;
+    @apply text-sm leading-tight text-neutral-700 xl:text-base xl:leading-[1.25];
   }
 
   .artwork-slider-item {
-    --slide-height: clamp(220px, 58vh, 520px);
-    width: min(92vw, calc(var(--slide-aspect, 1) * var(--slide-height)));
-    height: min(var(--slide-height), calc(92vw / var(--slide-aspect, 1)));
+    --slide-max-height: clamp(220px, 58vh, 520px);
+    --slide-height: min(var(--slide-max-height), calc(92vw / var(--carousel-max-aspect, 1)));
+    width: calc(var(--slide-aspect, 1) * var(--slide-height));
+    height: var(--slide-height);
+    max-width: 92vw;
   }
 
   .artwork-slider-frame {

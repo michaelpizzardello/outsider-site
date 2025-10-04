@@ -45,6 +45,22 @@ export default function ArtworkLayout({
   const [activeIndex, setActiveIndex] = useState(0);
   const activeImage = useMemo(() => gallery[activeIndex] ?? gallery[0] ?? null, [gallery, activeIndex]);
 
+  const maxSlideAspect = useMemo(() => {
+    if (!gallery?.length) return 1;
+
+    return gallery.reduce((max, img) => {
+      const width = typeof img.width === "number" && img.width > 0 ? img.width : null;
+      const height = typeof img.height === "number" && img.height > 0 ? img.height : null;
+
+      if (!width || !height) return max;
+
+      const aspect = width / height;
+      return Number.isFinite(aspect) && aspect > max ? aspect : max;
+    }, 1);
+  }, [gallery]);
+
+  const trackStyle = useMemo<CSSProperties>(() => ({ "--carousel-max-aspect": maxSlideAspect }), [maxSlideAspect]);
+
   useEffect(() => {
     setActiveIndex(0);
   }, [gallery]);
@@ -89,7 +105,7 @@ export default function ArtworkLayout({
   const hasMetaList = Boolean(medium || dimensionsLabel || additionalInfoHtml || hasPrice);
 
   const renderHeading = (className = "") => (
-    <div className={`space-y-2 xl:space-y-4 ${className}`.trim()}>
+    <div className={`space-y-1 xl:space-y-2 ${className}`.trim()}>
       {artist && <p className="artwork-heading-artist">{artist}</p>}
       <p className="artwork-heading-title">{title}</p>
       {year && <p className="artwork-heading-year">{year}</p>}
@@ -112,13 +128,13 @@ export default function ArtworkLayout({
 
         {hasCaption && (
           <div
-            className="artwork-meta-text space-y-4 text-neutral-800 [&_p]:artwork-meta-text [&_p]:text-neutral-800"
+            className="artwork-meta-text space-y-3 text-neutral-800 [&_p]:artwork-meta-text [&_p]:text-neutral-800"
             dangerouslySetInnerHTML={{ __html: captionHtml! }}
           />
         )}
 
         {hasMetaList && (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {medium && <p className="artwork-meta-text">{medium}</p>}
             {dimensionsLabel && <p className="artwork-meta-text">{dimensionsLabel}</p>}
             {additionalInfoHtml && (
@@ -156,7 +172,7 @@ export default function ArtworkLayout({
         <div className="px-4 pb-8 pt-6 sm:px-6 md:px-10">
           <div className="relative">
             <div ref={viewportRef} className="overflow-hidden">
-              <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 sm:gap-4" style={trackStyle}>
                 {gallery.map((img, idx) => {
                   const width = img.width ?? 1600;
                   const height = img.height ?? 1600;
