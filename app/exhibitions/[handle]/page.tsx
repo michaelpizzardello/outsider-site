@@ -453,9 +453,99 @@ function firstPortraitFromFields(fields: Field[]) {
   return f ? imageFromField(f) : undefined;
 }
 
+const HTML_TAG_REGEX = /<\s*[a-z][\s\S]*>/i;
+
+function fieldByKeysCaseInsensitive(
+  fields: Field[],
+  keys: string[]
+): Field | undefined {
+  if (!keys.length) return undefined;
+  const lower = keys.map((key) => key.toLowerCase());
+  return fields.find((field) => lower.includes(field.key.toLowerCase()));
+}
+
+function metaobjectFieldsForField(field: Field): Field[] | null {
+  const direct =
+    field.reference && field.reference.__typename === "Metaobject"
+      ? ((field.reference as any).fields as Field[] | undefined)
+      : undefined;
+  if (Array.isArray(direct) && direct.length) return direct;
+
+  const referencesAny = field.references as any;
+  const nodes: FieldRef[] = Array.isArray(referencesAny?.nodes)
+    ? (referencesAny.nodes as FieldRef[])
+    : Array.isArray(referencesAny)
+    ? (referencesAny as FieldRef[])
+    : [];
+
+  for (const ref of nodes) {
+    if (ref && ref.__typename === "Metaobject") {
+      const fieldsArr = (ref as any).fields as Field[] | undefined;
+      if (Array.isArray(fieldsArr) && fieldsArr.length) {
+        return fieldsArr;
+      }
+    }
+  }
+
+  return null;
+}
+
+function paragraphsFromText(value: string) {
+  return value
+    .split(/\n{2,}/)
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .map((segment) => `<p>${segment.replace(/\n/g, "<br/>")}</p>`)
+    .join("");
+}
+
+function fieldContentToHtml(field: Field): string | null {
+  const metaFields = metaobjectFieldsForField(field);
+  if (metaFields?.length) {
+    const fromMeta = extractLongCopy(metaFields as any);
+    if (fromMeta) return fromMeta;
+  }
+
+  const fromSelf = extractLongCopy([field] as any);
+  if (fromSelf) return fromSelf;
+
+  if (typeof field.value === "string") {
+    const trimmed = field.value.trim();
+    if (!trimmed) return null;
+    if (HTML_TAG_REGEX.test(trimmed)) return trimmed;
+    const paragraphs = paragraphsFromText(trimmed);
+    return paragraphs || `<p>${trimmed}</p>`;
+  }
+
+  return null;
+}
+
+function htmlFromFieldKeys(fields: Field[], keys: string[]) {
+  const field = fieldByKeysCaseInsensitive(fields, keys);
+  return field ? fieldContentToHtml(field) : null;
+}
+
 function extractBioHtmlFromArtistFields(fields: Field[]) {
-  const bio = fields.find((x) => x.key === "bio");
-  return bio ? extractLongCopy([bio] as any) : null;
+  const shortBio = htmlFromFieldKeys(fields, [
+    "short_bio",
+    "shortbio",
+    "bio_short",
+    "shortBio",
+    "bioShort",
+  ]);
+  if (shortBio) return shortBio;
+
+  const mainBio = htmlFromFieldKeys(fields, [
+    "bio",
+    "long_bio",
+    "bio_long",
+    "biography",
+    "bio_html",
+  ]);
+  if (mainBio) return mainBio;
+
+  const fallback = fields.find((field) => /bio/i.test(field.key));
+  return fallback ? fieldContentToHtml(fallback) : null;
 }
 
 // Fetch artist metaobject by handle (exact type: "artist")

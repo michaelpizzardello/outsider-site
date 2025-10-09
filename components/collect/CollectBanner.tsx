@@ -28,12 +28,7 @@ function SearchButton() {
 export default function CollectBanner() {
   return (
     <section className="border-b border-neutral-200 bg-white">
-      <Container className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.24em] text-neutral-500">
-          <span>Available works</span>
-          <span className="hidden h-3 w-px bg-neutral-300 md:inline" aria-hidden />
-          <span className="text-neutral-400">New arrivals weekly</span>
-        </div>
+      <Container className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-end">
         <div className="flex items-center gap-3 md:gap-4">
           <SearchButton />
           <CartToggle variant="banner" />
@@ -42,4 +37,3 @@ export default function CollectBanner() {
     </section>
   );
 }
-

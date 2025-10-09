@@ -131,7 +131,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
               onChange={(event) => setAvailability(event.target.value as AvailabilityFilter)}
               className="mt-2 w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
             >
-              <option value="available">Available works</option>
+              <option value="available">Available only</option>
               <option value="all">All works</option>
               <option value="sold">Sold / reserved</option>
             </select>

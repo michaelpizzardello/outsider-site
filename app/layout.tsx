@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { sofiaPro } from "./fonts";
+import { CartProvider } from "@/components/cart/CartContext";
+import CartFloatingButton from "@/components/cart/CartFloatingButton";
+import CartDrawer from "@/components/cart/CartDrawer";
 import Header from "@/components/layout/Header";
 import SiteFooter from "@/components/layout/SiteFooter";
-import { CartProvider } from "@/components/cart/CartContext";
-import CartDrawer from "@/components/cart/CartDrawer";
 
 export const metadata: Metadata = {
   viewport: {
@@ -28,6 +29,7 @@ export default function RootLayout({
           <Header />
           {children}
           <SiteFooter />
+          <CartFloatingButton />
           <CartDrawer />
         </CartProvider>
       </body>
