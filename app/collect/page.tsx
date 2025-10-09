@@ -165,7 +165,7 @@ export default async function CollectPage() {
         }
       />
 
-      <section className="py-16 sm:py-20">
+      <section className="pt-10 pb-16 sm:pt-14 sm:pb-20">
         <Container>
           <CollectGrid artworks={artworks} mediums={mediums} artists={artists} />
         </Container>

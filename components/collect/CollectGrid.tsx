@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import Image from "next/image";
+import { useMemo, useState } from "react";
 
-import type { CollectArtwork } from '@/app/collect/page';
-import { useCart } from '@/components/cart/CartContext';
-import ArtworkEnquiryModal from '@/components/exhibition/ArtworkEnquiryModal';
+import type { CollectArtwork } from "@/app/collect/page";
+import { useCart } from "@/components/cart/CartContext";
+import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 
 type Props = {
   artworks: CollectArtwork[];
@@ -13,15 +13,13 @@ type Props = {
   artists: string[];
 };
 
-type AvailabilityFilter = 'all' | 'available' | 'sold';
-
-function formatMoney(price: CollectArtwork['price']) {
-  if (!price) return 'Price on request';
+function formatMoney(price: CollectArtwork["price"]) {
+  if (!price) return "Price on request";
   const amount = Number(price.amount);
-  if (!Number.isFinite(amount)) return 'Price on request';
+  if (!Number.isFinite(amount)) return "Price on request";
   try {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
       currency: price.currencyCode,
       maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
     }).format(amount);
@@ -31,40 +29,45 @@ function formatMoney(price: CollectArtwork['price']) {
 }
 
 function availabilityLabel(artwork: CollectArtwork) {
-  if (artwork.available) return 'Available';
+  if (artwork.available) return "Available";
   if (artwork.status) return artwork.status;
-  return 'Sold';
+  return "Sold";
 }
 
 export default function CollectGrid({ artworks, mediums, artists }: Props) {
   const { addLine, openCart } = useCart();
-  const [search, setSearch] = useState('');
-  const [medium, setMedium] = useState<string>('all');
-  const [artist, setArtist] = useState<string>('all');
-  const [availability, setAvailability] = useState<AvailabilityFilter>('available');
-  const [enquiryArtwork, setEnquiryArtwork] = useState<CollectArtwork | null>(null);
+  const [search, setSearch] = useState("");
+  const [medium, setMedium] = useState<string>("all");
+  const [artist, setArtist] = useState<string>("all");
+  const [enquiryArtwork, setEnquiryArtwork] = useState<CollectArtwork | null>(
+    null
+  );
 
   const filtered = useMemo(() => {
     return artworks.filter((artwork) => {
-      if (medium !== 'all') {
-        const mediumValue = artwork.medium?.toLowerCase() ?? '';
+      if (medium !== "all") {
+        const mediumValue = artwork.medium?.toLowerCase() ?? "";
         if (!mediumValue.includes(medium.toLowerCase())) return false;
       }
-      if (artist !== 'all') {
-        if ((artwork.artist ?? '').toLowerCase() !== artist.toLowerCase()) return false;
+      if (artist !== "all") {
+        if ((artwork.artist ?? "").toLowerCase() !== artist.toLowerCase())
+          return false;
       }
-      if (availability === 'available' && !artwork.available) return false;
-      if (availability === 'sold' && artwork.available) return false;
       if (search.trim()) {
-        const haystack = [artwork.title, artwork.artist, artwork.medium, artwork.year]
+        const haystack = [
+          artwork.title,
+          artwork.artist,
+          artwork.medium,
+          artwork.year,
+        ]
           .filter(Boolean)
-          .join(' ')
+          .join(" ")
           .toLowerCase();
         if (!haystack.includes(search.trim().toLowerCase())) return false;
       }
       return true;
     });
-  }, [artworks, availability, artist, medium, search]);
+  }, [artworks, artist, medium, search]);
 
   async function handleAddToCart(artwork: CollectArtwork) {
     if (!artwork.variantId) {
@@ -75,33 +78,27 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
   }
 
   return (
-    <div className="space-y-16">
-      <div className="flex flex-col gap-6 border border-neutral-200 bg-white p-6 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.28em] text-neutral-500">Filter works</p>
-          <p className="mt-2 text-base text-neutral-600">
-            {filtered.length} of {artworks.length} works shown
-          </p>
-        </div>
-        <div className="flex w-full flex-col gap-4 md:max-w-4xl md:flex-row md:items-end">
-          <label className="flex-1 text-xs uppercase tracking-[0.2em] text-neutral-500">
-            Search
+    <div className="space-y-10">
+      <div className="flex flex-col gap-6 bg-white pb-2 pt-0 md:flex-row md:items-center">
+        <div className="flex w-full flex-col gap-3 md:flex-row md:items-end md:gap-4">
+          <label className="flex-1 text-sm text-neutral-500">
+            <span className="sr-only">Search</span>
             <input
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Artist, title, medium..."
-              className="mt-2 w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+              placeholder="Search..."
+              className="w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
             />
           </label>
-          <label className="flex-1 text-xs uppercase tracking-[0.2em] text-neutral-500">
-            Medium
+          <label className="flex-1 text-sm text-neutral-500">
+            <span className="sr-only">Filter by medium</span>
             <select
               value={medium}
               onChange={(event) => setMedium(event.target.value)}
-              className="mt-2 w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+              className="w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
             >
-              <option value="all">All media</option>
+              <option value="all">Filter by medium</option>
               {mediums.map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -109,31 +106,19 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
               ))}
             </select>
           </label>
-          <label className="flex-1 text-xs uppercase tracking-[0.2em] text-neutral-500">
-            Artist
+          <label className="flex-1 text-sm text-neutral-500">
+            <span className="sr-only">Filter by artist</span>
             <select
               value={artist}
               onChange={(event) => setArtist(event.target.value)}
-              className="mt-2 w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+              className="w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
             >
-              <option value="all">All artists</option>
+              <option value="all">Filter by artist</option>
               {artists.map((option) => (
                 <option key={option} value={option}>
                   {option}
                 </option>
               ))}
-            </select>
-          </label>
-          <label className="flex-1 text-xs uppercase tracking-[0.2em] text-neutral-500">
-            Availability
-            <select
-              value={availability}
-              onChange={(event) => setAvailability(event.target.value as AvailabilityFilter)}
-              className="mt-2 w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
-            >
-              <option value="available">Available only</option>
-              <option value="all">All works</option>
-              <option value="sold">Sold / reserved</option>
             </select>
           </label>
         </div>
@@ -166,14 +151,20 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
 
               <div className="flex flex-1 flex-col">
                 <div className="space-y-3 text-sm text-neutral-600">
-                  <p className="text-[11px] uppercase tracking-[0.32em] text-neutral-500">{status}</p>
+                  <p className="text-[11px] uppercase tracking-[0.32em] text-neutral-500">
+                    {status}
+                  </p>
                   <h3 className="text-base font-medium leading-snug text-neutral-900">
                     {artwork.title}
-                    {artwork.year ? <span className="text-neutral-500">, {artwork.year}</span> : null}
+                    {artwork.year ? (
+                      <span className="text-neutral-500">, {artwork.year}</span>
+                    ) : null}
                   </h3>
                   {artwork.artist ? <p>{artwork.artist}</p> : null}
                   {artwork.medium ? <p>{artwork.medium}</p> : null}
-                  {artwork.dimensions ? <p className="text-neutral-500">{artwork.dimensions}</p> : null}
+                  {artwork.dimensions ? (
+                    <p className="text-neutral-500">{artwork.dimensions}</p>
+                  ) : null}
                 </div>
 
                 <div className="mt-auto space-y-3">
@@ -189,8 +180,8 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                       disabled={!artwork.available || !artwork.variantId}
                       className={`flex-1 border border-neutral-900 px-4 py-2 text-xs uppercase tracking-[0.24em] transition ${
                         artwork.available && artwork.variantId
-                        ? 'bg-neutral-900 text-white hover:bg-black'
-                        : 'bg-neutral-200 text-neutral-500 border-neutral-300 cursor-not-allowed'
+                          ? "bg-neutral-900 text-white hover:bg-black"
+                          : "bg-neutral-200 text-neutral-500 border-neutral-300 cursor-not-allowed"
                       }`}
                     >
                       Add to cart
@@ -207,7 +198,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                     <p className="text-xs text-neutral-500">
                       {artwork.quantityAvailable > 1
                         ? `${artwork.quantityAvailable} editions available`
-                        : 'Unique work'}
+                        : "Unique work"}
                     </p>
                   ) : null}
                 </div>
@@ -219,7 +210,8 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
 
       {filtered.length === 0 ? (
         <div className="border border-dashed border-neutral-300 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
-          No works match your filters. Adjust the filters or contact our team for tailored recommendations.
+          No works match your filters. Adjust the filters or contact our team
+          for tailored recommendations.
         </div>
       ) : null}
 
@@ -236,11 +228,14 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                 dimensions: enquiryArtwork.dimensions ?? undefined,
                 price: formatMoney(enquiryArtwork.price),
                 image: enquiryArtwork.image
-                  ? { url: enquiryArtwork.image.url, alt: enquiryArtwork.image.altText ?? enquiryArtwork.title }
+                  ? {
+                      url: enquiryArtwork.image.url,
+                      alt: enquiryArtwork.image.altText ?? enquiryArtwork.title,
+                    }
                   : undefined,
               }
             : {
-                title: '',
+                title: "",
               }
         }
       />

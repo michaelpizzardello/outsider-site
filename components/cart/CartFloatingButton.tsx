@@ -25,7 +25,10 @@ export default function CartFloatingButton() {
       <span className="relative flex items-center justify-center">
         <CartIcon className="h-7 w-7 text-white" />
         {showBadge ? (
-          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-semibold text-neutral-900 shadow">
+          <span
+            className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-semibold text-white shadow"
+            style={{ backgroundColor: "#E11D48" }}
+          >
             {count}
           </span>
         ) : null}
