@@ -2,7 +2,6 @@ import "server-only";
 
 import Container from "@/components/layout/Container";
 import CollectGrid from "@/components/collect/CollectGrid";
-import CollectBanner from "@/components/collect/CollectBanner";
 import { shopifyFetch } from "@/lib/shopify";
 import PageSubheader from "@/components/layout/PageSubheader";
 
@@ -165,10 +164,6 @@ export default async function CollectPage() {
           </>
         }
       />
-
-      <div className="mt-12 sm:mt-16">
-        <CollectBanner />
-      </div>
 
       <section className="py-16 sm:py-20">
         <Container>
