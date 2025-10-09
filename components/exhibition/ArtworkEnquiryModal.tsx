@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import type { FormEvent, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
+import type {
+  FormEvent,
+  InputHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
@@ -34,7 +38,10 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const formId = useId();
   const [submitting, setSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState<null | { ok: boolean; message: string }>(null);
+  const [feedback, setFeedback] = useState<null | {
+    ok: boolean;
+    message: string;
+  }>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -75,11 +82,17 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
     try {
       // TODO: integrate with real enquiry endpoint.
       await new Promise((resolve) => setTimeout(resolve, 900));
-      setFeedback({ ok: true, message: "Thank you. We will be in touch shortly." });
+      setFeedback({
+        ok: true,
+        message: "Thank you. We will be in touch shortly.",
+      });
       form.reset();
     } catch (error) {
       console.error("Failed to send enquiry", error);
-      setFeedback({ ok: false, message: "Something went wrong. Please try again." });
+      setFeedback({
+        ok: false,
+        message: "Something went wrong. Please try again.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -113,6 +126,8 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
               </h2>
             </header>
 
+            {/* <div className="mx-6 h-px bg-neutral-300 sm:mx-8" /> */}
+
             <section className="grid gap-6 lg:grid-cols-[minmax(220px,0.42fr)_minmax(0,0.58fr)]">
               <aside className="bg-neutral-100 px-6 pb-9 pt-9 text-neutral-900 sm:px-8 lg:px-10 lg:pt-11">
                 {artwork.image ? (
@@ -128,42 +143,70 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
                   </div>
                 ) : null}
 
-                <div className="mt-6 text-sm text-neutral-900">
-                  <div className="space-y-[0.25rem]">
-                    {artwork.artist && <p className="font-medium text-neutral-900">{artwork.artist}</p>}
-                    <p className="italic text-neutral-900">{artwork.title}</p>
-                    {artwork.year && <p className="text-neutral-900">{artwork.year}</p>}
+                <div className="mt-6 space-y-6 text-sm text-neutral-900 [&_*]:text-neutral-900">
+                  <div className="space-y-[0.25rem] leading-[1.08]">
+                    {artwork.artist && (
+                      <p className="font-medium leading-[1.08]">
+                        {artwork.artist}
+                      </p>
+                    )}
+                    <p className="italic leading-[1.08]">{artwork.title}</p>
+                    {artwork.year && (
+                      <p className="leading-[1.08]">{artwork.year}</p>
+                    )}
                   </div>
 
-                  {(artwork.medium || artwork.dimensions) && (
-                    <div className="mt-6 space-y-[0.25rem]">
-                      {artwork.medium && <p>{artwork.medium}</p>}
-                      {artwork.dimensions && <p>{artwork.dimensions}</p>}
-                    </div>
-                  )}
-
-                  {artwork.additionalHtml && (
-                    <div className="mt-6 text-neutral-900">
-                      <div
-                        className="[&>*]:leading-[1.06] [&>*]:text-neutral-900 [&>*+*]:mt-[0.25rem] [&_p]:m-0"
-                        dangerouslySetInnerHTML={{ __html: artwork.additionalHtml }}
-                      />
+                  {(artwork.medium ||
+                    artwork.dimensions ||
+                    artwork.additionalHtml) && (
+                    <div className="space-y-[0.25rem] leading-[1.08] lg:mt-2">
+                      {artwork.medium && (
+                        <p className="leading-[1.08]">{artwork.medium}</p>
+                      )}
+                      {artwork.dimensions && (
+                        <p className="leading-[1.08]">{artwork.dimensions}</p>
+                      )}
+                      {artwork.additionalHtml && (
+                        <div
+                          className="space-y-[0.25rem] leading-[1.08] [&_*]:m-0 [&_*]:leading-[1.08]"
+                          dangerouslySetInnerHTML={{
+                            __html: artwork.additionalHtml,
+                          }}
+                        />
+                      )}
                     </div>
                   )}
 
                   {artwork.price && (
-                    <p className="mt-8 font-medium text-neutral-900">{artwork.price}</p>
+                    <p className="text-base font-medium leading-[1.08]">
+                      {artwork.price}
+                    </p>
                   )}
                 </div>
               </aside>
 
               <section className="px-6 pb-12 pt-2 sm:px-8 lg:px-12 lg:pt-5">
-                <p className="text-sm text-neutral-900">* indicates a mandatory field</p>
+                <p className="text-sm text-neutral-900">
+                  * indicates a mandatory field
+                </p>
 
-                <form onSubmit={handleSubmit} className="mt-7 space-y-5" aria-live="polite">
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-7 space-y-5"
+                  aria-live="polite"
+                >
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <LabelledInput id={field("first-name")} name="firstName" label="First name" required />
-                    <LabelledInput id={field("last-name")} name="lastName" label="Last name" />
+                    <LabelledInput
+                      id={field("first-name")}
+                      name="firstName"
+                      label="First name"
+                      required
+                    />
+                    <LabelledInput
+                      id={field("last-name")}
+                      name="lastName"
+                      label="Last name"
+                    />
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -192,7 +235,12 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
                     label="Receive newsletter"
                   />
 
-                  <LabelledTextarea id={field("message")} name="message" label="Message" rows={4} />
+                  <LabelledTextarea
+                    id={field("message")}
+                    name="message"
+                    label="Message"
+                    rows={4}
+                  />
 
                   {feedback && (
                     <div
@@ -214,7 +262,6 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
                   >
                     {submitting ? "Sending…" : "Send enquiry"}
                   </button>
-
                 </form>
               </section>
             </section>
@@ -225,12 +272,24 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
   );
 }
 
-function LabelledInput({ label, id, required, type = "text", className, ...rest }: InputProps) {
+function LabelledInput({
+  label,
+  id,
+  required,
+  type = "text",
+  className,
+  ...rest
+}: InputProps) {
   const isCheckbox = type === "checkbox";
   if (isCheckbox) {
     return (
       <label className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-neutral-900">
-        <input id={id} type="checkbox" className={clsx("h-4 w-4", className)} {...rest} />
+        <input
+          id={id}
+          type="checkbox"
+          className={clsx("h-4 w-4", className)}
+          {...rest}
+        />
         <span>
           {label}
           {required ? <span className="ml-1 text-red-500">*</span> : null}
@@ -259,7 +318,13 @@ function LabelledInput({ label, id, required, type = "text", className, ...rest 
   );
 }
 
-function LabelledTextarea({ label, id, required, className, ...rest }: TextareaProps) {
+function LabelledTextarea({
+  label,
+  id,
+  required,
+  className,
+  ...rest
+}: TextareaProps) {
   return (
     <label className="flex flex-col text-xs uppercase tracking-[0.2em] text-neutral-900">
       {label}
