@@ -254,9 +254,6 @@ export default async function ArtistExhibitions({ artistHandle, artistName }: Pr
                     <p className="mt-2 text-sm text-neutral-600">
                       {ex.start ? formatDates(ex.start, ex.end) : ex.summary ?? ""}
                     </p>
-                    {ex.location ? (
-                      <p className="mt-1 text-sm text-neutral-600 whitespace-pre-wrap">{ex.location}</p>
-                    ) : null}
                     <ArrowCtaInline
                       label={labels.button}
                       className="mt-4"

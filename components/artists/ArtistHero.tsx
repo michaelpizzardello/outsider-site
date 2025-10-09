@@ -88,7 +88,7 @@ export default function ArtistHero({
         <div className="flex w-full flex-col items-center lg:order-1 lg:justify-self-start lg:my-auto">
           <div className="mx-auto max-w-2xl text-center">
             {/* Responsive type scale to balance against the portrait sizing. */}
-            <h1 className="text-[2.25rem] font-semibold tracking-tight text-black sm:text-[2.55rem] md:text-[2.9rem] lg:text-[3.1rem] xl:text-[3.6rem]">
+            <h1 className="text-[2.15rem] font-normal tracking-tight text-black sm:text-[2.55rem] md:text-[2.9rem] lg:text-[3.1rem] xl:text-[3.6rem]">
               {displayName}
             </h1>
             {nationalityLine || birthLine ? (
@@ -99,7 +99,7 @@ export default function ArtistHero({
                   </p>
                 ) : null}
                 {birthLine ? (
-                  <p className="text-base font-semibold sm:text-lg lg:text-xl">
+                  <p className="text-sm font-semibold sm:text-lg lg:text-xl">
                     {birthLine}
                   </p>
                 ) : null}

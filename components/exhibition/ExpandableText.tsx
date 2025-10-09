@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import clsx from "clsx";
 
 type Props = {
   shortText?: string | null;
   longTextHtml?: string | null;
   clampLines?: number;
+  className?: string;
+  shortClassName?: string;
+  longClassName?: string;
 };
 
 type Paragraph = { text: string; html: string };
@@ -72,6 +76,9 @@ export default function ExpandableText({
   shortText,
   longTextHtml,
   clampLines = 10,
+  className,
+  shortClassName,
+  longClassName,
 }: Props) {
   const clampedRef = useRef<HTMLDivElement | null>(null);
   const fullRef = useRef<HTMLDivElement | null>(null);
@@ -151,11 +158,19 @@ export default function ExpandableText({
     : undefined;
 
   return (
-    <div className="text-base leading-relaxed lg:text-lg lg:leading-8">
+    <div
+      className={clsx(
+        "text-base leading-relaxed lg:text-lg lg:leading-8",
+        className
+      )}
+    >
       {hasShort ? (
         <>
           <div
-            className="prose prose-lg md:prose-xl max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4"
+            className={clsx(
+              "prose prose-lg md:prose-xl max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4",
+              shortClassName
+            )}
             dangerouslySetInnerHTML={{ __html: shortHtml! }}
           />
 
@@ -184,7 +199,10 @@ export default function ExpandableText({
 
               {expanded && hasLong && (
                 <div
-                  className="mt-6 prose max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4"
+                  className={clsx(
+                    "mt-6 prose max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4",
+                    longClassName
+                  )}
                   dangerouslySetInnerHTML={{ __html: expandedHtml ?? longHtml! }}
                 />
               )}
@@ -205,7 +223,10 @@ export default function ExpandableText({
             )}
 
             <div
-              className="prose max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4"
+              className={clsx(
+                "prose max-w-none whitespace-pre-line space-y-6 prose-p:mb-4 prose-p:leading-relaxed prose-ul:my-4 prose-ol:my-4",
+                longClassName
+              )}
               dangerouslySetInnerHTML={{ __html: longHtml ?? "" }}
             />
           </div>

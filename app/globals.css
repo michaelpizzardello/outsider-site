@@ -36,19 +36,19 @@ body {
 
 @layer components {
   .artwork-heading-artist {
-    @apply mt-2 text-3xl font-normal leading-[1.08] text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-5xl xl:leading-[1.12];
+    @apply mt-2 text-[1.7rem] font-light leading-[1.08] text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-[3.2rem] xl:leading-[1.12];
   }
 
   .artwork-heading-title {
-    @apply text-xl leading-[1.1] italic text-neutral-900 xl:text-3xl xl:leading-[1.18];
+    @apply text-[1.32rem] font-light leading-[1.08] italic text-neutral-900 xl:text-[2.3rem] xl:leading-[1.16];
   }
 
   .artwork-heading-year {
-    @apply text-lg font-medium uppercase leading-[1.15] tracking-[0.18em] text-neutral-900 xl:text-2xl xl:tracking-[0.24em] xl:leading-[1.18];
+    @apply mt-6 text-base font-light uppercase leading-[1.1] tracking-[0.02em] text-neutral-900 lg:mt-4 xl:text-xl xl:tracking-[0.06em] xl:leading-[1.14];
   }
 
   .artwork-meta-text {
-    @apply text-base leading-tight text-neutral-900 xl:text-xl xl:leading-[1.25];
+    @apply text-[0.94rem] leading-[1.06] text-neutral-900 xl:text-[1.1rem] xl:leading-[1.18];
   }
 
   .artwork-meta-muted {

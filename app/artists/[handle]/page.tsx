@@ -7,6 +7,7 @@ import ArtistArtworks from "@/components/artists/ArtistArtworks";
 import ArtistExhibitions from "@/components/artists/ArtistExhibitions";
 import { shopifyFetch } from "@/lib/shopify";
 import { extractLongCopy } from "@/lib/extractLongCopy";
+import { toHtml } from "@/lib/richtext";
 
 export const dynamic = "force-dynamic";
 
@@ -63,7 +64,43 @@ const QUERY = /* GraphQL */ `
   }
 `;
 
-function extractBioHtml(fields: Field[]): string | null {
+function looksLikeHtml(value: string) {
+  return /<\s*[a-z][\s\S]*>/i.test(value);
+}
+
+function multilineToHtml(value: string) {
+  return value
+    .split(/\n{2,}/)
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .map((segment) => `<p>${segment.replace(/\n/g, "<br/>")}</p>`)
+    .join("");
+}
+
+function fieldByKeys(fields: Field[], keys: string[]): Field | undefined {
+  const lowerKeys = keys.map((key) => key.toLowerCase());
+  return fields.find((field) => lowerKeys.includes(field.key.toLowerCase()));
+}
+
+function fieldToHtml(field?: Field): string | null {
+  if (!field) return null;
+  if (typeof field.value !== "string") return null;
+  const trimmed = field.value.trim();
+  if (!trimmed) return null;
+
+  const type = field.type?.toLowerCase() ?? "";
+  if (type.includes("rich_text")) {
+    return toHtml(trimmed) ?? null;
+  }
+
+  if (looksLikeHtml(trimmed)) {
+    return trimmed;
+  }
+
+  return multilineToHtml(trimmed);
+}
+
+function fallbackBioHtml(fields: Field[]): string | null {
   const bioLike: ExtractLongCopyField[] = fields
     .filter((field) => /bio/i.test(field.key))
     .map(({ key, type, value }) => ({ key, type, value }));
@@ -117,7 +154,11 @@ export default async function ArtistPage({ params }: { params: { handle: string 
     valueMap.born ??
     valueMap.birthdate
   ) as string | undefined;
-  const bioHtml = extractBioHtml(mo.fields);
+  const shortBioHtml =
+    fieldToHtml(fieldByKeys(mo.fields, ["short_bio", "shortbio", "bio_short"])) ?? null;
+  const longBioHtml =
+    fieldToHtml(fieldByKeys(mo.fields, ["long_bio", "longbio", "bio_long"])) ??
+    fallbackBioHtml(mo.fields);
 
   return (
     <main
@@ -130,7 +171,7 @@ export default async function ArtistPage({ params }: { params: { handle: string 
         birthYear={birthYear}
         cover={cover}
       />
-      <ArtistBioSection html={bioHtml} />
+      <ArtistBioSection shortHtml={shortBioHtml} longHtml={longBioHtml} />
       <ArtistArtworks artistHandle={mo.handle} artistName={name} />
       <ArtistExhibitions artistHandle={mo.handle} artistName={name} />
     </main>

@@ -151,38 +151,54 @@ export default function ArtworkLayout({
     }: { onEnquire?: () => void; showDivider?: boolean } = {}
   ) => {
     const showDividerAfterButton = showDivider && (hasCaption || hasMetaList);
+    const captionOffset = showDividerAfterButton ? "mt-7" : "mt-8";
+    const metaOffset = hasCaption ? "mt-4" : captionOffset;
+    const hasSupportingMeta = Boolean(
+      medium || dimensionsLabel || additionalInfoHtml
+    );
 
     return (
-      <div className={`space-y-6 w-full ${className}`.trim()}>
-        <OutlineLabelButton onClick={onEnquire} className="tracking-[0.28em]">
+      <div className={`w-full ${className}`.trim()}>
+        <OutlineLabelButton
+          onClick={onEnquire}
+          className="!h-[2.5rem] !px-4 !text-[0.95rem] !font-medium !normal-case !tracking-[0.012em]"
+        >
           Enquire
         </OutlineLabelButton>
 
         {showDividerAfterButton && (
-          <div className="my-6 h-px w-full bg-neutral-300 lg:my-8" />
+          <div className="mt-5 mb-6 h-px w-full bg-neutral-300 lg:mt-6 lg:mb-8" />
         )}
 
         {hasCaption && (
           <div
-            className="artwork-meta-text space-y-3 text-neutral-800 [&_p]:artwork-meta-text [&_p]:text-neutral-800"
+            className={`artwork-meta-text ${captionOffset} space-y-2 text-neutral-800 [&_p]:artwork-meta-text [&_p]:text-neutral-800`.trim()}
             dangerouslySetInnerHTML={{ __html: captionHtml! }}
           />
         )}
 
         {hasMetaList && (
-          <div className="space-y-1.5">
-            {medium && <p className="artwork-meta-text">{medium}</p>}
-            {dimensionsLabel && (
-              <p className="artwork-meta-text">{dimensionsLabel}</p>
-            )}
-            {additionalInfoHtml && (
-              <div
-                className="artwork-meta-text space-y-2 text-neutral-800 [&_p]:artwork-meta-text"
-                dangerouslySetInnerHTML={{ __html: additionalInfoHtml }}
-              />
+          <div className={`${metaOffset} space-y-3`.trim()}>
+            {hasSupportingMeta && (
+              <div className="space-y-1">
+                {medium && <p className="artwork-meta-text">{medium}</p>}
+                {dimensionsLabel && (
+                  <p className="artwork-meta-text">{dimensionsLabel}</p>
+                )}
+                {additionalInfoHtml && (
+                  <div
+                    className="artwork-meta-text space-y-2 text-neutral-800 [&_p]:artwork-meta-text"
+                    dangerouslySetInnerHTML={{ __html: additionalInfoHtml }}
+                  />
+                )}
+              </div>
             )}
             {displayPriceLabel && (
-              <p className="artwork-meta-text font-medium text-neutral-900 pt-2">
+              <p
+                className={`artwork-meta-text font-medium text-neutral-900 text-base xl:text-xl ${
+                  hasSupportingMeta ? "mt-4 pt-1" : ""
+                }`.trim()}
+              >
                 {displayPriceLabel}
               </p>
             )}
@@ -200,7 +216,7 @@ export default function ArtworkLayout({
   return (
     <main className="flex min-h-screen flex-col bg-white text-neutral-900 lg:flex-row">
       {/* Mobile info rail */}
-      <section className="relative w-full bg-white px-4 pb-8 pt-14 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
+      <section className="relative w-full bg-white px-4 pb-6 pt-12 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
         <CloseArtworkButton
           fallbackHref={`/exhibitions/${exhibitionHandle}`}
           className="absolute right-4 top-4 text-[2.5rem] leading-none text-neutral-900 font-light transition sm:right-6 sm:top-6"
@@ -210,7 +226,7 @@ export default function ArtworkLayout({
 
       {/* Slider for mobile & tablet */}
       <section className="relative lg:hidden">
-        <div className="px-4 pb-8 pt-6 sm:px-6 md:px-10">
+        <div className="px-4 pb-5 pt-4 sm:px-6 md:px-10">
           <div className="relative">
             <div ref={viewportRef} className="overflow-hidden">
               <div
@@ -267,7 +283,7 @@ export default function ArtworkLayout({
       </section>
 
       {/* Mobile detail info below carousel */}
-      <section className="bg-white px-4 pb-12 pt-6 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
+      <section className="bg-white px-4 pb-12 pt-4 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
         {renderDetails("", { onEnquire: openEnquire, showDivider: false })}
       </section>
 

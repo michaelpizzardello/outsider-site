@@ -106,13 +106,15 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
             &times;
           </button>
 
-          <div className="grid gap-8">
+          <div className="grid gap-6">
             <header className="bg-white px-6 pt-12 text-center sm:px-8">
-              <h2 className="text-2xl font-medium uppercase tracking-[0.3em] text-neutral-900">Artwork enquiry</h2>
+              <h2 className="text-2xl font-medium tracking-tight text-neutral-900 sm:text-3xl">
+                Artwork Enquiry
+              </h2>
             </header>
 
-            <section className="grid gap-8 lg:grid-cols-[minmax(220px,0.42fr)_minmax(0,0.58fr)]">
-              <aside className="bg-neutral-100 px-6 pb-10 pt-10 sm:px-8 lg:px-10 lg:pt-12">
+            <section className="grid gap-6 lg:grid-cols-[minmax(220px,0.42fr)_minmax(0,0.58fr)]">
+              <aside className="bg-neutral-100 px-6 pb-9 pt-9 text-neutral-900 sm:px-8 lg:px-10 lg:pt-11">
                 {artwork.image ? (
                   <div className="relative max-w-[280px] bg-white">
                     <Image
@@ -126,30 +128,37 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
                   </div>
                 ) : null}
 
-                <div className="mt-6 space-y-2 text-sm text-neutral-800">
-                  {artwork.artist && <p className="font-medium">{artwork.artist}</p>}
-                  <p className="italic">{artwork.title}</p>
-                  {artwork.year && <p>{artwork.year}</p>}
-
-                  <div className="mt-4 space-y-1 text-neutral-600">
-                    {artwork.medium && <p>{artwork.medium}</p>}
-                    {artwork.dimensions && <p>{artwork.dimensions}</p>}
-                    {artwork.price && (
-                      <p className="font-medium text-neutral-800">{artwork.price}</p>
-                    )}
+                <div className="mt-6 text-sm text-neutral-900">
+                  <div className="space-y-[0.25rem]">
+                    {artwork.artist && <p className="font-medium text-neutral-900">{artwork.artist}</p>}
+                    <p className="italic text-neutral-900">{artwork.title}</p>
+                    {artwork.year && <p className="text-neutral-900">{artwork.year}</p>}
                   </div>
 
+                  {(artwork.medium || artwork.dimensions) && (
+                    <div className="mt-6 space-y-[0.25rem]">
+                      {artwork.medium && <p>{artwork.medium}</p>}
+                      {artwork.dimensions && <p>{artwork.dimensions}</p>}
+                    </div>
+                  )}
+
                   {artwork.additionalHtml && (
-                    <div
-                      className="mt-4 space-y-2 text-neutral-700"
-                      dangerouslySetInnerHTML={{ __html: artwork.additionalHtml }}
-                    />
+                    <div className="mt-6 text-neutral-900">
+                      <div
+                        className="[&>*]:leading-[1.06] [&>*]:text-neutral-900 [&>*+*]:mt-[0.25rem] [&_p]:m-0"
+                        dangerouslySetInnerHTML={{ __html: artwork.additionalHtml }}
+                      />
+                    </div>
+                  )}
+
+                  {artwork.price && (
+                    <p className="mt-8 font-medium text-neutral-900">{artwork.price}</p>
                   )}
                 </div>
               </aside>
 
-              <section className="px-6 pb-12 pt-4 sm:px-8 lg:px-12 lg:pt-6">
-                <p className="text-sm text-neutral-500">* indicates a mandatory field</p>
+              <section className="px-6 pb-12 pt-2 sm:px-8 lg:px-12 lg:pt-5">
+                <p className="text-sm text-neutral-900">* indicates a mandatory field</p>
 
                 <form onSubmit={handleSubmit} className="mt-7 space-y-5" aria-live="polite">
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -206,10 +215,6 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
                     {submitting ? "Sending…" : "Send enquiry"}
                   </button>
 
-                  <p className="text-xs text-neutral-500">
-                    In order to respond to your enquiry, we will process the personal data you provide in line with our privacy
-                    practices. You can update your preferences at any time by following the link in our emails.
-                  </p>
                 </form>
               </section>
             </section>
@@ -224,7 +229,7 @@ function LabelledInput({ label, id, required, type = "text", className, ...rest 
   const isCheckbox = type === "checkbox";
   if (isCheckbox) {
     return (
-      <label className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-neutral-500">
+      <label className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-neutral-900">
         <input id={id} type="checkbox" className={clsx("h-4 w-4", className)} {...rest} />
         <span>
           {label}
@@ -235,7 +240,7 @@ function LabelledInput({ label, id, required, type = "text", className, ...rest 
   }
 
   return (
-    <label className="flex flex-col text-xs uppercase tracking-[0.2em] text-neutral-500">
+    <label className="flex flex-col text-xs uppercase tracking-[0.2em] text-neutral-900">
       <span>
         {label}
         {required ? <span className="ml-1 text-red-500">*</span> : null}
@@ -256,7 +261,7 @@ function LabelledInput({ label, id, required, type = "text", className, ...rest 
 
 function LabelledTextarea({ label, id, required, className, ...rest }: TextareaProps) {
   return (
-    <label className="flex flex-col text-xs uppercase tracking-[0.2em] text-neutral-500">
+    <label className="flex flex-col text-xs uppercase tracking-[0.2em] text-neutral-900">
       {label}
       {required ? <span className="ml-1 text-red-500">*</span> : null}
       <textarea
