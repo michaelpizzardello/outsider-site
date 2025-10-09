@@ -1,4 +1,3 @@
-
 // components/artists/ArtistHero.tsx
 // ---------------------------------------------------------------------------
 // Artist detail heading: responsive two-column layout that stacks portrait and
@@ -38,24 +37,30 @@ export default function ArtistHero({
     // Shopify sometimes stores birth year as "Born 1980" or "1980".
     if (!trimmedBirthYear) return null;
     const lower = trimmedBirthYear.toLowerCase();
-    return lower.startsWith("b.") || lower.includes("born")
-      ? trimmedBirthYear
-      : `b. ${trimmedBirthYear}`;
+    if (lower.startsWith("b.")) {
+      return trimmedBirthYear.replace(/^b\./i, "B.");
+    }
+    if (lower.startsWith("born")) {
+      return `Born ${trimmedBirthYear.slice(4).trimStart()}`;
+    }
+    return `B. ${trimmedBirthYear}`;
   })();
 
   // Preserve the uploaded artwork aspect ratio when available.
   const aspectRatio =
-    cover?.width && cover?.height ? `${cover.width}/${cover.height}` : undefined;
+    cover?.width && cover?.height
+      ? `${cover.width}/${cover.height}`
+      : undefined;
 
   return (
     // Background tone and padding mirror other hero bands across the site.
-    <section className="relative border-b border-[var(--colors-grey-dark,#e0e0e0)] bg-[var(--colors-grey-default,#f6f6f5)] py-8">
+    <section className="relative border-b border-[var(--colors-grey-dark,#e0e0e0)] bg-[var(--colors-grey-default,#f6f6f5)] pt-12 pb-12 sm:py-24">
       {/* Grid: single column until `lg`, then image/text columns. */}
       <Container className="grid items-center gap-y-6 py-0 sm:gap-y-10 sm:py-24 lg:grid-cols-2 lg:gap-x-20 lg:justify-items-center xl:gap-x-24">
         {cover?.url ? (
           // Portrait block. Constrains max width on smaller breakpoints so the
           // image doesn't overwhelm the viewport, but allows full bleed at `lg+`.
-          <figure className="relative flex w-full max-w-[360px] flex-col items-center self-center text-center sm:max-w-[460px] md:max-w-[560px] justify-self-center lg:max-w-none lg:order-2 lg:justify-self-end lg:my-auto">
+          <figure className="relative flex w-full max-w-[360px] flex-col items-center self-center pt-1 pb-8 text-center sm:max-w-[460px] sm:pt-0 sm:pb-0 md:max-w-[560px] justify-self-center lg:max-w-none lg:order-2 lg:justify-self-end lg:my-auto">
             <div
               className="relative w-full"
               style={{ aspectRatio: aspectRatio ?? "4 / 5" }}
@@ -71,7 +76,7 @@ export default function ArtistHero({
             </div>
             {cover.alt ? (
               <figcaption
-                className={`${EXHIBITION_LABEL_BASE_CLASS} mt-6 text-center text-neutral-500`}
+                className={`${EXHIBITION_LABEL_BASE_CLASS} mt-6 text-center text-black`}
               >
                 {cover.alt}
               </figcaption>
@@ -83,13 +88,21 @@ export default function ArtistHero({
         <div className="flex w-full flex-col items-center lg:order-1 lg:justify-self-start lg:my-auto">
           <div className="mx-auto max-w-2xl text-center">
             {/* Responsive type scale to balance against the portrait sizing. */}
-            <h1 className="text-4xl font-light tracking-tight text-neutral-900 sm:text-[2.6rem] md:text-[2.9rem] lg:text-[3.1rem] xl:text-[3.8rem]">
+            <h1 className="text-[2.25rem] font-semibold tracking-tight text-black sm:text-[2.55rem] md:text-[2.9rem] lg:text-[3.1rem] xl:text-[3.6rem]">
               {displayName}
             </h1>
-            {(nationalityLine || birthLine) ? (
-              <div className="mt-4 space-y-2 text-base text-neutral-600 sm:text-lg lg:text-xl lg:space-y-3">
-                {nationalityLine ? <p>{nationalityLine}</p> : null}
-                {birthLine ? <p>{birthLine}</p> : null}
+            {nationalityLine || birthLine ? (
+              <div className="mt-4 space-y-1 pb-12 text-black sm:space-y-1.5 lg:pb-0">
+                {nationalityLine ? (
+                  <p className="text-sm font-normal sm:text-base lg:text-lg">
+                    {nationalityLine}
+                  </p>
+                ) : null}
+                {birthLine ? (
+                  <p className="text-base font-semibold sm:text-lg lg:text-xl">
+                    {birthLine}
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>

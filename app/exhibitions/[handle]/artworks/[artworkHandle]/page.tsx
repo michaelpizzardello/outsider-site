@@ -6,8 +6,10 @@ import { shopifyFetch } from "@/lib/shopify";
 import { toHtml } from "@/lib/richtext";
 import ArtworkLayout from "@/components/exhibition/ArtworkLayout";
 
+// Static revalidation keeps artwork detail pages fresh without SSR on every hit.
 export const revalidate = 120;
 
+// GraphQL query that gathers the artwork product with all metafields needed for the detail view.
 const ARTWORK_QUERY = /* GraphQL */ `
   query ArtworkByHandle(
     $handle: String!
@@ -70,6 +72,7 @@ const ARTWORK_QUERY = /* GraphQL */ `
   }
 `;
 
+// Helper type for metaobject references returned inside metafields.
 type MaybeMetaobject = {
   __typename: string;
   handle?: string | null;
@@ -125,10 +128,12 @@ type ImageNode = {
   altText?: string | null;
 };
 
+// Quick heuristic that detects whether a string contains HTML-like markup.
 function looksLikeHtml(value: string) {
   return /<\s*[a-z][\s\S]*>/i.test(value);
 }
 
+// Normalise metafield values to plain trimmed strings.
 function metafieldString(mf?: MaybeMetafield | null): string | undefined {
   const value = mf?.value;
   if (typeof value !== "string") return undefined;
@@ -136,6 +141,8 @@ function metafieldString(mf?: MaybeMetafield | null): string | undefined {
   return trimmed.length ? trimmed : undefined;
 }
 
+// Convert metafield values into HTML, accounting for rich_text payloads and
+// falling back to simple paragraph-wrapped text when necessary.
 function metafieldHtml(mf?: MaybeMetafield | null): string | undefined {
   const raw = metafieldString(mf);
   if (!raw) return undefined;
@@ -147,6 +154,7 @@ function metafieldHtml(mf?: MaybeMetafield | null): string | undefined {
   return `<p>${raw.replace(/\n+/g, "<br/>")}</p>`;
 }
 
+// Parse metafield values to numbers when the payload contains numeric strings.
 function metafieldNumber(mf?: MaybeMetafield | null): number | undefined {
   const raw = metafieldString(mf);
   if (!raw) return undefined;
@@ -154,6 +162,7 @@ function metafieldNumber(mf?: MaybeMetafield | null): number | undefined {
   return Number.isFinite(num) ? num : undefined;
 }
 
+// Combine dimension values (cm) into a readable label such as "40 x 60 x 5 cm".
 function formatDimensionsCm(
   width?: number,
   height?: number,
@@ -171,6 +180,7 @@ function formatDimensionsCm(
   return `${parts.join(" x ")} cm`;
 }
 
+// Extract the artist name, giving priority to referenced metaobject fields when available.
 function getArtistName(meta?: MaybeMetafield | null): string | undefined {
   const fromValue = metafieldString(meta);
   const ref = meta?.reference;
@@ -185,6 +195,7 @@ function getArtistName(meta?: MaybeMetafield | null): string | undefined {
   return fromValue || undefined;
 }
 
+// Confirm the product is linked to the requested exhibition handle before rendering.
 function productBelongsToExhibition(
   product: ArtworkQuery["product"],
   exhibitionHandle: string
@@ -196,6 +207,7 @@ function productBelongsToExhibition(
   return nodes?.some((node) => node?.__typename === "Metaobject" && node.handle === exhibitionHandle) ?? false;
 }
 
+// Present price/sold status, falling back to Shopify availability when metafields are absent.
 function formatPriceLabel(product: ArtworkQuery["product"]): string | undefined {
   const price = product?.priceRange?.minVariantPrice;
   const status = metafieldString(product?.status)?.toLowerCase();
@@ -226,12 +238,15 @@ function formatPriceLabel(product: ArtworkQuery["product"]): string | undefined 
   return undefined;
 }
 
+// Server component entry point for the artwork detail view.
 export default async function ArtworkPage({
   params,
 }: {
   params: { handle: string; artworkHandle: string };
 }) {
   const { handle: exhibitionHandle, artworkHandle } = params;
+
+  // Fetch the artwork product with the relevant metafields in a single request.
   const data = await shopifyFetch<ArtworkQuery>(ARTWORK_QUERY, {
     handle: artworkHandle,
     ns: "custom",
@@ -242,42 +257,49 @@ export default async function ArtworkPage({
   const product = data.product;
   if (!product) notFound();
 
-  // Optionally ensure the product references this exhibition; otherwise continue but console.log.
+  // Safety check: log when the handle is mismatched so editors catch incorrect URL slugs.
   if (!productBelongsToExhibition(product, exhibitionHandle)) {
     console.log(
       `[artworks] product ${product.handle} does not reference exhibition ${exhibitionHandle} — continuing anyway.`
     );
   }
 
+  // Pull the headline metadata that drives the detail template.
   const artist = getArtistName(product.artistMeta);
   const year = metafieldString(product.year);
   const medium = metafieldString(product.medium);
 
+  // Prefer the richest caption the merch team provided, falling back to Shopify copy.
   const captionHtml =
     metafieldHtml(product.fullCaption) ||
     metafieldHtml(product.caption) ||
     product.descriptionHtml ||
     (product.description ? `<p>${product.description}</p>` : undefined);
 
+  // Additional text shown lower on the page; we merge multiple metafields into one block.
   const additionalInfoHtml =
     metafieldHtml(product.additionalInfo) ||
     metafieldHtml(product.additional) ||
     metafieldHtml(product.notes);
 
+  // Sold status or formatted price displayed in the side rail.
   const priceLabel = formatPriceLabel(product);
 
+  // Prepare the media gallery, ensuring the featured image leads the carousel.
   const images = product.images?.nodes?.filter((img): img is ImageNode => Boolean(img?.url)) ?? [];
   const heroImage = product.featuredImage || images[0];
   const gallery = heroImage
     ? [heroImage, ...images.filter((img) => img.url !== heroImage.url)]
     : images;
 
+  // Dimension metafields arrive as either individual numbers or a pre-formatted string.
   const widthCm = metafieldNumber(product.widthCm);
   const heightCm = metafieldNumber(product.heightCm);
   const depthCm = metafieldNumber(product.depthCm);
   const dimensionsLabel =
     formatDimensionsCm(widthCm, heightCm, depthCm) ?? metafieldString(product.dimensions);
 
+  // Pass the cleaned data to the client layout component which renders the full UI.
   return (
     <ArtworkLayout
       exhibitionHandle={exhibitionHandle}

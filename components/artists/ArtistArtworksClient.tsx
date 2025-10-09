@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import Container from "@/components/layout/Container";
 import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 
 type ArtworkPayload = {
   id: string;
+  artist: string | null;
   title: string;
   year: string | null;
   priceLabel: string;
@@ -39,17 +41,17 @@ type Props = {
   rows: LayoutRow[];
 };
 
-function ArtworkCard({ artwork, options }: { artwork: ArtworkPayload; options: RenderOptions }) {
-  const Wrapper = artwork.href ? Link : ("div" as const);
-  const wrapperProps = artwork.href
-    ? {
-        href: artwork.href,
-        className: "block flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-black",
-      }
-    : {
-        className: "block flex-shrink-0",
-      };
-
+function ArtworkCard({
+  artwork,
+  options,
+  onEnquire,
+}: {
+  artwork: ArtworkPayload;
+  options: RenderOptions;
+  onEnquire: (artwork: ArtworkPayload) => void;
+}) {
+  const href = artwork.href ?? undefined;
+  const image = artwork.featureImage;
   const sizeAttr = options.sizeOverride
     ? options.sizeOverride
     : options.span === "full"
@@ -63,46 +65,72 @@ function ArtworkCard({ artwork, options }: { artwork: ArtworkPayload; options: R
       ? `${options.forcedAspectRatio}`
       : artwork.aspectRatio ?? undefined;
 
+  const media = (
+    image ? (
+      <div
+        className={`relative w-full overflow-hidden bg-white${
+          options.centerImage ? " flex h-full items-center" : ""
+        }`}
+        style={
+          wrapperAspect
+            ? { aspectRatio: wrapperAspect }
+            : { aspectRatio: options.span === "full" ? "4 / 3" : "4 / 5" }
+        }
+      >
+        <Image
+          src={image.url}
+          alt={image.altText || artwork.title}
+          fill
+          className="object-contain object-center transition duration-300 group-hover:scale-[1.01]"
+          sizes={sizeAttr}
+        />
+      </div>
+    ) : (
+      <div className="bg-neutral-100" style={{ aspectRatio: options.span === "full" ? "4 / 3" : "4 / 5" }} />
+    )
+  );
+
+  const titleBlock = (
+    <>
+      <p className="artwork-card__title mt-1 break-words underline-offset-4">
+        <span className="italic">{artwork.title}</span>
+        {artwork.year && <span>, {artwork.year}</span>}
+      </p>
+      <p className="mt-2 font-medium">{artwork.priceLabel}</p>
+    </>
+  );
+
   return (
-    <div className="group flex h-full flex-col justify-end gap-y-8 md:gap-y-10">
-      <Wrapper {...(wrapperProps as any)}>
-        {artwork.featureImage ? (
-          <div
-            className={`relative w-full overflow-hidden bg-white${
-              options.centerImage ? " flex h-full items-center" : ""
-            }`}
-            style={
-              wrapperAspect
-                ? { aspectRatio: wrapperAspect }
-                : { aspectRatio: options.span === "full" ? "4 / 3" : "4 / 5" }
-            }
-          >
-            <Image
-              src={artwork.featureImage.url}
-              alt={artwork.featureImage.altText || artwork.title}
-              fill
-              className="object-contain object-center transition duration-300 group-hover:scale-[1.01]"
-              sizes={sizeAttr}
-            />
-          </div>
-        ) : (
-          <div className="bg-neutral-100" style={{ aspectRatio: options.span === "full" ? "4 / 3" : "4 / 5" }} />
-        )}
-      </Wrapper>
+    <div className="artwork-card flex h-full flex-col justify-end gap-y-8 md:gap-y-10">
+      {href ? (
+        <Link
+          href={href}
+          data-artwork-link="image"
+          className="group block flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+        >
+          {media}
+        </Link>
+      ) : (
+        <div className="group block flex-shrink-0">{media}</div>
+      )}
 
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 text-[15px] leading-snug">
-        <div className="min-w-[200px] flex-1">
-          <p className="mt-1 break-words underline-offset-4 group-hover:underline">
-            <span className="italic">{artwork.title}</span>
-            {artwork.year && <span>, {artwork.year}</span>}
-          </p>
-          <p className="mt-2 font-medium">{artwork.priceLabel}</p>
-        </div>
+        {href ? (
+          <Link
+            href={href}
+            data-artwork-link="title"
+            className="min-w-[200px] flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          >
+            {titleBlock}
+          </Link>
+        ) : (
+          <div className="min-w-[200px] flex-1">{titleBlock}</div>
+        )}
 
         <div className="flex shrink-0 items-center gap-x-6 text-sm">
-          {artwork.href ? (
+          {href ? (
             <ArrowCtaLink
-              href={artwork.href}
+              href={href}
               label="View work"
               className="hidden sm:inline-flex hover:opacity-85"
               underline={false}
@@ -111,6 +139,12 @@ function ArtworkCard({ artwork, options }: { artwork: ArtworkPayload; options: R
           <Link
             href={artwork.enquireHref}
             className="group inline-flex items-center gap-4 text-sm font-medium md:text-base hover:opacity-85 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+            onClick={(event) => {
+              if (event.defaultPrevented) return;
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+              event.preventDefault();
+              onEnquire(artwork);
+            }}
           >
             <span className="underline-offset-[6px] group-hover:underline group-focus-visible:underline">
               Enquire
@@ -125,6 +159,7 @@ function ArtworkCard({ artwork, options }: { artwork: ArtworkPayload; options: R
 export default function ArtistArtworksClient({ artworks, rows }: Props) {
   const [viewAll, setViewAll] = useState(false);
   const [isBelowMd, setIsBelowMd] = useState(false);
+  const [enquiryArtwork, setEnquiryArtwork] = useState<ArtworkPayload | null>(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -139,6 +174,7 @@ export default function ArtistArtworksClient({ artworks, rows }: Props) {
   }, [isBelowMd, viewAll]);
 
   const showToggle = !isBelowMd && artworks.length > rows.length;
+  const closeEnquiry = () => setEnquiryArtwork(null);
 
   return (
     <section className="w-full border-t border-neutral-200 pt-8 pb-16 md:pt-10 md:pb-20">
@@ -198,6 +234,7 @@ export default function ArtistArtworksClient({ artworks, rows }: Props) {
                     sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
                     centerImage: true,
                   }}
+                  onEnquire={(selected) => setEnquiryArtwork(selected)}
                 />
               ))}
             </div>
@@ -219,6 +256,7 @@ export default function ArtistArtworksClient({ artworks, rows }: Props) {
                         <ArtworkCard
                           artwork={artwork}
                           options={{ span: "full", forcedAspectRatio: forcedAspect }}
+                          onEnquire={(selected) => setEnquiryArtwork(selected)}
                         />
                       ) : null}
                     </div>
@@ -238,6 +276,7 @@ export default function ArtistArtworksClient({ artworks, rows }: Props) {
                             key={artwork.id}
                             artwork={artwork}
                             options={{ span: "half", forcedAspectRatio: forcedAspect }}
+                            onEnquire={(selected) => setEnquiryArtwork(selected)}
                           />
                         ) : null;
                       })}
@@ -257,6 +296,7 @@ export default function ArtistArtworksClient({ artworks, rows }: Props) {
                           key={artwork.id}
                           artwork={artwork}
                           options={{ span: "third", forcedAspectRatio: forcedAspect }}
+                          onEnquire={(selected) => setEnquiryArtwork(selected)}
                         />
                       ) : null;
                     })}
@@ -284,6 +324,22 @@ export default function ArtistArtworksClient({ artworks, rows }: Props) {
           ) : null}
         </div>
       </Container>
+      <ArtworkEnquiryModal
+        open={Boolean(enquiryArtwork)}
+        onClose={closeEnquiry}
+        artwork={{
+          title: enquiryArtwork?.title ?? "",
+          artist: enquiryArtwork?.artist ?? undefined,
+          year: enquiryArtwork?.year ?? undefined,
+          price: enquiryArtwork?.priceLabel,
+          image: enquiryArtwork?.featureImage
+            ? {
+                url: enquiryArtwork.featureImage.url,
+                alt: enquiryArtwork.featureImage.altText || enquiryArtwork.title,
+              }
+            : undefined,
+        }}
+      />
     </section>
   );
 }

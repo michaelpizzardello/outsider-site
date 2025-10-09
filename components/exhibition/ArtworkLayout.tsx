@@ -9,6 +9,9 @@ import CloseArtworkButton from "@/components/exhibition/CloseArtworkButton";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 
+// Client-side shell that displays the artwork hero, metadata rail, and enquiry modal.
+
+// Minimal image shape shared between Shopify responses and the layout.
 type GalleryImage = {
   id?: string | null;
   url: string;
@@ -17,6 +20,7 @@ type GalleryImage = {
   altText?: string | null;
 };
 
+// UI props received from the server component.
 type Props = {
   exhibitionHandle: string;
   title: string;
@@ -42,15 +46,22 @@ export default function ArtworkLayout({
   dimensionsLabel,
   additionalInfoHtml,
 }: Props) {
+  // Track currently selected slide; used by both carousel and desktop hero image.
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeImage = useMemo(() => gallery[activeIndex] ?? gallery[0] ?? null, [gallery, activeIndex]);
+  const activeImage = useMemo(
+    () => gallery[activeIndex] ?? gallery[0] ?? null,
+    [gallery, activeIndex]
+  );
 
+  // Calculate the widest slide aspect ratio so the carousel height stays stable.
   const maxSlideAspect = useMemo(() => {
     if (!gallery?.length) return 1;
 
     return gallery.reduce((max, img) => {
-      const width = typeof img.width === "number" && img.width > 0 ? img.width : null;
-      const height = typeof img.height === "number" && img.height > 0 ? img.height : null;
+      const width =
+        typeof img.width === "number" && img.width > 0 ? img.width : null;
+      const height =
+        typeof img.height === "number" && img.height > 0 ? img.height : null;
 
       if (!width || !height) return max;
 
@@ -59,13 +70,25 @@ export default function ArtworkLayout({
     }, 1);
   }, [gallery]);
 
-  const trackStyle = useMemo<CSSProperties>(() => ({ "--carousel-max-aspect": maxSlideAspect }), [maxSlideAspect]);
+  // Applied to the Embla track so CSS can clamp slide frames with --carousel-max-aspect.
+  const trackStyle = useMemo<CSSProperties>(
+    () =>
+      ({
+        ["--carousel-max-aspect" as any]: `${maxSlideAspect}`,
+      } as CSSProperties),
+    [maxSlideAspect]
+  );
 
   useEffect(() => {
     setActiveIndex(0);
   }, [gallery]);
 
-  const [viewportRef, embla] = useEmblaCarousel({ loop: false, align: "center", skipSnaps: false });
+  // Initialise Embla carousel instance once and share it across effects.
+  const [viewportRef, embla] = useEmblaCarousel({
+    loop: false,
+    align: "center",
+    skipSnaps: false,
+  });
 
   useEffect(() => {
     if (!embla) return;
@@ -86,6 +109,7 @@ export default function ArtworkLayout({
     }
   }, [activeIndex, embla]);
 
+  // Normalise price strings coming from Shopify so the UI shows standard currency labels.
   const normalizePriceLabel = (label: string) => {
     if (!label) return "";
     if (/^A\$/i.test(label)) {
@@ -97,34 +121,46 @@ export default function ArtworkLayout({
     return label;
   };
 
-  const displayPriceLabel = priceLabel ? normalizePriceLabel(priceLabel) : undefined;
+  const displayPriceLabel = priceLabel
+    ? normalizePriceLabel(priceLabel)
+    : undefined;
 
+  // Booleans drive conditional rendering throughout the template.
   const hasHeading = Boolean(artist || title || year);
   const hasCaption = Boolean(captionHtml);
   const hasPrice = Boolean(displayPriceLabel);
-  const hasMetaList = Boolean(medium || dimensionsLabel || additionalInfoHtml || hasPrice);
+  const hasMetaList = Boolean(
+    medium || dimensionsLabel || additionalInfoHtml || hasPrice
+  );
 
+  // Reusable heading stack rendered in multiple breakpoints.
   const renderHeading = (className = "") => (
-    <div className={`space-y-1 xl:space-y-2 ${className}`.trim()}>
+    <div className={`space-y-1 xl:space-y-2 w-full ${className}`.trim()}>
       {artist && <p className="artwork-heading-artist">{artist}</p>}
       <p className="artwork-heading-title">{title}</p>
       {year && <p className="artwork-heading-year">{year}</p>}
     </div>
   );
 
+  // Metadata column including enquiry button, caption, medium, dimensions, notes, and price.
   const renderDetails = (
     className = "",
-    { onEnquire, showDivider = true }: { onEnquire?: () => void; showDivider?: boolean } = {}
+    {
+      onEnquire,
+      showDivider = true,
+    }: { onEnquire?: () => void; showDivider?: boolean } = {}
   ) => {
     const showDividerAfterButton = showDivider && (hasCaption || hasMetaList);
 
     return (
-      <div className={`space-y-6 ${className}`.trim()}>
+      <div className={`space-y-6 w-full ${className}`.trim()}>
         <OutlineLabelButton onClick={onEnquire} className="tracking-[0.28em]">
           Enquire
         </OutlineLabelButton>
 
-        {showDividerAfterButton && <div className="h-px bg-neutral-300" />}
+        {showDividerAfterButton && (
+          <div className="my-6 h-px w-full bg-neutral-300 lg:my-8" />
+        )}
 
         {hasCaption && (
           <div
@@ -136,20 +172,27 @@ export default function ArtworkLayout({
         {hasMetaList && (
           <div className="space-y-1.5">
             {medium && <p className="artwork-meta-text">{medium}</p>}
-            {dimensionsLabel && <p className="artwork-meta-text">{dimensionsLabel}</p>}
+            {dimensionsLabel && (
+              <p className="artwork-meta-text">{dimensionsLabel}</p>
+            )}
             {additionalInfoHtml && (
               <div
                 className="artwork-meta-text space-y-2 text-neutral-800 [&_p]:artwork-meta-text"
                 dangerouslySetInnerHTML={{ __html: additionalInfoHtml }}
               />
             )}
-            {displayPriceLabel && <p className="artwork-meta-text font-medium text-neutral-900">{displayPriceLabel}</p>}
+            {displayPriceLabel && (
+              <p className="artwork-meta-text font-medium text-neutral-900 pt-2">
+                {displayPriceLabel}
+              </p>
+            )}
           </div>
         )}
       </div>
     );
   };
 
+  // Local modal state keeps the enquiry overlay scoped to this layout.
   const [isEnquireOpen, setIsEnquireOpen] = useState(false);
   const openEnquire = () => setIsEnquireOpen(true);
   const closeEnquire = () => setIsEnquireOpen(false);
@@ -162,9 +205,7 @@ export default function ArtworkLayout({
           fallbackHref={`/exhibitions/${exhibitionHandle}`}
           className="absolute right-4 top-4 text-[2.5rem] leading-none text-neutral-900 font-light transition sm:right-6 sm:top-6"
         />
-        {hasHeading && (
-          <>{renderHeading("mt-2")}</>
-        )}
+        {hasHeading && <>{renderHeading("mt-2")}</>}
       </section>
 
       {/* Slider for mobile & tablet */}
@@ -172,14 +213,22 @@ export default function ArtworkLayout({
         <div className="px-4 pb-8 pt-6 sm:px-6 md:px-10">
           <div className="relative">
             <div ref={viewportRef} className="overflow-hidden">
-              <div className="flex items-center gap-3 sm:gap-4" style={trackStyle}>
+              <div
+                className="flex items-center gap-3 sm:gap-4"
+                style={trackStyle}
+              >
                 {gallery.map((img, idx) => {
                   const width = img.width ?? 1600;
                   const height = img.height ?? 1600;
-                  const aspectValue = width > 0 && height > 0 ? width / height : 1;
-                  const slideStyle: CSSProperties = {
-                    "--slide-aspect": Number.isFinite(aspectValue) && aspectValue > 0 ? aspectValue : 1,
-                  };
+                  const aspectValue =
+                    width > 0 && height > 0 ? width / height : 1;
+                  const slideStyle = {
+                    "--slide-aspect": `${
+                      Number.isFinite(aspectValue) && aspectValue > 0
+                        ? aspectValue
+                        : 1
+                    }`,
+                  } as React.CSSProperties;
                   const isActiveSlide = idx === activeIndex;
 
                   return (
@@ -190,6 +239,7 @@ export default function ArtworkLayout({
                       }`}
                       style={slideStyle}
                       onClick={() => {
+                        // Tap/click moves the mobile carousel unless the slide is already active.
                         if (!embla || idx === activeIndex) return;
                         embla.scrollTo(idx);
                       }}
@@ -248,16 +298,16 @@ export default function ArtworkLayout({
 
         {hasHeading && (
           <>
-            {renderHeading("mt-4 pr-2 sm:pr-4 lg:mt-6 lg:pr-4")}
-            <div className="mt-5 h-px bg-neutral-300" />
+            {renderHeading("mt-4 lg:mt-6")}
+            <div className="mt-6 mb-6 h-px w-full bg-neutral-300 lg:mt-8 lg:mb-8" />
           </>
         )}
 
-        {renderDetails("mt-5 pr-2 sm:pr-4 lg:pr-4", { onEnquire: openEnquire })}
+        {renderDetails("mt-5", { onEnquire: openEnquire })}
 
         {gallery.length > 1 && (
-          <section className="hidden space-y-3 lg:block">
-            <div className="h-px bg-neutral-300" />
+          <section className="hidden space-y-3 lg:block lg:mt-6">
+            <div className="my-6 h-px w-full bg-neutral-300 lg:my-8" />
             <div className="grid grid-cols-4 gap-2 xl:grid-cols-5 xl:gap-3">
               {gallery.map((img, idx) => {
                 const isActive = idx === activeIndex;
@@ -271,6 +321,7 @@ export default function ArtworkLayout({
                     } focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/40`}
                     aria-label={`Show image ${img.altText || title}`}
                   >
+                    {/* Thumbnails provide quick navigation across the gallery. */}
                     <Image
                       src={img.url}
                       alt={img.altText || `${title} thumbnail`}
@@ -297,7 +348,9 @@ export default function ArtworkLayout({
           dimensions: dimensionsLabel,
           price: displayPriceLabel,
           additionalHtml: additionalInfoHtml,
-          image: gallery[0] ? { url: gallery[0].url, alt: gallery[0].altText || title } : undefined,
+          image: gallery[0]
+            ? { url: gallery[0].url, alt: gallery[0].altText || title }
+            : undefined,
         }}
       />
     </main>

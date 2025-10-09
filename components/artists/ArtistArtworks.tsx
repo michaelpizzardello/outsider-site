@@ -51,6 +51,7 @@ type Props = {
 
 type ArtworkPayload = {
   id: string;
+  artist: string | null;
   title: string;
   year: string | null;
   priceLabel: string;
@@ -262,6 +263,7 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
 
     return {
       id: product.id,
+      artist: artistName || null,
       title: product.title,
       year: product.year?.value ?? null,
       priceLabel: pricing,

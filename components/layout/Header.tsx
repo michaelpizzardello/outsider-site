@@ -212,7 +212,7 @@ export default function Header({
           {/* --------------------------------------------------------------- */}
           <div
             className={clsx(
-              "flex items-center justify-between md:hidden",
+              "flex items-center justify-between md:hidden -mr-4 sm:-mr-6 pr-1 sm:pr-2",
               headerPaddingMobile,
               transitionSmooth
             )}
@@ -233,10 +233,10 @@ export default function Header({
               onClick={() => setOpen((v) => !v)}
               className="flex h-8 w-8 flex-col justify-center space-y-1.5"
             >
-              <span className="block h-0.5 w-6 bg-current" />
-              <span className="block h-0.5 w-6 bg-current" />
-              <span className="block h-0.5 w-6 bg-current" />
-            </button>
+            <span className="block h-0.5 w-6 bg-current" />
+            <span className="block h-0.5 w-6 bg-current" />
+            <span className="block h-0.5 w-6 bg-current" />
+          </button>
           </div>
         </Container>
       </header>

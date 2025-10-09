@@ -63,8 +63,8 @@ export default function SiteFooter({
         <div className="py-10 md:py-14">
           {/* --- Newsletter (single section) --- */}
           <div className="max-w-2xl">
-            <h2 className="text-base md:text-lg font-medium">Newsletter</h2>
-            <p className="text-sm text-neutral-600 mt-1">
+            <h2 className="text-lg md:text-2xl font-medium">Newsletter</h2>
+            <p className="text-sm md:text-base text-neutral-600 mt-1">
               Join our monthly invitation list for openings and stay up to date on new exhibitions, artists and more
             </p>
 
@@ -85,7 +85,6 @@ export default function SiteFooter({
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    placeholder="Jane"
                     className="mt-1 w-full h-11 rounded-xl border border-neutral-300 bg-white px-3 text-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
@@ -103,7 +102,6 @@ export default function SiteFooter({
                     autoComplete="family-name"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Doe"
                     className="mt-1 w-full h-11 rounded-xl border border-neutral-300 bg-white px-3 text-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-black/10"
                   />
                 </div>
@@ -124,7 +122,6 @@ export default function SiteFooter({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="jane@domain.com"
                   className="mt-1 w-full h-11 rounded-xl border border-neutral-300 bg-white px-3 text-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-black/10"
                 />
               </div>
