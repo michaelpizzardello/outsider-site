@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import type { CollectArtwork } from "@/app/collect/page";
 import { useCart } from "@/components/cart/CartContext";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
+import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 
 type Props = {
   artworks: CollectArtwork[];
@@ -16,7 +17,7 @@ type Props = {
 function formatMoney(price: CollectArtwork["price"]) {
   if (!price) return "Price on request";
   const amount = Number(price.amount);
-  if (!Number.isFinite(amount)) return "Price on request";
+  if (!Number.isFinite(amount) || amount <= 0) return "Price on request";
   try {
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
@@ -72,10 +73,10 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
   }
 
   return (
-    <div className="space-y-16">
-      <div className="flex flex-col gap-6 bg-white pb-2 pt-0 md:flex-row md:items-center">
-        <div className="flex w-full flex-col gap-3 md:flex-row md:items-end md:gap-4">
-          <label className="flex-1 text-sm text-neutral-500">
+    <div className="space-y-20">
+      <div className="bg-white pb-2 pt-0">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 sm:flex-row sm:items-end sm:gap-5">
+          <label className="sm:flex-1 text-sm text-neutral-600">
             <span className="sr-only">Search</span>
             <input
               type="search"
@@ -85,7 +86,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
               className="w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
             />
           </label>
-          <label className="flex-1 text-sm text-neutral-500">
+          <label className="sm:flex-1 text-sm text-neutral-600">
             <span className="sr-only">Filter by medium</span>
             <select
               value={medium}
@@ -100,7 +101,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
               ))}
             </select>
           </label>
-          <label className="flex-1 text-sm text-neutral-500">
+          <label className="sm:flex-1 text-sm text-neutral-600">
             <span className="sr-only">Filter by artist</span>
             <select
               value={artist}
@@ -118,9 +119,15 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-x-12 gap-y-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 sm:gap-x-12 sm:gap-y-20 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-24 xl:grid-cols-4 xl:gap-x-20">
         {filtered.map((artwork) => {
           const priceLabel = formatMoney(artwork.price);
+          const hasPrice =
+            artwork.price &&
+            Number.isFinite(Number(artwork.price.amount)) &&
+            Number(artwork.price.amount) > 0;
+          const canPurchase =
+            hasPrice && artwork.available && Boolean(artwork.variantId);
           const wrapperAspect = (() => {
             const width = artwork.image?.width ?? null;
             const height = artwork.image?.height ?? null;
@@ -136,10 +143,10 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
           })();
 
           return (
-            <article key={artwork.id} className="flex h-full flex-col justify-between">
-              <div className="group relative w-full overflow-hidden bg-neutral-100">
+            <article key={artwork.id} className="flex h-full flex-col">
+              <div className="group bg-white">
                 <div
-                  className="relative w-full bg-white"
+                  className="relative w-full"
                   style={{ aspectRatio: wrapperAspect }}
                 >
                   {artwork.image?.url ? (
@@ -148,7 +155,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                       alt={artwork.image.altText || `${artwork.title} artwork`}
                       fill
                       sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                      className="object-contain object-center transition duration-300 group-hover:scale-[1.01]"
+                      className="object-contain object-center"
                     />
                   ) : (
                     <div className="h-full w-full bg-neutral-200" />
@@ -156,14 +163,12 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-1 flex-col gap-5 text-sm text-neutral-600">
-                <div className="space-y-2">
+              <div className="flex flex-1 flex-col">
+                <div className="mt-6 space-y-2 text-[0.95rem] leading-relaxed text-neutral-800">
                   {artwork.artist ? (
-                    <p className="text-sm font-medium text-neutral-900">
-                      {artwork.artist}
-                    </p>
+                    <p className="text-neutral-900">{artwork.artist}</p>
                   ) : null}
-                  <h3 className="text-base leading-snug text-neutral-900">
+                  <h3 className="text-neutral-900">
                     <span className="italic">{artwork.title}</span>
                     {artwork.year ? <span>, {artwork.year}</span> : null}
                   </h3>
@@ -173,33 +178,25 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                   ) : null}
                 </div>
 
-                <div className="mt-auto space-y-4">
-                  <p className="text-sm font-medium text-neutral-900">
-                    {priceLabel}
-                  </p>
-                  <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                    <button
-                      type="button"
+                <div className="mt-auto space-y-4 pt-4 text-sm text-neutral-700 sm:pt-5">
+                  <p className="font-medium text-neutral-900">{priceLabel}</p>
+                  {canPurchase ? (
+                    <OutlineLabelButton
                       onClick={() => {
                         void handleAddToCart(artwork);
                       }}
-                      disabled={!artwork.available || !artwork.variantId}
-                      className={`flex-1 border border-neutral-900 px-4 py-2 text-xs uppercase tracking-[0.24em] transition ${
-                        artwork.available && artwork.variantId
-                          ? "bg-neutral-900 text-white hover:bg-black"
-                          : "bg-neutral-200 text-neutral-500 border-neutral-300 cursor-not-allowed"
-                      }`}
+                      className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em] !border-neutral-900 !bg-neutral-900 !text-white hover:!bg-black hover:!border-black"
                     >
-                      Add to cart
-                    </button>
-                    <button
-                      type="button"
+                      Purchase
+                    </OutlineLabelButton>
+                  ) : (
+                    <OutlineLabelButton
                       onClick={() => setEnquiryArtwork(artwork)}
-                      className="flex-1 border border-neutral-300 px-4 py-2 text-xs uppercase tracking-[0.24em] text-neutral-900 transition hover:border-neutral-900"
+                      className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em]"
                     >
                       Enquire
-                    </button>
-                  </div>
+                    </OutlineLabelButton>
+                  )}
                 </div>
               </div>
             </article>
