@@ -28,12 +28,6 @@ function formatMoney(price: CollectArtwork["price"]) {
   }
 }
 
-function availabilityLabel(artwork: CollectArtwork) {
-  if (artwork.available) return "Available";
-  if (artwork.status) return artwork.status;
-  return "Sold";
-}
-
 export default function CollectGrid({ artworks, mediums, artists }: Props) {
   const { addLine, openCart } = useCart();
   const [search, setSearch] = useState("");
@@ -78,7 +72,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-16">
       <div className="flex flex-col gap-6 bg-white pb-2 pt-0 md:flex-row md:items-center">
         <div className="flex w-full flex-col gap-3 md:flex-row md:items-end md:gap-4">
           <label className="flex-1 text-sm text-neutral-500">
@@ -127,48 +121,60 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
       <div className="grid grid-cols-1 gap-x-12 gap-y-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filtered.map((artwork) => {
           const priceLabel = formatMoney(artwork.price);
-          const status = availabilityLabel(artwork);
+          const wrapperAspect = (() => {
+            const width = artwork.image?.width ?? null;
+            const height = artwork.image?.height ?? null;
+            if (
+              typeof width === "number" &&
+              width > 0 &&
+              typeof height === "number" &&
+              height > 0
+            ) {
+              return `${width}/${height}`;
+            }
+            return "4 / 5";
+          })();
 
           return (
-            <article key={artwork.id} className="flex h-full flex-col gap-5">
-              <div className="relative flex h-[220px] w-full items-end justify-center overflow-hidden border border-neutral-200 bg-neutral-50">
-                {artwork.image?.url ? (
-                  <Image
-                    src={artwork.image.url}
-                    alt={artwork.image.altText || `${artwork.title} artwork`}
-                    fill
-                    sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                    className="object-contain"
-                    style={{ objectPosition: "center bottom" }}
-                  />
-                ) : null}
-                {!artwork.available ? (
-                  <span className="absolute right-4 top-4 bg-neutral-900 px-3 py-1 text-xs uppercase tracking-[0.24em] text-white">
-                    {status}
-                  </span>
-                ) : null}
+            <article key={artwork.id} className="flex h-full flex-col justify-between">
+              <div className="group relative w-full overflow-hidden bg-neutral-100">
+                <div
+                  className="relative w-full bg-white"
+                  style={{ aspectRatio: wrapperAspect }}
+                >
+                  {artwork.image?.url ? (
+                    <Image
+                      src={artwork.image.url}
+                      alt={artwork.image.altText || `${artwork.title} artwork`}
+                      fill
+                      sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
+                      className="object-contain object-center transition duration-300 group-hover:scale-[1.01]"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-neutral-200" />
+                  )}
+                </div>
               </div>
 
-              <div className="flex flex-1 flex-col">
-                <div className="space-y-3 text-sm text-neutral-600">
-                  <p className="text-[11px] uppercase tracking-[0.32em] text-neutral-500">
-                    {status}
-                  </p>
-                  <h3 className="text-base font-medium leading-snug text-neutral-900">
-                    {artwork.title}
-                    {artwork.year ? (
-                      <span className="text-neutral-500">, {artwork.year}</span>
-                    ) : null}
+              <div className="mt-6 flex flex-1 flex-col gap-5 text-sm text-neutral-600">
+                <div className="space-y-2">
+                  {artwork.artist ? (
+                    <p className="text-sm font-medium text-neutral-900">
+                      {artwork.artist}
+                    </p>
+                  ) : null}
+                  <h3 className="text-base leading-snug text-neutral-900">
+                    <span className="italic">{artwork.title}</span>
+                    {artwork.year ? <span>, {artwork.year}</span> : null}
                   </h3>
-                  {artwork.artist ? <p>{artwork.artist}</p> : null}
                   {artwork.medium ? <p>{artwork.medium}</p> : null}
                   {artwork.dimensions ? (
                     <p className="text-neutral-500">{artwork.dimensions}</p>
                   ) : null}
                 </div>
 
-                <div className="mt-auto space-y-3">
-                  <p className="text-sm font-medium uppercase tracking-[0.18em] text-neutral-900">
+                <div className="mt-auto space-y-4">
+                  <p className="text-sm font-medium text-neutral-900">
                     {priceLabel}
                   </p>
                   <div className="flex flex-col gap-3 md:flex-row md:items-center">
@@ -194,13 +200,6 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                       Enquire
                     </button>
                   </div>
-                  {artwork.quantityAvailable !== null ? (
-                    <p className="text-xs text-neutral-500">
-                      {artwork.quantityAvailable > 1
-                        ? `${artwork.quantityAvailable} editions available`
-                        : "Unique work"}
-                    </p>
-                  ) : null}
                 </div>
               </div>
             </article>

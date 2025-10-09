@@ -16,6 +16,17 @@ type ProductVariantNode = {
   quantityAvailable: number | null;
 };
 
+type MetaobjectField = { key?: string | null; value?: string | null } | null;
+
+type MetaobjectReference =
+  | {
+      __typename: string;
+      handle?: string | null;
+      type?: string | null;
+      fields?: MetaobjectField[] | null;
+    }
+  | null;
+
 type ProductNode = {
   id: string;
   handle: string;
@@ -26,7 +37,10 @@ type ProductNode = {
   priceRange?: { minVariantPrice?: Money | null } | null;
   variants?: { nodes?: ProductVariantNode[] | null } | null;
   tags?: string[] | null;
-  artistField?: { value?: string | null } | null;
+  artistField?: {
+    value?: string | null;
+    reference?: MetaobjectReference;
+  } | null;
   yearField?: { value?: string | null } | null;
   mediumField?: { value?: string | null } | null;
   dimensionsField?: { value?: string | null } | null;
@@ -75,7 +89,17 @@ const QUERY = /* GraphQL */ `
           }
         }
         tags
-        artistField: metafield(namespace: "custom", key: "artist") { value }
+        artistField: metafield(namespace: "custom", key: "artist") {
+          value
+          reference {
+            __typename
+            ... on Metaobject {
+              handle
+              type
+              fields { key value }
+            }
+          }
+        }
         yearField: metafield(namespace: "custom", key: "year") { value }
         mediumField: metafield(namespace: "custom", key: "medium") { value }
         dimensionsField: metafield(namespace: "custom", key: "dimensions") { value }
@@ -102,6 +126,37 @@ function pickVariant(nodes: ProductVariantNode[] | null | undefined) {
   return available ?? nodes[0] ?? null;
 }
 
+function metaobjectFieldLookup(
+  reference: MetaobjectReference | undefined | null,
+  keys: string[]
+): string | null {
+  if (!reference || reference.__typename !== "Metaobject") return null;
+  const fields = reference.fields ?? [];
+  for (const key of keys) {
+    const match = fields.find(
+      (field) => field?.key?.toLowerCase() === key.toLowerCase()
+    );
+    if (match?.value) {
+      const value = norm(match.value);
+      if (value) return value;
+    }
+  }
+  return null;
+}
+
+function getArtistName(node: ProductNode): string | null {
+  const fromMeta = metaobjectFieldLookup(node.artistField?.reference, [
+    "name",
+    "full_name",
+    "fullName",
+    "title",
+  ]);
+  if (fromMeta) return fromMeta;
+  const directValue = norm(node.artistField?.value);
+  if (directValue) return directValue;
+  return norm(node.vendor);
+}
+
 function mapProduct(node: ProductNode): CollectArtwork {
   const variant = pickVariant(node.variants?.nodes ?? []);
   const soldFlag = parseBoolean(node.soldField?.value);
@@ -111,7 +166,7 @@ function mapProduct(node: ProductNode): CollectArtwork {
     id: node.id,
     handle: node.handle,
     title: node.title,
-    artist: norm(node.artistField?.value) ?? norm(node.vendor) ?? null,
+    artist: getArtistName(node),
     year: norm(node.yearField?.value),
     medium: norm(node.mediumField?.value),
     dimensions: norm(node.dimensionsField?.value),
