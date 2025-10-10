@@ -222,21 +222,9 @@ export default async function AboutPage() {
       <section className="border-t border-neutral-200 bg-white">
         <Container className="py-16 sm:py-24">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-12">
-            <div className="rounded-lg border border-neutral-200 bg-white">
-              <div className="grid gap-8 md:grid-cols-2 md:gap-10">
-                <div className="h-[320px] w-full overflow-hidden md:h-[360px]">
-                  <iframe
-                    title="Outsider Gallery location"
-                    src="https://maps.google.com/maps?q=Outsider%20Gallery%20144%20Commonwealth%20St&t=&z=16&ie=UTF8&iwloc=near&output=embed"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
-                <div className="flex flex-col justify-center px-8 py-10 sm:px-12">
+            <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
+              <div className="grid gap-6 md:grid-cols-2 md:gap-12">
+                <div className="order-2 flex flex-col justify-center md:order-1">
                   <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
                     Address
                   </p>
@@ -245,6 +233,20 @@ export default async function AboutPage() {
                     <p>144 Commonwealth St</p>
                     <p>Surry Hills NSW 2010</p>
                     <p>Sydney</p>
+                  </div>
+                </div>
+                <div className="order-1 md:order-2">
+                  <div className="h-[280px] w-full overflow-hidden rounded-md bg-neutral-100 md:h-[340px]">
+                    <iframe
+                      title="Outsider Gallery location"
+                      src="https://maps.google.com/maps?q=Outsider%20Gallery%20144%20Commonwealth%20St&t=&z=16&ie=UTF8&iwloc=near&output=embed"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
                   </div>
                 </div>
               </div>
