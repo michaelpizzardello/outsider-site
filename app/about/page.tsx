@@ -188,10 +188,10 @@ export default async function AboutPage() {
 
       <section className="bg-white">
         <Container className="flex justify-center px-0">
-          <div className="w-full max-w-[960px] space-y-12 pb-12 sm:space-y-14 sm:pb-16">
+          <div className="w-full max-w-[960px] space-y-14 pb-12 sm:space-y-16 sm:pb-16">
             {aboutShortHtml ? (
               <div
-                className="w-full text-left text-lg font-light tracking-tight text-neutral-900 sm:text-3xl [&_p]:m-0 [&_p:not(:first-child)]:mt-5"
+                className="w-full py-6 text-left text-lg font-light tracking-tight text-neutral-900 sm:py-8 sm:text-2xl [&_p]:m-0 [&_p:not(:first-child)]:mt-6"
                 dangerouslySetInnerHTML={{ __html: aboutShortHtml }}
               />
             ) : null}
@@ -209,7 +209,7 @@ export default async function AboutPage() {
             ) : null}
             {aboutLongHtml ? (
               <div
-                className="w-full text-left text-base leading-relaxed text-neutral-700 sm:text-lg [&_ol]:ml-6 [&_ol]:list-decimal [&_p:not(:first-child)]:mt-4 [&_ul]:ml-6 [&_ul]:list-disc lg:text-[1.05rem]"
+                className="w-full text-left text-base leading-relaxed text-neutral-700 sm:text-lg [&_ol]:ml-6 [&_ol]:list-decimal [&_p:not(:first-child)]:mt-5 [&_ul]:ml-6 [&_ul]:list-disc lg:text-[1.05rem]"
                 dangerouslySetInnerHTML={{ __html: aboutLongHtml }}
               />
             ) : null}
@@ -218,11 +218,11 @@ export default async function AboutPage() {
       </section>
 
       <section className="bg-white">
-        <Container className="py-16 sm:py-24">
-          <div className="mx-auto flex w-full max-w-5xl flex-col gap-12">
+        <Container className="py-10 sm:py-16">
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 sm:gap-12">
             <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
               <div className="grid gap-6 md:grid-cols-2 md:gap-12">
-                <div className="order-2 flex flex-col justify-center md:order-1">
+                <div className="flex flex-col justify-center">
                   <p className="text-xs uppercase tracking-[0.24em] text-black">
                     Address
                   </p>
@@ -233,7 +233,7 @@ export default async function AboutPage() {
                     <p>Sydney</p>
                   </div>
                 </div>
-                <div className="order-1 md:order-2">
+                <div className="md:order-2">
                   <div className="h-[280px] w-full overflow-hidden rounded-md bg-neutral-100 md:h-[340px]">
                     <iframe
                       title="Outsider Gallery location"
