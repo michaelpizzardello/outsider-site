@@ -188,7 +188,13 @@ export default async function AboutPage() {
 
       <section className="bg-white">
         <Container className="flex justify-center px-0">
-          <div className="w-full max-w-[960px] space-y-12 pb-16 sm:space-y-16 sm:pb-24">
+          <div className="w-full max-w-[960px] space-y-8 pb-12 sm:space-y-12 sm:pb-16">
+            {aboutShortHtml ? (
+              <div
+                className="w-full text-left text-xl font-light tracking-tight text-neutral-900 sm:text-3xl [&_p]:m-0 [&_p:not(:first-child)]:mt-4"
+                dangerouslySetInnerHTML={{ __html: aboutShortHtml }}
+              />
+            ) : null}
             {coverImage ? (
               <div className="relative aspect-[3/2] w-full bg-neutral-100">
                 <Image
@@ -201,25 +207,17 @@ export default async function AboutPage() {
                 />
               </div>
             ) : null}
-            <div className="space-y-8 text-left">
-              {aboutShortHtml ? (
-                <div
-                  className="w-full text-2xl font-light tracking-tight text-neutral-900 sm:text-3xl [&_p]:m-0 [&_p:not(:first-child)]:mt-4"
-                  dangerouslySetInnerHTML={{ __html: aboutShortHtml }}
-                />
-              ) : null}
-              {aboutLongHtml ? (
-                <div
-                  className="w-full text-base leading-relaxed text-neutral-700 sm:text-lg [&_ol]:ml-6 [&_ol]:list-decimal [&_p:not(:first-child)]:mt-4 [&_ul]:ml-6 [&_ul]:list-disc lg:text-[1.05rem]"
-                  dangerouslySetInnerHTML={{ __html: aboutLongHtml }}
-                />
-              ) : null}
-            </div>
+            {aboutLongHtml ? (
+              <div
+                className="w-full text-left text-base leading-relaxed text-neutral-700 sm:text-lg [&_ol]:ml-6 [&_ol]:list-decimal [&_p:not(:first-child)]:mt-4 [&_ul]:ml-6 [&_ul]:list-disc lg:text-[1.05rem]"
+                dangerouslySetInnerHTML={{ __html: aboutLongHtml }}
+              />
+            ) : null}
           </div>
         </Container>
       </section>
 
-      <section className="border-t border-neutral-200 bg-white">
+      <section className="bg-white">
         <Container className="py-16 sm:py-24">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-12">
             <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">

@@ -2,7 +2,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
   --colors-grey-default: #f9f9f9;
   --colors-grey-dark: #e0e0e0;
   --header-tight-h: 64px;
@@ -25,6 +25,16 @@
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+@layer base {
+  *, *::before, *::after {
+    color: #000000 !important;
+  }
+
+  a {
+    color: #000000 !important;
+  }
 }
 
 .site-container {
