@@ -188,10 +188,10 @@ export default async function AboutPage() {
 
       <section className="bg-white">
         <Container className="flex justify-center px-0">
-          <div className="w-full max-w-[960px] space-y-8 pb-12 sm:space-y-12 sm:pb-16">
+          <div className="w-full max-w-[960px] space-y-12 pb-12 sm:space-y-14 sm:pb-16">
             {aboutShortHtml ? (
               <div
-                className="w-full text-left text-xl font-light tracking-tight text-neutral-900 sm:text-3xl [&_p]:m-0 [&_p:not(:first-child)]:mt-4"
+                className="w-full text-left text-lg font-light tracking-tight text-neutral-900 sm:text-3xl [&_p]:m-0 [&_p:not(:first-child)]:mt-5"
                 dangerouslySetInnerHTML={{ __html: aboutShortHtml }}
               />
             ) : null}
@@ -223,10 +223,10 @@ export default async function AboutPage() {
             <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
               <div className="grid gap-6 md:grid-cols-2 md:gap-12">
                 <div className="order-2 flex flex-col justify-center md:order-1">
-                  <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                  <p className="text-xs uppercase tracking-[0.24em] text-black">
                     Address
                   </p>
-                  <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
+                  <div className="mt-5 space-y-1 text-lg font-light leading-snug text-black sm:text-xl">
                     <p>Outsider Gallery</p>
                     <p>144 Commonwealth St</p>
                     <p>Surry Hills NSW 2010</p>
@@ -253,22 +253,22 @@ export default async function AboutPage() {
             <div className="grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16">
               <div className="space-y-8">
                 <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
-                  <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                  <p className="text-xs uppercase tracking-[0.24em] text-black">
                     Opening Hours
                   </p>
-                  <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
+                  <div className="mt-5 space-y-1 text-lg font-light leading-snug text-black sm:text-xl">
                     <p>Wednesday—Saturday</p>
                     <p>10am – 5pm</p>
                   </div>
-                  <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base">
+                  <p className="mt-4 text-sm leading-relaxed text-black sm:text-base">
                     or by appointment
                   </p>
                 </div>
                 <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
-                  <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                  <p className="text-xs uppercase tracking-[0.24em] text-black">
                     Contact
                   </p>
-                  <div className="mt-5 space-y-3 text-sm leading-relaxed text-neutral-700 sm:text-base">
+                  <div className="mt-5 space-y-3 text-sm leading-relaxed text-black sm:text-base">
                     <p>
                       <a
                         href="mailto:info@outsidergallery.com.au"
@@ -289,7 +289,7 @@ export default async function AboutPage() {
                 </div>
               </div>
               <div className="rounded-lg border border-neutral-200 bg-[var(--colors-grey-default,#f6f6f5)] p-8 sm:p-10">
-                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                <p className="text-xs uppercase tracking-[0.24em] text-black">
                   Enquire
                 </p>
                 <form
