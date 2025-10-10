@@ -6,84 +6,6 @@ import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 import { toHtml } from "@/lib/richtext";
 
-const TIMELINE = [
-  {
-    year: "2015",
-    title: "Outsider Gallery founded",
-    body: "Opened in New York with a mission to champion visionary artists working outside traditional pathways, presenting our inaugural exhibition of contemporary painting.",
-  },
-  {
-    year: "2018",
-    title: "London space debuts",
-    body: "Launched a flagship gallery in Mayfair, expanding our roster and establishing a dedicated programme of talks and performances.",
-  },
-  {
-    year: "2021",
-    title: "Residency programme launches",
-    body: "Introduced an annual residency in Accra supporting experimentation, with resulting exhibitions staged across our locations.",
-  },
-  {
-    year: "2024",
-    title: "Digital collecting platform",
-    body: "Rolled out a global online sales channel with personalised advisory, enabling collectors to acquire works directly from studio to home.",
-  },
-];
-
-const SERVICES = [
-  {
-    title: "Collection advisory",
-    body: "Bespoke guidance for new and established collectors, from defining a focus to managing acquisitions, framing, and installation.",
-  },
-  {
-    title: "Institutional liaison",
-    body: "We broker loans, commissions, and curated presentations with museums and biennials to deepen visibility for our artists.",
-  },
-  {
-    title: "Artist development",
-    body: "Our team supports studio production, scholarship, and publishing, pairing artists with curators, writers, and archives.",
-  },
-  {
-    title: "Public programmes",
-    body: "Talks, screenings, and performances staged across our galleries and partner venues invite audiences into the artists&rsquo; processes.",
-  },
-];
-
-const LOCATIONS = [
-  {
-    city: "New York",
-    blurb:
-      "Two-floor gallery in Tribeca featuring large-scale exhibition spaces, private viewing rooms, and a rooftop sculpture terrace.",
-  },
-  {
-    city: "London",
-    blurb:
-      "Flagship townhouse with natural light galleries, library, and dedicated salon for collection viewings in Mayfair.",
-  },
-  {
-    city: "Accra",
-    blurb:
-      "Seasonal project space and residency studio supporting cross-continental collaboration and community programming.",
-  },
-];
-
-const TEAM = [
-  {
-    name: "Maya Ellis",
-    role: "Founder & Director",
-    contact: "maya@outsider.gallery",
-  },
-  {
-    name: "Tomas Rivera",
-    role: "Senior Sales Advisor",
-    contact: "tomas@outsider.gallery",
-  },
-  {
-    name: "Lina Duval",
-    role: "Head of Institutional Projects",
-    contact: "lina@outsider.gallery",
-  },
-];
-
 export const revalidate = 300;
 
 type FieldReference =
@@ -264,224 +186,148 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      <section className="">
-        <Container className="flex justify-center">
-          <div className="flex w-full max-w-4xl flex-col gap-12">
+      <section className="bg-white">
+        <Container className="flex justify-center px-0">
+          <div className="w-full max-w-[960px] space-y-12 pb-16 sm:space-y-16 sm:pb-24">
             {coverImage ? (
-              <div className="overflow-hidden">
+              <div className="relative aspect-[3/2] w-full bg-neutral-100">
                 <Image
                   src={coverImage.url}
                   alt={coverImage.alt ?? "About Us cover"}
-                  width={coverImage.width ?? 1600}
-                  height={coverImage.height ?? 900}
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(min-width: 1024px) 960px, 90vw"
+                  className="object-cover"
                   priority
                 />
               </div>
-            ) : (
-              <div className="grid gap-6 border border-neutral-200 bg-neutral-50 p-8 sm:grid-cols-2">
-                <div>
-                  <p className="text-4xl font-light">35+</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.28em] text-neutral-500">
-                    Artists represented
-                  </p>
-                </div>
-                <div>
-                  <p className="text-4xl font-light">120</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.28em] text-neutral-500">
-                    Exhibitions staged to date
-                  </p>
-                </div>
-                <div>
-                  <p className="text-4xl font-light">3</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.28em] text-neutral-500">
-                    Global spaces
-                  </p>
-                </div>
-                <div>
-                  <p className="text-4xl font-light">18</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.28em] text-neutral-500">
-                    Annual publications
-                  </p>
-                </div>
-              </div>
-            )}
-            <div>
+            ) : null}
+            <div className="space-y-8 text-left">
               {aboutShortHtml ? (
                 <div
-                  className="text-2xl font-light tracking-tight [&_p]:m-0 [&_p:not(:first-child)]:mt-4"
+                  className="w-full text-2xl font-light tracking-tight text-neutral-900 sm:text-3xl [&_p]:m-0 [&_p:not(:first-child)]:mt-4"
                   dangerouslySetInnerHTML={{ __html: aboutShortHtml }}
                 />
-              ) : (
-                <h2 className="text-2xl font-light tracking-tight">
-                  A gallery shaped by artists
-                </h2>
-              )}
+              ) : null}
               {aboutLongHtml ? (
                 <div
-                  className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg [&_ol]:ml-5 [&_ol]:list-decimal [&_p:not(:first-child)]:mt-4 [&_ul]:ml-5 [&_ul]:list-disc"
+                  className="w-full text-base leading-relaxed text-neutral-700 sm:text-lg [&_ol]:ml-6 [&_ol]:list-decimal [&_p:not(:first-child)]:mt-4 [&_ul]:ml-6 [&_ul]:list-disc lg:text-[1.05rem]"
                   dangerouslySetInnerHTML={{ __html: aboutLongHtml }}
                 />
-              ) : (
-                <p className="mt-5 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                  Outsider Gallery began as a single room championing artists
-                  whose practices fell between disciplines. Today, we continue
-                  to prioritise experimentation and offer production resources,
-                  scholarly support, and curatorial collaboration to each artist
-                  we represent. Our exhibitions pair newly commissioned works
-                  with context drawn from archives, oral histories, and research
-                  trips.
-                </p>
-              )}
+              ) : null}
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="border-y border-neutral-200 bg-neutral-50 py-16 sm:py-24">
-        <Container>
-          <h2 className="text-2xl font-light tracking-tight">Spaces</h2>
-          <p className="mt-3 max-w-3xl text-base leading-relaxed text-neutral-600 sm:text-lg">
-            Each location is tailored to the artists we work with - flexible
-            studios, experimental project rooms, and dedicated viewing salons
-            allow us to present ambitious installations and intimate encounters
-            alike.
-          </p>
-
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
-            {LOCATIONS.map((location) => (
-              <div
-                key={location.city}
-                className="flex h-full flex-col justify-between rounded-lg border border-neutral-200 bg-white p-6"
-              >
-                <div>
-                  <p className="text-xs uppercase tracking-[0.28em] text-neutral-500">
-                    {location.city}
-                  </p>
-                  <h3 className="mt-3 text-lg font-medium">
-                    {location.city} Gallery
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                    {location.blurb}
-                  </p>
+      <section className="border-t border-neutral-200 bg-white">
+        <Container className="py-16 sm:py-24">
+          <div className="mx-auto grid w-full max-w-5xl gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+            <div className="space-y-8">
+              <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
+                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                  Address
+                </p>
+                <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
+                  <p>144 Commonwealth St</p>
+                  <p>Surry Hills 2010</p>
+                  <p>Sydney</p>
                 </div>
-                <p className="mt-6 text-xs uppercase tracking-[0.28em] text-neutral-500">
-                  Mon - Sat | By appointment
+              </div>
+              <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
+                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                  Opening Hours
+                </p>
+                <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
+                  <p>Wednesday—Saturday</p>
+                  <p>10am – 5pm</p>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base">
+                  or by appointment
                 </p>
               </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-16 sm:py-20">
-        <Container>
-          <div className="grid gap-y-10 md:grid-cols-2 md:gap-x-14">
-            <div>
-              <h2 className="text-2xl font-light tracking-tight">What we do</h2>
-              <p className="mt-4 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                Our team works closely with artists, patrons, and institutions,
-                delivering tailored services that sustain ambitious practices
-                and thoughtful collections.
-              </p>
-            </div>
-            <div className="grid gap-8">
-              {SERVICES.map((service) => (
-                <div
-                  key={service.title}
-                  className="border-t border-neutral-200 pt-6"
-                >
-                  <h3 className="text-lg font-medium">{service.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                    {service.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="border-y border-neutral-200 bg-[var(--colors-grey-default,#f6f6f5)] py-16 sm:py-24">
-        <Container>
-          <h2 className="text-2xl font-light tracking-tight">Milestones</h2>
-          <div className="mt-10 grid gap-8 md:grid-cols-2 md:gap-x-12">
-            {TIMELINE.map((entry) => (
-              <div
-                key={entry.year}
-                className="rounded-lg border border-neutral-200 bg-white p-6"
-              >
-                <p className="text-xs uppercase tracking-[0.28em] text-neutral-500">
-                  {entry.year}
+              <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
+                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                  Contact
                 </p>
-                <h3 className="mt-3 text-lg font-medium">{entry.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                  {entry.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-16 sm:py-20">
-        <Container>
-          <div className="grid gap-y-8 md:grid-cols-12 md:gap-x-14 lg:gap-x-20">
-            <div className="md:col-span-4">
-              <h2 className="text-2xl font-light tracking-tight">Team</h2>
-              <p className="mt-4 text-sm leading-relaxed text-neutral-600">
-                Get in touch with our leadership team to discuss exhibitions,
-                acquisitions, or institutional projects.
-              </p>
-            </div>
-            <div className="md:col-span-8">
-              <ul className="grid gap-6 sm:grid-cols-2">
-                {TEAM.map((member) => (
-                  <li
-                    key={member.name}
-                    className="rounded-lg border border-neutral-200 bg-neutral-50 p-5"
-                  >
-                    <p className="text-lg font-medium">{member.name}</p>
-                    <p className="text-sm text-neutral-600">{member.role}</p>
+                <div className="mt-5 space-y-3 text-sm leading-relaxed text-neutral-700 sm:text-base">
+                  <p>
                     <a
-                      href={`mailto:${member.contact}`}
-                      className="mt-3 inline-flex text-sm underline underline-offset-4"
+                      href="mailto:info@outsidergallery.com.au"
+                      className="underline underline-offset-4"
                     >
-                      {member.contact}
+                      info@outsidergallery.com.au
                     </a>
-                  </li>
-                ))}
-              </ul>
+                  </p>
+                  <p>
+                    <a
+                      href="tel:0422509508"
+                      className="underline underline-offset-4"
+                    >
+                      0422 509 508
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div className="rounded-lg border border-neutral-200 bg-white p-0">
+                <iframe
+                  title="Outsider Gallery location"
+                  src="https://maps.google.com/maps?q=Outsider%20Gallery%20144%20Commonwealth%20St&t=&z=16&ie=UTF8&iwloc=near&output=embed"
+                  width="100%"
+                  height="320"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
             </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="border-t border-neutral-200 py-20">
-        <Container className="grid gap-y-8 md:grid-cols-2 md:gap-x-14">
-          <div>
-            <h2 className="text-2xl font-light tracking-tight">Visit Us</h2>
-            <p className="mt-4 text-sm leading-relaxed text-neutral-600">
-              Appointments are available across all gallery locations. Our
-              client-services team can arrange private tours, digital
-              walk-throughs, and tailored viewing packages.
-            </p>
-          </div>
-          <div className="space-y-4 text-sm text-neutral-600">
-            <p>
-              Email{" "}
-              <a
-                href="mailto:visit@outsider.gallery"
-                className="underline underline-offset-4"
-              >
-                visit@outsider.gallery
-              </a>{" "}
-              or call +1 (212) 555-0187.
-            </p>
-            <p>
-              Subscribe to the newsletter for exhibition announcements, artist
-              interviews, and collector previews.
-            </p>
+            <div className="flex">
+              <div className="w-full rounded-lg border border-neutral-200 bg-[var(--colors-grey-default,#f6f6f5)] p-8 sm:p-10">
+                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                  Enquire
+                </p>
+                <form
+                  className="mt-6 grid gap-6"
+                  method="post"
+                  action="mailto:info@outsidergallery.com.au"
+                  encType="text/plain"
+                >
+                  <label className="flex flex-col text-sm font-medium text-neutral-700">
+                    Name
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      className="mt-2 border border-neutral-300 bg-white px-4 py-3 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500"
+                    />
+                  </label>
+                  <label className="flex flex-col text-sm font-medium text-neutral-700">
+                    Email
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      className="mt-2 border border-neutral-300 bg-white px-4 py-3 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500"
+                    />
+                  </label>
+                  <label className="flex flex-col text-sm font-medium text-neutral-700">
+                    Message
+                    <textarea
+                      name="message"
+                      rows={6}
+                      required
+                      className="mt-2 border border-neutral-300 bg-white px-4 py-3 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500"
+                    />
+                  </label>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center bg-neutral-900 px-8 py-3 text-sm font-medium uppercase tracking-[0.24em] text-white transition hover:bg-neutral-700"
+                  >
+                    Send
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </Container>
       </section>
