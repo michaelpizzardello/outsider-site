@@ -221,68 +221,74 @@ export default async function AboutPage() {
 
       <section className="border-t border-neutral-200 bg-white">
         <Container className="py-16 sm:py-24">
-          <div className="mx-auto grid w-full max-w-5xl gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
-            <div className="space-y-8">
-              <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
-                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
-                  Address
-                </p>
-                <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
-                  <p>144 Commonwealth St</p>
-                  <p>Surry Hills 2010</p>
-                  <p>Sydney</p>
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-12">
+            <div className="rounded-lg border border-neutral-200 bg-white">
+              <div className="grid gap-8 md:grid-cols-2 md:gap-10">
+                <div className="h-[320px] w-full overflow-hidden md:h-[360px]">
+                  <iframe
+                    title="Outsider Gallery location"
+                    src="https://maps.google.com/maps?q=Outsider%20Gallery%20144%20Commonwealth%20St&t=&z=16&ie=UTF8&iwloc=near&output=embed"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
                 </div>
-              </div>
-              <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
-                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
-                  Opening Hours
-                </p>
-                <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
-                  <p>Wednesday—Saturday</p>
-                  <p>10am – 5pm</p>
-                </div>
-                <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base">
-                  or by appointment
-                </p>
-              </div>
-              <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
-                <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
-                  Contact
-                </p>
-                <div className="mt-5 space-y-3 text-sm leading-relaxed text-neutral-700 sm:text-base">
-                  <p>
-                    <a
-                      href="mailto:info@outsidergallery.com.au"
-                      className="underline underline-offset-4"
-                    >
-                      info@outsidergallery.com.au
-                    </a>
+                <div className="flex flex-col justify-center px-8 py-10 sm:px-12">
+                  <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                    Address
                   </p>
-                  <p>
-                    <a
-                      href="tel:0422509508"
-                      className="underline underline-offset-4"
-                    >
-                      0422 509 508
-                    </a>
-                  </p>
+                  <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
+                    <p>Outsider Gallery</p>
+                    <p>144 Commonwealth St</p>
+                    <p>Surry Hills NSW 2010</p>
+                    <p>Sydney</p>
+                  </div>
                 </div>
-              </div>
-              <div className="rounded-lg border border-neutral-200 bg-white p-0">
-                <iframe
-                  title="Outsider Gallery location"
-                  src="https://maps.google.com/maps?q=Outsider%20Gallery%20144%20Commonwealth%20St&t=&z=16&ie=UTF8&iwloc=near&output=embed"
-                  width="100%"
-                  height="320"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
               </div>
             </div>
-            <div className="flex">
-              <div className="w-full rounded-lg border border-neutral-200 bg-[var(--colors-grey-default,#f6f6f5)] p-8 sm:p-10">
+
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16">
+              <div className="space-y-8">
+                <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
+                  <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                    Opening Hours
+                  </p>
+                  <div className="mt-5 space-y-1 text-lg font-light leading-snug text-neutral-900 sm:text-xl">
+                    <p>Wednesday—Saturday</p>
+                    <p>10am – 5pm</p>
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base">
+                    or by appointment
+                  </p>
+                </div>
+                <div className="rounded-lg border border-neutral-200 bg-white p-8 sm:p-10">
+                  <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
+                    Contact
+                  </p>
+                  <div className="mt-5 space-y-3 text-sm leading-relaxed text-neutral-700 sm:text-base">
+                    <p>
+                      <a
+                        href="mailto:info@outsidergallery.com.au"
+                        className="underline underline-offset-4"
+                      >
+                        info@outsidergallery.com.au
+                      </a>
+                    </p>
+                    <p>
+                      <a
+                        href="tel:0422509508"
+                        className="underline underline-offset-4"
+                      >
+                        0422 509 508
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-lg border border-neutral-200 bg-[var(--colors-grey-default,#f6f6f5)] p-8 sm:p-10">
                 <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">
                   Enquire
                 </p>
@@ -319,12 +325,14 @@ export default async function AboutPage() {
                       className="mt-2 border border-neutral-300 bg-white px-4 py-3 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500"
                     />
                   </label>
-                  <button
-                    type="submit"
-                    className="inline-flex items-center justify-center bg-neutral-900 px-8 py-3 text-sm font-medium uppercase tracking-[0.24em] text-white transition hover:bg-neutral-700"
-                  >
-                    Send
-                  </button>
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center justify-center bg-neutral-900 px-8 py-3 text-sm font-medium uppercase tracking-[0.24em] text-white transition hover:bg-neutral-700"
+                    >
+                      Send
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
