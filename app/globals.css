@@ -44,7 +44,7 @@ body {
   }
 
   .artwork-heading-year {
-    @apply mt-6 text-base font-light uppercase leading-[1.1] tracking-[0.02em] text-neutral-900 lg:mt-4 xl:text-xl xl:tracking-[0.06em] xl:leading-[1.14];
+    @apply text-base font-light uppercase leading-[1.1] tracking-[0.02em] text-neutral-900 xl:text-xl xl:tracking-[0.06em] xl:leading-[1.14];
   }
 
   .artwork-meta-text {
