@@ -205,7 +205,7 @@ export default async function CollectPage() {
 
   return (
     <main
-      className="bg-white text-neutral-900"
+      className="bg-neutral-100 text-neutral-900"
       style={{ paddingTop: "var(--header-h, 76px)" }}
     >
       <PageSubheader
@@ -220,8 +220,11 @@ export default async function CollectPage() {
         }
       />
 
-      <section className="pt-10 pb-16 sm:pt-14 sm:pb-20">
-        <Container>
+      <section
+        className="pt-10 pb-16 sm:pt-14 sm:pb-20"
+        style={{ minHeight: "calc(100vh - var(--header-h, 76px) - 120px)" }}
+      >
+        <Container className="max-w-5xl">
           <CollectGrid artworks={artworks} mediums={mediums} artists={artists} />
         </Container>
       </section>
