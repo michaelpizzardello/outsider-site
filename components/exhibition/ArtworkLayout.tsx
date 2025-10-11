@@ -244,7 +244,7 @@ export default function ArtworkLayout({
             {displayPriceLabel && (
               <p
                 className={`artwork-meta-text font-medium text-neutral-900 ${
-                  hasSupportingMeta ? "mt-3" : ""
+                  hasSupportingMeta ? "mt-4" : ""
                 }`.trim()}
               >
                 {displayPriceLabel}
