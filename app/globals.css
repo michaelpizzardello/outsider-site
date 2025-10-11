@@ -36,11 +36,11 @@ body {
 
 @layer components {
   .artwork-heading-artist {
-    @apply mt-2 text-[1.7rem] font-light leading-[1.08] text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-[2.6rem] xl:leading-[1.1];
+    @apply mt-2 text-[1.7rem] font-light leading-[1.08] text-neutral-900 lg:mt-3 lg:whitespace-nowrap xl:text-[2.2rem] xl:leading-[1.08];
   }
 
   .artwork-heading-title {
-    @apply text-[1.32rem] font-light leading-[1.08] italic text-neutral-900 xl:text-[1.9rem] xl:leading-[1.14];
+    @apply text-[1.32rem] font-light leading-[1.08] italic text-neutral-900 xl:text-[1.6rem] xl:leading-[1.12];
   }
 
   .artwork-heading-year {
