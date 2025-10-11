@@ -362,7 +362,7 @@ export default function ArtworkLayout({
           </>
         )}
 
-        {renderDetails("mt-5", {
+        {renderDetails("", {
           onEnquire: showPurchaseButton ? undefined : openEnquire,
           onPurchase: showPurchaseButton ? handlePurchase : undefined,
           purchaseDisabled: isAdding,
