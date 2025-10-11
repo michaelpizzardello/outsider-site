@@ -205,7 +205,7 @@ export default function ArtworkLayout({
         {buttonNode}
 
         {showDividerAfterButton && (
-          <div className="mt-5 mb-6 h-px w-full bg-neutral-300 lg:mt-6 lg:mb-8" />
+          <div className="mt-5 mb-5 h-px w-full bg-neutral-300 lg:mt-6 lg:mb-6" />
         )}
 
         {hasCaption && (

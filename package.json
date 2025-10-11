@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "chokidar": "^4.0.3",
     "clsx": "^2.1.1",
     "embla": "^1.0.0",
     "embla-carousel-react": "^8.0.1",
@@ -22,6 +23,7 @@
     "@types/node": "^20.19.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "chokidar-cli": "^3.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "tailwindcss": "^4",
