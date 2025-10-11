@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Container from "@/components/layout/Container";
-import { ArrowCtaLink } from "@/components/ui/ArrowCta";
+import { useCart } from "@/components/cart/CartContext";
 import ArtworkEnquiryModal from "./ArtworkEnquiryModal";
 
 type ArtworkPayload = {
@@ -15,6 +15,9 @@ type ArtworkPayload = {
   artist: string | null;
   year: string | null;
   priceLabel: string;
+  sold: boolean;
+  canPurchase: boolean;
+  variantId?: string | null;
   featureImage?: {
     url: string;
     width?: number | null;
@@ -29,6 +32,7 @@ type ArtworkPayload = {
 type LayoutRow = { layout: "full" | "pair" | "triple"; indexes: number[] };
 
 type Props = {
+  title: string;
   exhibitionHandle: string;
   artworks: ArtworkPayload[];
   rows: LayoutRow[];
@@ -46,11 +50,15 @@ function ArtworkCard({
   exhibitionHandle,
   options,
   onEnquire,
+  onPurchase,
+  isPurchasing,
 }: {
   artwork: ArtworkPayload;
   exhibitionHandle: string;
   options: RenderOptions;
   onEnquire: (artwork: ArtworkPayload) => void;
+  onPurchase?: (artwork: ArtworkPayload) => void | Promise<void>;
+  isPurchasing?: boolean;
 }) {
   const href = `/exhibitions/${exhibitionHandle}/artworks/${artwork.handle}`;
   const enquireHref = `/enquire?artwork=${encodeURIComponent(artwork.id)}`;
@@ -115,36 +123,49 @@ function ArtworkCard({
         </Link>
 
         <div className="flex shrink-0 items-center gap-x-6 text-sm">
-          <ArrowCtaLink
-            href={href}
-            label="View work"
-            className="hidden sm:inline-flex hover:opacity-85"
-            underline={false}
-          />
-          <Link
-            href={enquireHref}
-            className="group inline-flex items-center gap-4 text-sm font-medium md:text-base hover:opacity-85 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-            onClick={(event) => {
-              if (event.defaultPrevented) return;
-              if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
-              event.preventDefault();
-              onEnquire(artwork);
-            }}
-          >
-            <span className="underline-offset-[6px] group-hover:underline group-focus-visible:underline">
-              Enquire
-            </span>
-          </Link>
+          {artwork.canPurchase && artwork.variantId && onPurchase ? (
+            <button
+              type="button"
+              onClick={() => {
+                if (onPurchase) {
+                  void onPurchase(artwork);
+                }
+              }}
+              disabled={isPurchasing}
+              className={`inline-flex items-center gap-4 text-sm font-medium md:text-base text-neutral-900 underline-offset-[6px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
+                isPurchasing ? "cursor-wait opacity-70" : "hover:underline"
+              }`}
+            >
+              {isPurchasing ? "Adding..." : "Purchase"}
+            </button>
+          ) : (
+            <Link
+              href={enquireHref}
+              className="group inline-flex items-center gap-4 text-sm font-medium md:text-base hover:opacity-85 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+              onClick={(event) => {
+                if (event.defaultPrevented) return;
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+                event.preventDefault();
+                onEnquire(artwork);
+              }}
+            >
+              <span className="underline-offset-[6px] group-hover:underline group-focus-visible:underline">
+                Enquire
+              </span>
+            </Link>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }: Props) {
+export default function FeaturedWorksClient({ title, exhibitionHandle, artworks, rows }: Props) {
   const [viewAll, setViewAll] = React.useState(false);
   const [isBelowMd, setIsBelowMd] = React.useState(false);
   const [enquiryArtwork, setEnquiryArtwork] = React.useState<ArtworkPayload | null>(null);
+  const [addingId, setAddingId] = React.useState<string | null>(null);
+  const { addLine, openCart } = useCart();
 
   React.useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -162,6 +183,21 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
 
   const handleToggle = () => setViewAll((prev) => !prev);
   const closeEnquiry = () => setEnquiryArtwork(null);
+  const handlePurchase = React.useCallback(
+    async (artwork: ArtworkPayload) => {
+      if (!artwork.variantId) return;
+      setAddingId(artwork.id);
+      try {
+        await addLine({ merchandiseId: artwork.variantId, quantity: 1 });
+        openCart();
+      } catch (error) {
+        console.error("[FeaturedWorks] Failed to add artwork to cart", error);
+      } finally {
+        setAddingId(null);
+      }
+    },
+    [addLine, openCart]
+  );
 
   const headingClasses = "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between";
 
@@ -172,7 +208,7 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
       <Container>
         <div className="pt-6 md:pt-8">
           <div className={`${headingClasses} mb-8 lg:mb-12`}>
-            <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">Featured Works</h2>
+            <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
             {showToggle && (
               <button
                 type="button"
@@ -225,6 +261,8 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                     centerImage: true,
                   }}
                   onEnquire={(selected) => setEnquiryArtwork(selected)}
+                  onPurchase={handlePurchase}
+                  isPurchasing={addingId === artwork.id}
                 />
               ))}
             </div>
@@ -248,6 +286,8 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                           exhibitionHandle={exhibitionHandle}
                           options={{ span: "full", forcedAspectRatio: forcedAspect }}
                           onEnquire={(selected) => setEnquiryArtwork(selected)}
+                          onPurchase={handlePurchase}
+                          isPurchasing={addingId === artwork.id}
                         />
                       )}
                     </div>
@@ -269,6 +309,8 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                             exhibitionHandle={exhibitionHandle}
                             options={{ span: "half", forcedAspectRatio: forcedAspect }}
                             onEnquire={(selected) => setEnquiryArtwork(selected)}
+                            onPurchase={handlePurchase}
+                            isPurchasing={addingId === artwork.id}
                           />
                         ) : null;
                       })}
@@ -290,6 +332,8 @@ export default function FeaturedWorksClient({ exhibitionHandle, artworks, rows }
                           exhibitionHandle={exhibitionHandle}
                           options={{ span: "third", forcedAspectRatio: forcedAspect }}
                           onEnquire={(selected) => setEnquiryArtwork(selected)}
+                          onPurchase={handlePurchase}
+                          isPurchasing={addingId === artwork.id}
                         />
                       ) : null;
                     })}

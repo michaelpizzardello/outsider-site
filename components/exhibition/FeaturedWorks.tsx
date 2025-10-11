@@ -17,6 +17,7 @@ type ProductNode = {
   title: string;
   vendor?: string | null;
   availableForSale: boolean;
+  onlineStoreUrl?: string | null;
   featuredImage?: { url: string; width?: number; height?: number; altText?: string | null } | null;
   priceRange?: { minVariantPrice?: Money | null } | null;
   year?: { value?: string | null } | null;
@@ -32,6 +33,12 @@ type ProductNode = {
   exhibitions?: {
     reference?: { __typename: string; handle?: string | null } | null;
     references?: { nodes?: Array<{ __typename: string; handle?: string | null } | null> | null } | null;
+  } | null;
+  variants?: {
+    nodes?: Array<{
+      id: string;
+      availableForSale?: boolean | null;
+    } | null> | null;
   } | null;
 };
 
@@ -53,6 +60,7 @@ const QUERY = /* GraphQL */ `
         title
         vendor
         availableForSale
+        onlineStoreUrl
         featuredImage { url width height altText }
         priceRange { minVariantPrice { amount currencyCode } }
         year: metafield(namespace: $ns, key: "year") { value }
@@ -71,6 +79,12 @@ const QUERY = /* GraphQL */ `
           reference { __typename ... on Metaobject { handle type } }
           references(first: 50) {
             nodes { __typename ... on Metaobject { handle type } }
+          }
+        }
+        variants(first: 1) {
+          nodes {
+            id
+            availableForSale
           }
         }
       }
@@ -121,6 +135,9 @@ type ArtworkPayload = {
   artist: string | null;
   year: string | null;
   priceLabel: string;
+  sold: boolean;
+  canPurchase: boolean;
+  variantId?: string | null;
   featureImage?: {
     url: string;
     width?: number | null;
@@ -175,62 +192,88 @@ export default async function FeaturedWorks({
   if (items.length === 0) return null;
 
   type ArtworkInternal = (typeof items)[number];
-  const rows: LayoutRow[] = [];
-  const normType = (t: ArtworkInternal["type"]) => (t === "P" ? "P" : "L");
 
-  for (let i = 0; i < items.length; ) {
-    const remaining = items.length - i;
-    const currentType = normType(items[i].type);
+  const buildRows = (artworkList: ArtworkPayload[]): LayoutRow[] => {
+    if (!artworkList.length) return [];
 
-    const nextTypeMatches = (count: number) => {
-      if (remaining < count) return false;
-      for (let j = 0; j < count; j++) {
-        if (normType(items[i + j].type) !== currentType) return false;
+    const rows: LayoutRow[] = [];
+    const normType = (t: ArtworkPayload["type"]) => (t === "P" ? "P" : "L");
+
+    for (let i = 0; i < artworkList.length; ) {
+      const remaining = artworkList.length - i;
+      const currentType = normType(artworkList[i].type);
+
+      const nextTypeMatches = (count: number) => {
+        if (remaining < count) return false;
+        for (let j = 0; j < count; j++) {
+          if (normType(artworkList[i + j].type) !== currentType) return false;
+        }
+        return true;
+      };
+
+      if (nextTypeMatches(4)) {
+        rows.push({ layout: "pair", indexes: [i, i + 1] });
+        rows.push({ layout: "pair", indexes: [i + 2, i + 3] });
+        i += 4;
+        continue;
       }
-      return true;
-    };
 
-    if (nextTypeMatches(4)) {
-      rows.push({ layout: "pair", indexes: [i, i + 1] });
-      rows.push({ layout: "pair", indexes: [i + 2, i + 3] });
-      i += 4;
-      continue;
-    }
-
-    if (nextTypeMatches(3)) {
-      if (currentType === "P") {
-        rows.push({ layout: "triple", indexes: [i, i + 1, i + 2] });
-      } else {
-        rows.push({ layout: "full", indexes: [i] });
-        rows.push({ layout: "pair", indexes: [i + 1, i + 2] });
+      if (nextTypeMatches(3)) {
+        if (currentType === "P") {
+          rows.push({ layout: "triple", indexes: [i, i + 1, i + 2] });
+        } else {
+          rows.push({ layout: "full", indexes: [i] });
+          rows.push({ layout: "pair", indexes: [i + 1, i + 2] });
+        }
+        i += 3;
+        continue;
       }
-      i += 3;
-      continue;
+
+      if (nextTypeMatches(2)) {
+        rows.push({ layout: "pair", indexes: [i, i + 1] });
+        i += 2;
+        continue;
+      }
+
+      rows.push({ layout: "full", indexes: [i] });
+      i += 1;
     }
 
-    if (nextTypeMatches(2)) {
-      rows.push({ layout: "pair", indexes: [i, i + 1] });
-      i += 2;
-      continue;
-    }
+    return rows;
+  };
 
-    rows.push({ layout: "full", indexes: [i] });
-    i += 1;
-  }
   const artworks: ArtworkPayload[] = items.map((item) => {
     const product = item.product;
     const price = product.priceRange?.minVariantPrice ?? undefined;
+    const amount = price ? Number(price.amount) : NaN;
+    const hasPrice = Number.isFinite(amount) && amount > 0;
+    const primaryVariant =
+      product.variants?.nodes?.find((variant) => Boolean(variant?.id)) ?? null;
+    const variantAvailable =
+      primaryVariant?.availableForSale !== false && Boolean(primaryVariant?.id);
+    const isPublishedOnline = Boolean(product.onlineStoreUrl);
+    const priceText = priceLabel({
+      price,
+      status: product.status?.value,
+      availableForSale: product.availableForSale,
+    });
+    const isSoldLabel = priceText.trim().toLowerCase() === "sold";
     return {
       id: product.id,
       handle: product.handle,
       title: product.title,
       artist: getArtistName(product, fallbackArtist) ?? null,
       year: product.year?.value ?? null,
-      priceLabel: priceLabel({
-        price,
-        status: product.status?.value,
-        availableForSale: product.availableForSale,
-      }),
+      priceLabel: priceText,
+      sold: isSoldLabel,
+      canPurchase: Boolean(
+        product.availableForSale &&
+          hasPrice &&
+          isPublishedOnline &&
+          variantAvailable &&
+          !isSoldLabel
+      ),
+      variantId: (primaryVariant?.id as string | undefined) ?? null,
       featureImage: product.featuredImage
         ? {
             url: product.featuredImage.url,
@@ -245,11 +288,32 @@ export default async function FeaturedWorks({
     };
   });
 
+  const availableArtworks = artworks.filter((artwork) => !artwork.sold);
+  const soldArtworks = artworks.filter((artwork) => artwork.sold);
+
+  const availableRows = buildRows(availableArtworks);
+  const soldRows = buildRows(soldArtworks);
+
+  if (!availableArtworks.length && !soldArtworks.length) return null;
+
   return (
-    <FeaturedWorksClient
-      exhibitionHandle={exhibitionHandle}
-      artworks={artworks}
-      rows={rows}
-    />
+    <>
+      {availableArtworks.length > 0 && (
+        <FeaturedWorksClient
+          title="Available Works"
+          exhibitionHandle={exhibitionHandle}
+          artworks={availableArtworks}
+          rows={availableRows}
+        />
+      )}
+      {soldArtworks.length > 0 && (
+        <FeaturedWorksClient
+          title="Featured Works"
+          exhibitionHandle={exhibitionHandle}
+          artworks={soldArtworks}
+          rows={soldRows}
+        />
+      )}
+    </>
   );
 }
