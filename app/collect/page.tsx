@@ -204,10 +204,7 @@ export default async function CollectPage() {
   ).sort((a, b) => a.localeCompare(b));
 
   return (
-    <main
-      className="bg-neutral-100 text-neutral-900"
-      style={{ paddingTop: "var(--header-h, 76px)" }}
-    >
+    <main className="text-neutral-900" style={{ paddingTop: "var(--header-h, 76px)" }}>
       <PageSubheader
         title="Collect"
         description={
@@ -220,14 +217,16 @@ export default async function CollectPage() {
         }
       />
 
-      <section
-        className="pt-10 pb-16 sm:pt-14 sm:pb-20"
-        style={{ minHeight: "calc(100vh - var(--header-h, 76px) - 120px)" }}
+      <div
+        className="bg-neutral-100"
+        style={{ minHeight: "calc(100vh - var(--header-h, 76px))" }}
       >
-        <Container className="max-w-5xl">
-          <CollectGrid artworks={artworks} mediums={mediums} artists={artists} />
-        </Container>
-      </section>
+        <section className="pt-10 pb-16 sm:pt-14 sm:pb-20">
+          <Container className="max-w-5xl">
+            <CollectGrid artworks={artworks} mediums={mediums} artists={artists} />
+          </Container>
+        </section>
+      </div>
     </main>
   );
 }
