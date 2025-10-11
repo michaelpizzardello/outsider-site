@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
@@ -8,6 +8,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import CloseArtworkButton from "@/components/exhibition/CloseArtworkButton";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
+import { useCart } from "@/components/cart/CartContext";
 
 // Client-side shell that displays the artwork hero, metadata rail, and enquiry modal.
 
@@ -32,6 +33,8 @@ type Props = {
   medium?: string;
   dimensionsLabel?: string;
   additionalInfoHtml?: string;
+  canPurchase?: boolean;
+  variantId?: string | null;
 };
 
 export default function ArtworkLayout({
@@ -45,6 +48,8 @@ export default function ArtworkLayout({
   medium,
   dimensionsLabel,
   additionalInfoHtml,
+  canPurchase,
+  variantId,
 }: Props) {
   // Track currently selected slide; used by both carousel and desktop hero image.
   const [activeIndex, setActiveIndex] = useState(0);
@@ -109,6 +114,22 @@ export default function ArtworkLayout({
     }
   }, [activeIndex, embla]);
 
+  const { addLine, openCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handlePurchase = useCallback(async () => {
+    if (!variantId || !canPurchase) return;
+    setIsAdding(true);
+    try {
+      await addLine({ merchandiseId: variantId, quantity: 1 });
+      openCart();
+    } catch (error) {
+      console.error("[ArtworkLayout] Failed to add artwork to cart", error);
+    } finally {
+      setIsAdding(false);
+    }
+  }, [variantId, canPurchase, addLine, openCart]);
+
   // Normalise price strings coming from Shopify so the UI shows standard currency labels.
   const normalizePriceLabel = (label: string) => {
     if (!label) return "";
@@ -132,6 +153,7 @@ export default function ArtworkLayout({
   const hasMetaList = Boolean(
     medium || dimensionsLabel || additionalInfoHtml || hasPrice
   );
+  const showPurchaseButton = Boolean(canPurchase && variantId);
 
   // Reusable heading stack rendered in multiple breakpoints.
   const renderHeading = (className = "") => (
@@ -147,10 +169,31 @@ export default function ArtworkLayout({
     className = "",
     {
       onEnquire,
+      onPurchase,
+      purchaseDisabled = false,
       showDivider = true,
-    }: { onEnquire?: () => void; showDivider?: boolean } = {}
+    }: {
+      onEnquire?: () => void;
+      onPurchase?: () => Promise<void> | void;
+      purchaseDisabled?: boolean;
+      showDivider?: boolean;
+    } = {}
   ) => {
-    const showDividerAfterButton = showDivider && (hasCaption || hasMetaList);
+    const buttonNode = onPurchase ? (
+      <OutlineLabelButton
+        onClick={() => {
+          if (onPurchase) void onPurchase();
+        }}
+        disabled={purchaseDisabled}
+      >
+        {purchaseDisabled ? "Adding..." : "Purchase"}
+      </OutlineLabelButton>
+    ) : onEnquire ? (
+      <OutlineLabelButton onClick={onEnquire}>Enquire</OutlineLabelButton>
+    ) : null;
+
+    const showDividerAfterButton =
+      showDivider && buttonNode && (hasCaption || hasMetaList);
     const captionOffset = showDividerAfterButton ? "mt-7" : "mt-8";
     const metaOffset = hasCaption ? "mt-4" : captionOffset;
     const hasSupportingMeta = Boolean(
@@ -159,12 +202,7 @@ export default function ArtworkLayout({
 
     return (
       <div className={`w-full ${className}`.trim()}>
-        <OutlineLabelButton
-          onClick={onEnquire}
-          className="text-[0.95rem] font-medium normal-case"
-        >
-          Enquire
-        </OutlineLabelButton>
+        {buttonNode}
 
         {showDividerAfterButton && (
           <div className="mt-5 mb-6 h-px w-full bg-neutral-300 lg:mt-6 lg:mb-8" />
@@ -284,7 +322,12 @@ export default function ArtworkLayout({
 
       {/* Mobile detail info below carousel */}
       <section className="bg-white px-4 pb-12 pt-4 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
-        {renderDetails("", { onEnquire: openEnquire, showDivider: false })}
+        {renderDetails("", {
+          onEnquire: showPurchaseButton ? undefined : openEnquire,
+          onPurchase: showPurchaseButton ? handlePurchase : undefined,
+          purchaseDisabled: isAdding,
+          showDivider: false,
+        })}
       </section>
 
       {/* Left column: desktop main artwork image */}
@@ -319,7 +362,11 @@ export default function ArtworkLayout({
           </>
         )}
 
-        {renderDetails("mt-5", { onEnquire: openEnquire })}
+        {renderDetails("mt-5", {
+          onEnquire: showPurchaseButton ? undefined : openEnquire,
+          onPurchase: showPurchaseButton ? handlePurchase : undefined,
+          purchaseDisabled: isAdding,
+        })}
 
         {gallery.length > 1 && (
           <section className="hidden space-y-3 lg:block lg:mt-6">

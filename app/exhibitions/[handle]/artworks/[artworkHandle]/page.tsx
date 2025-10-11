@@ -26,11 +26,15 @@ const ARTWORK_QUERY = /* GraphQL */ `
       description
       descriptionHtml
       availableForSale
+      onlineStoreUrl
       featuredImage { url width height altText }
       images(first: 12) {
         nodes { id url width height altText }
       }
       priceRange { minVariantPrice { amount currencyCode } }
+      variants(first: 1) {
+        nodes { id availableForSale }
+      }
       year: metafield(namespace: $ns, key: "year") { value }
       medium: metafield(namespace: $ns, key: "medium") { value }
       dimensions: metafield(namespace: $ns, key: "dimensions") { value }
@@ -96,9 +100,19 @@ type ArtworkQuery = {
     description?: string | null;
     descriptionHtml?: string | null;
     availableForSale: boolean;
+    onlineStoreUrl?: string | null;
     featuredImage?: ImageNode | null;
     images?: { nodes?: ImageNode[] | null } | null;
     priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } | null } | null;
+    variants?: {
+      nodes?: Array<
+        | {
+            id: string;
+            availableForSale?: boolean | null;
+          }
+        | null
+      > | null;
+    } | null;
     year?: MaybeMetafield | null;
     medium?: MaybeMetafield | null;
     dimensions?: MaybeMetafield | null;
@@ -208,8 +222,7 @@ function productBelongsToExhibition(
   return nodes?.some((node) => node?.__typename === "Metaobject" && node.handle === exhibitionHandle) ?? false;
 }
 
-// Present price/sold status, falling back to Shopify availability when metafields are absent.
-function formatPriceLabel(product: ArtworkQuery["product"]): string | undefined {
+function deriveCommerceState(product: ArtworkQuery["product"]) {
   const price = product?.priceRange?.minVariantPrice;
   const status = metafieldString(product?.status)?.toLowerCase();
   const soldFlag = metafieldString(product?.sold)?.toLowerCase();
@@ -221,14 +234,37 @@ function formatPriceLabel(product: ArtworkQuery["product"]): string | undefined 
     status === "reserved" ||
     product?.availableForSale === false;
 
-  if (isSold) return "Sold";
-  if (!price) return undefined;
+  const amount = price ? Number(price.amount) : NaN;
+  const hasPrice = Number.isFinite(amount) && amount > 0;
+  const formattedPrice =
+    hasPrice && price ? formatCurrency(amount, price.currencyCode) : undefined;
 
-  const amount = Number(price.amount);
-  if (!Number.isFinite(amount)) return undefined;
+  const primaryVariant =
+    product?.variants?.nodes?.find((variant) => Boolean(variant?.id)) ?? null;
+  const variantId = (primaryVariant?.id as string | undefined) ?? null;
+  const variantAvailable =
+    primaryVariant?.availableForSale !== false && Boolean(variantId);
+  const publishedOnline = Boolean(product?.onlineStoreUrl);
 
-  const formatted = formatCurrency(amount, price.currencyCode);
-  return formatted || undefined;
+  const canPurchase = Boolean(
+    !isSold &&
+      product?.availableForSale &&
+      variantAvailable &&
+      publishedOnline &&
+      hasPrice
+  );
+
+  const priceLabel = (() => {
+    if (isSold) return undefined;
+    if (formattedPrice) return formattedPrice;
+    return "Price on request";
+  })();
+
+  return {
+    priceLabel,
+    canPurchase,
+    variantId,
+  };
 }
 
 // Server component entry point for the artwork detail view.
@@ -275,8 +311,8 @@ export default async function ArtworkPage({
     metafieldHtml(product.additional) ||
     metafieldHtml(product.notes);
 
-  // Sold status or formatted price displayed in the side rail.
-  const priceLabel = formatPriceLabel(product);
+  // Commerce state used for pricing labels and purchase CTA logic.
+  const { priceLabel, canPurchase, variantId } = deriveCommerceState(product);
 
   // Prepare the media gallery, ensuring the featured image leads the carousel.
   const images = product.images?.nodes?.filter((img): img is ImageNode => Boolean(img?.url)) ?? [];
@@ -305,6 +341,8 @@ export default async function ArtworkPage({
       medium={medium}
       dimensionsLabel={dimensionsLabel}
       additionalInfoHtml={additionalInfoHtml}
+      canPurchase={canPurchase}
+      variantId={variantId}
     />
   );
 }
