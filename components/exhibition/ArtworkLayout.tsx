@@ -212,7 +212,7 @@ export default function ArtworkLayout({
 
     return (
       <div className={`w-full ${className}`.trim()}>
-        {buttonNode}
+        {buttonsNode}
 
         {showDividerAfterButton && (
           <div className="mt-5 mb-5 h-px w-full bg-neutral-300 lg:mt-6 lg:mb-6" />
