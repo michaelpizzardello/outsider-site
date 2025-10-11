@@ -17,7 +17,7 @@ type OutlineLabelButtonProps = {
 } & (ButtonVariantProps | AnchorVariantProps);
 
 const BASE_CLASS =
-  "inline-flex h-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent px-6 text-[0.75rem] font-semibold uppercase tracking-[0.32em] text-neutral-900 transition hover:border-neutral-700 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100 disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex h-9 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent px-3 text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-neutral-900 transition hover:border-neutral-700 hover:text-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/30 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100 disabled:cursor-not-allowed disabled:opacity-40";
 
 export default function OutlineLabelButton({
   as = "button",

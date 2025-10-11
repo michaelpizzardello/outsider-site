@@ -179,15 +179,11 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                       onClick={() => {
                         void handleAddToCart(artwork);
                       }}
-                      className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em] !border-neutral-900 !bg-neutral-900 !text-white hover:!bg-black hover:!border-black"
                     >
                       Purchase
                     </OutlineLabelButton>
                   ) : (
-                    <OutlineLabelButton
-                      onClick={() => setEnquiryArtwork(artwork)}
-                      className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em]"
-                    >
+                    <OutlineLabelButton onClick={() => setEnquiryArtwork(artwork)}>
                       Enquire
                     </OutlineLabelButton>
                   )}

@@ -161,7 +161,7 @@ export default function ArtworkLayout({
       <div className={`w-full ${className}`.trim()}>
         <OutlineLabelButton
           onClick={onEnquire}
-          className="!h-[2.5rem] !px-4 !text-[0.95rem] !font-medium !normal-case !tracking-[0.012em]"
+          className="text-[0.95rem] font-medium normal-case"
         >
           Enquire
         </OutlineLabelButton>

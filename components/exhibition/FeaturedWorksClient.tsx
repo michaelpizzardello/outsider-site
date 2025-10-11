@@ -137,15 +137,11 @@ function ArtworkCard({
                   }
                 }}
                 disabled={isPurchasing}
-                className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em] !border-neutral-900 !bg-neutral-900 !text-white hover:!bg-black hover:!border-black disabled:!bg-neutral-600 disabled:!border-neutral-600"
               >
                 {isPurchasing ? "Adding..." : "Purchase"}
               </OutlineLabelButton>
             ) : (
-              <OutlineLabelButton
-                onClick={() => onEnquire(artwork)}
-                className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em]"
-              >
+              <OutlineLabelButton onClick={() => onEnquire(artwork)}>
                 Enquire
               </OutlineLabelButton>
             )}
