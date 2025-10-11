@@ -113,81 +113,89 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 sm:gap-x-12 sm:gap-y-20 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-24 xl:grid-cols-4 xl:gap-x-20">
-        {filtered.map((artwork) => {
-          const priceLabel = formatMoney(artwork.price);
-          const hasPrice =
-            artwork.price &&
-            Number.isFinite(Number(artwork.price.amount)) &&
-            Number(artwork.price.amount) > 0;
-          const canPurchase =
-            hasPrice && artwork.available && Boolean(artwork.variantId);
-          const wrapperAspect = "4 / 5";
+      <div className="rounded-3xl bg-neutral-100 px-6 py-10 sm:px-8 sm:py-12">
+        {filtered.length ? (
+          <div className="grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 sm:gap-x-12 sm:gap-y-20 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-24 xl:grid-cols-4 xl:gap-x-20">
+            {filtered.map((artwork) => {
+              const priceLabel = formatMoney(artwork.price);
+              const hasPrice =
+                artwork.price &&
+                Number.isFinite(Number(artwork.price.amount)) &&
+                Number(artwork.price.amount) > 0;
+              const canPurchase =
+                hasPrice && artwork.available && Boolean(artwork.variantId);
+              const wrapperAspect = "4 / 5";
 
-          return (
-            <article key={artwork.id} className="flex h-full flex-col">
-              <div className="group bg-white">
-                <div
-                  className="relative w-full"
-                  style={{ aspectRatio: wrapperAspect }}
-                >
-                  {artwork.image?.url ? (
-                    <Image
-                      src={artwork.image.url}
-                      alt={artwork.image.altText || `${artwork.title} artwork`}
-                      fill
-                      sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                      className="object-contain object-bottom"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-neutral-200" />
-                  )}
-                </div>
-              </div>
-
-              <div className="flex flex-1 flex-col">
-                <div className="mt-6 space-y-2 text-[0.95rem] leading-relaxed text-neutral-800">
-                  {artwork.artist ? (
-                    <p className="text-neutral-900">{artwork.artist}</p>
-                  ) : null}
-                  <h3 className="text-neutral-900">
-                    <span className="italic">{artwork.title}</span>
-                    {artwork.year ? <span>, {artwork.year}</span> : null}
-                  </h3>
-                  {artwork.medium ? <p>{artwork.medium}</p> : null}
-                  {artwork.dimensions ? (
-                    <p className="text-neutral-500">{artwork.dimensions}</p>
-                  ) : null}
-                </div>
-
-                <div className="mt-auto space-y-4 pt-4 text-sm text-neutral-700 sm:pt-5">
-                  <p className="font-medium text-neutral-900">{priceLabel}</p>
-                  {canPurchase ? (
-                    <OutlineLabelButton
-                      onClick={() => {
-                        void handleAddToCart(artwork);
-                      }}
+              return (
+                <article key={artwork.id} className="flex h-full flex-col">
+                  <div className="group bg-white">
+                    <div
+                      className="relative w-full"
+                      style={{ aspectRatio: wrapperAspect }}
                     >
-                      Purchase
-                    </OutlineLabelButton>
-                  ) : (
-                    <OutlineLabelButton onClick={() => setEnquiryArtwork(artwork)}>
-                      Enquire
-                    </OutlineLabelButton>
-                  )}
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+                      {artwork.image?.url ? (
+                        <Image
+                          src={artwork.image.url}
+                          alt={
+                            artwork.image.altText || `${artwork.title} artwork`
+                          }
+                          fill
+                          sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
+                          className="object-contain object-bottom"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-neutral-200" />
+                      )}
+                    </div>
+                  </div>
 
-      {filtered.length === 0 ? (
-        <div className="border border-dashed border-neutral-300 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
-          No works match your filters. Adjust the filters or contact our team
-          for tailored recommendations.
-        </div>
-      ) : null}
+                  <div className="flex flex-1 flex-col">
+                    <div className="mt-6 space-y-2 text-[0.95rem] leading-relaxed text-neutral-800">
+                      {artwork.artist ? (
+                        <p className="text-neutral-900">{artwork.artist}</p>
+                      ) : null}
+                      <h3 className="text-neutral-900">
+                        <span className="italic">{artwork.title}</span>
+                        {artwork.year ? <span>, {artwork.year}</span> : null}
+                      </h3>
+                      {artwork.medium ? <p>{artwork.medium}</p> : null}
+                      {artwork.dimensions ? (
+                        <p className="text-neutral-500">
+                          {artwork.dimensions}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-auto space-y-4 pt-4 text-sm text-neutral-700 sm:pt-5">
+                      <p className="font-medium text-neutral-900">{priceLabel}</p>
+                      {canPurchase ? (
+                        <OutlineLabelButton
+                          onClick={() => {
+                            void handleAddToCart(artwork);
+                          }}
+                        >
+                          Purchase
+                        </OutlineLabelButton>
+                      ) : (
+                        <OutlineLabelButton
+                          onClick={() => setEnquiryArtwork(artwork)}
+                        >
+                          Enquire
+                        </OutlineLabelButton>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="border border-dashed border-neutral-300 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
+            No works match your filters. Adjust the filters or contact our team
+            for tailored recommendations.
+          </div>
+        )}
+      </div>
 
       <ArtworkEnquiryModal
         open={Boolean(enquiryArtwork)}
