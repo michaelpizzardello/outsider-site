@@ -333,7 +333,7 @@ export default function ArtworkLayout({
       {/* Mobile detail info below carousel */}
       <section className="bg-white px-4 pb-12 pt-4 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
         {renderDetails("", {
-          onEnquire: showPurchaseButton ? undefined : openEnquire,
+          onEnquire: openEnquire,
           onPurchase: showPurchaseButton ? handlePurchase : undefined,
           purchaseDisabled: isAdding,
           showDivider: false,
@@ -373,7 +373,7 @@ export default function ArtworkLayout({
         )}
 
         {renderDetails("", {
-          onEnquire: showPurchaseButton ? undefined : openEnquire,
+          onEnquire: openEnquire,
           onPurchase: showPurchaseButton ? handlePurchase : undefined,
           purchaseDisabled: isAdding,
         })}
