@@ -68,7 +68,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
 
   return (
     <div className="space-y-20">
-      <div className="bg-white pb-2 pt-0">
+      <div className="bg-neutral-100 pb-2 pt-0">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 sm:flex-row sm:items-end sm:gap-5">
           <label className="sm:flex-1 text-sm text-neutral-600">
             <span className="sr-only">Search</span>
@@ -126,7 +126,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
 
           return (
             <article key={artwork.id} className="flex h-full flex-col">
-              <div className="group bg-white">
+              <div className="group bg-neutral-100">
                 <div
                   className="relative w-full"
                   style={{ aspectRatio: wrapperAspect }}
