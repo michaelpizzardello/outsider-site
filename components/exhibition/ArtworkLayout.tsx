@@ -179,21 +179,31 @@ export default function ArtworkLayout({
       showDivider?: boolean;
     } = {}
   ) => {
-    const buttonNode = onPurchase ? (
-      <OutlineLabelButton
-        onClick={() => {
-          if (onPurchase) void onPurchase();
-        }}
-        disabled={purchaseDisabled}
-      >
-        {purchaseDisabled ? "Adding..." : "Purchase"}
-      </OutlineLabelButton>
-    ) : onEnquire ? (
-      <OutlineLabelButton onClick={onEnquire}>Enquire</OutlineLabelButton>
-    ) : null;
+    const hasPurchase = Boolean(onPurchase);
+    const hasEnquire = Boolean(onEnquire);
+    const buttonsNode =
+      hasPurchase || hasEnquire ? (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+          {hasPurchase && (
+            <OutlineLabelButton
+              onClick={() => {
+                if (onPurchase) void onPurchase();
+              }}
+              disabled={purchaseDisabled}
+            >
+              {purchaseDisabled ? "Adding..." : "Purchase"}
+            </OutlineLabelButton>
+          )}
+          {hasEnquire && (
+            <OutlineLabelButton onClick={onEnquire}>
+              Enquire
+            </OutlineLabelButton>
+          )}
+        </div>
+      ) : null;
 
     const showDividerAfterButton =
-      showDivider && buttonNode && (hasCaption || hasMetaList);
+      showDivider && buttonsNode && (hasCaption || hasMetaList);
     const captionOffset = showDividerAfterButton ? "mt-7" : "mt-8";
     const metaOffset = hasCaption ? "mt-4" : captionOffset;
     const hasSupportingMeta = Boolean(
