@@ -204,7 +204,7 @@ export default function ArtworkLayout({
 
     const showDividerAfterButton =
       showDivider && buttonsNode && (hasCaption || hasMetaList);
-    const captionOffset = showDividerAfterButton ? "mt-7" : "mt-8";
+    const captionOffset = showDividerAfterButton ? "mt-6" : "mt-7";
     const metaOffset = hasCaption ? "mt-4" : captionOffset;
     const hasSupportingMeta = Boolean(
       medium || dimensionsLabel || additionalInfoHtml
@@ -243,8 +243,8 @@ export default function ArtworkLayout({
             )}
             {displayPriceLabel && (
               <p
-                className={`artwork-meta-text font-medium text-neutral-900 text-base xl:text-xl ${
-                  hasSupportingMeta ? "mt-4 pt-1" : ""
+                className={`artwork-meta-text font-medium text-neutral-900 ${
+                  hasSupportingMeta ? "mt-3" : ""
                 }`.trim()}
               >
                 {displayPriceLabel}
