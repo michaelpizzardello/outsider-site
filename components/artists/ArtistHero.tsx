@@ -54,13 +54,13 @@ export default function ArtistHero({
 
   return (
     // Background tone and padding mirror other hero bands across the site.
-    <section className="relative border-b border-[var(--colors-grey-dark,#e0e0e0)] bg-[var(--colors-grey-default,#f6f6f5)] pt-12 pb-12 sm:py-24">
+    <section className="relative border-b border-[var(--colors-grey-dark,#e0e0e0)] bg-[var(--colors-grey-default,#f6f6f5)] py-10 sm:py-16 lg:py-20">
       {/* Grid: single column until `lg`, then image/text columns. */}
-      <Container className="grid items-center gap-y-6 py-0 sm:gap-y-10 sm:py-24 lg:grid-cols-2 lg:gap-x-20 lg:justify-items-center xl:gap-x-24">
+      <Container className="grid items-center gap-y-6 py-0 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-20 lg:justify-items-center xl:gap-x-24">
         {cover?.url ? (
           // Portrait block. Constrains max width on smaller breakpoints so the
           // image doesn't overwhelm the viewport, but allows full bleed at `lg+`.
-          <figure className="relative flex w-full max-w-[360px] flex-col items-center self-center pt-1 pb-8 text-center sm:max-w-[460px] sm:pt-0 sm:pb-0 md:max-w-[560px] justify-self-center lg:max-w-none lg:order-2 lg:justify-self-end lg:my-auto">
+          <figure className="relative flex w-full max-w-[360px] flex-col items-center self-center pt-1 pb-6 text-center sm:max-w-[460px] sm:pt-0 sm:pb-0 md:max-w-[560px] justify-self-center lg:max-w-none lg:order-2 lg:justify-self-end lg:my-auto">
             <div
               className="relative w-full"
               style={{ aspectRatio: aspectRatio ?? "4 / 5" }}
@@ -92,7 +92,7 @@ export default function ArtistHero({
               {displayName}
             </h1>
             {nationalityLine || birthLine ? (
-              <div className="mt-4 space-y-1 pb-12 text-black sm:space-y-1.5 lg:pb-0">
+              <div className="mt-4 space-y-1 pb-8 text-black sm:space-y-1.5 lg:pb-0">
                 {nationalityLine ? (
                   <p className="text-sm font-normal sm:text-base lg:text-lg">
                     {nationalityLine}
