@@ -258,13 +258,14 @@ export default async function FeaturedWorks({
       availableForSale: product.availableForSale,
     });
     const isSoldLabel = priceText.trim().toLowerCase() === "sold";
+    const displayPriceLabel = isSoldLabel ? "" : priceText;
     return {
       id: product.id,
       handle: product.handle,
       title: product.title,
       artist: getArtistName(product, fallbackArtist) ?? null,
       year: product.year?.value ?? null,
-      priceLabel: priceText,
+      priceLabel: displayPriceLabel,
       sold: isSoldLabel,
       canPurchase: Boolean(
         product.availableForSale &&
@@ -304,6 +305,7 @@ export default async function FeaturedWorks({
           exhibitionHandle={exhibitionHandle}
           artworks={availableArtworks}
           rows={availableRows}
+          showActions
         />
       )}
       {soldArtworks.length > 0 && (
@@ -312,6 +314,7 @@ export default async function FeaturedWorks({
           exhibitionHandle={exhibitionHandle}
           artworks={soldArtworks}
           rows={soldRows}
+          showActions={false}
         />
       )}
     </>

@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import Container from "@/components/layout/Container";
 import { useCart } from "@/components/cart/CartContext";
+import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 import ArtworkEnquiryModal from "./ArtworkEnquiryModal";
 
 type ArtworkPayload = {
@@ -36,6 +37,7 @@ type Props = {
   exhibitionHandle: string;
   artworks: ArtworkPayload[];
   rows: LayoutRow[];
+  showActions?: boolean;
 };
 
 type RenderOptions = {
@@ -52,6 +54,7 @@ function ArtworkCard({
   onEnquire,
   onPurchase,
   isPurchasing,
+  showActions = true,
 }: {
   artwork: ArtworkPayload;
   exhibitionHandle: string;
@@ -59,9 +62,9 @@ function ArtworkCard({
   onEnquire: (artwork: ArtworkPayload) => void;
   onPurchase?: (artwork: ArtworkPayload) => void | Promise<void>;
   isPurchasing?: boolean;
+  showActions?: boolean;
 }) {
   const href = `/exhibitions/${exhibitionHandle}/artworks/${artwork.handle}`;
-  const enquireHref = `/enquire?artwork=${encodeURIComponent(artwork.id)}`;
   const image = artwork.featureImage;
 
   const sizeAttr = options.sizeOverride
@@ -119,48 +122,41 @@ function ArtworkCard({
             <span className="italic">{artwork.title}</span>
             {artwork.year && <span>, {artwork.year}</span>}
           </p>
-          <p className="mt-2 font-medium">{artwork.priceLabel}</p>
+          {artwork.priceLabel ? (
+            <p className="mt-2 font-medium">{artwork.priceLabel}</p>
+          ) : null}
         </Link>
 
-        <div className="flex shrink-0 items-center gap-x-6 text-sm">
-          {artwork.canPurchase && artwork.variantId && onPurchase ? (
-            <button
-              type="button"
-              onClick={() => {
-                if (onPurchase) {
-                  void onPurchase(artwork);
-                }
-              }}
-              disabled={isPurchasing}
-              className={`inline-flex items-center gap-4 text-sm font-medium md:text-base text-neutral-900 underline-offset-[6px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
-                isPurchasing ? "cursor-wait opacity-70" : "hover:underline"
-              }`}
-            >
-              {isPurchasing ? "Adding..." : "Purchase"}
-            </button>
-          ) : (
-            <Link
-              href={enquireHref}
-              className="group inline-flex items-center gap-4 text-sm font-medium md:text-base hover:opacity-85 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-              onClick={(event) => {
-                if (event.defaultPrevented) return;
-                if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
-                event.preventDefault();
-                onEnquire(artwork);
-              }}
-            >
-              <span className="underline-offset-[6px] group-hover:underline group-focus-visible:underline">
+        {showActions ? (
+          <div className="flex shrink-0 items-center gap-x-6 text-sm">
+            {artwork.canPurchase && artwork.variantId && onPurchase ? (
+              <OutlineLabelButton
+                onClick={() => {
+                  if (onPurchase) {
+                    void onPurchase(artwork);
+                  }
+                }}
+                disabled={isPurchasing}
+                className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em] !border-neutral-900 !bg-neutral-900 !text-white hover:!bg-black hover:!border-black disabled:!bg-neutral-600 disabled:!border-neutral-600"
+              >
+                {isPurchasing ? "Adding..." : "Purchase"}
+              </OutlineLabelButton>
+            ) : (
+              <OutlineLabelButton
+                onClick={() => onEnquire(artwork)}
+                className="!h-[2.5rem] !px-5 !text-[0.75rem] !tracking-[0.28em]"
+              >
                 Enquire
-              </span>
-            </Link>
-          )}
-        </div>
+              </OutlineLabelButton>
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   );
 }
 
-export default function FeaturedWorksClient({ title, exhibitionHandle, artworks, rows }: Props) {
+export default function FeaturedWorksClient({ title, exhibitionHandle, artworks, rows, showActions = true }: Props) {
   const [viewAll, setViewAll] = React.useState(false);
   const [isBelowMd, setIsBelowMd] = React.useState(false);
   const [enquiryArtwork, setEnquiryArtwork] = React.useState<ArtworkPayload | null>(null);
@@ -263,6 +259,7 @@ export default function FeaturedWorksClient({ title, exhibitionHandle, artworks,
                   onEnquire={(selected) => setEnquiryArtwork(selected)}
                   onPurchase={handlePurchase}
                   isPurchasing={addingId === artwork.id}
+                  showActions={showActions}
                 />
               ))}
             </div>
@@ -281,18 +278,19 @@ export default function FeaturedWorksClient({ title, exhibitionHandle, artworks,
                   return (
                     <div key={`full-${idx}`} className="grid grid-cols-1">
                       {artwork && (
-                        <ArtworkCard
-                          artwork={artwork}
-                          exhibitionHandle={exhibitionHandle}
-                          options={{ span: "full", forcedAspectRatio: forcedAspect }}
-                          onEnquire={(selected) => setEnquiryArtwork(selected)}
-                          onPurchase={handlePurchase}
-                          isPurchasing={addingId === artwork.id}
-                        />
-                      )}
-                    </div>
-                  );
-                }
+                      <ArtworkCard
+                        artwork={artwork}
+                        exhibitionHandle={exhibitionHandle}
+                        options={{ span: "full", forcedAspectRatio: forcedAspect }}
+                        onEnquire={(selected) => setEnquiryArtwork(selected)}
+                        onPurchase={handlePurchase}
+                        isPurchasing={addingId === artwork.id}
+                        showActions={showActions}
+                      />
+                    )}
+                  </div>
+                );
+              }
 
                 if (row.layout === "pair") {
                   return (
@@ -305,17 +303,18 @@ export default function FeaturedWorksClient({ title, exhibitionHandle, artworks,
                         return artwork ? (
                           <ArtworkCard
                             key={artwork.id}
-                            artwork={artwork}
-                            exhibitionHandle={exhibitionHandle}
-                            options={{ span: "half", forcedAspectRatio: forcedAspect }}
-                            onEnquire={(selected) => setEnquiryArtwork(selected)}
-                            onPurchase={handlePurchase}
-                            isPurchasing={addingId === artwork.id}
-                          />
-                        ) : null;
-                      })}
-                    </div>
-                  );
+                          artwork={artwork}
+                          exhibitionHandle={exhibitionHandle}
+                          options={{ span: "half", forcedAspectRatio: forcedAspect }}
+                          onEnquire={(selected) => setEnquiryArtwork(selected)}
+                          onPurchase={handlePurchase}
+                          isPurchasing={addingId === artwork.id}
+                          showActions={showActions}
+                        />
+                      ) : null;
+                    })}
+                  </div>
+                );
                 }
 
                 return (
@@ -328,17 +327,18 @@ export default function FeaturedWorksClient({ title, exhibitionHandle, artworks,
                       return artwork ? (
                         <ArtworkCard
                           key={artwork.id}
-                          artwork={artwork}
-                          exhibitionHandle={exhibitionHandle}
-                          options={{ span: "third", forcedAspectRatio: forcedAspect }}
-                          onEnquire={(selected) => setEnquiryArtwork(selected)}
-                          onPurchase={handlePurchase}
-                          isPurchasing={addingId === artwork.id}
-                        />
-                      ) : null;
-                    })}
-                  </div>
-                );
+                        artwork={artwork}
+                        exhibitionHandle={exhibitionHandle}
+                        options={{ span: "third", forcedAspectRatio: forcedAspect }}
+                        onEnquire={(selected) => setEnquiryArtwork(selected)}
+                        onPurchase={handlePurchase}
+                        isPurchasing={addingId === artwork.id}
+                        showActions={showActions}
+                      />
+                    ) : null;
+                  })}
+                </div>
+              );
               })}
             </div>
           )}
