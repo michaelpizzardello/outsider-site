@@ -379,8 +379,8 @@ export default function ArtworkLayout({
         })}
 
         {gallery.length > 1 && (
-          <section className="hidden space-y-3 lg:block lg:mt-6">
-            <div className="my-6 h-px w-full bg-neutral-300 lg:my-8" />
+          <section className="hidden space-y-3 lg:block lg:mt-4">
+            <div className="my-4 h-px w-full bg-neutral-300 lg:my-5" />
             <div className="grid grid-cols-4 gap-2 xl:grid-cols-5 xl:gap-3">
               {gallery.map((img, idx) => {
                 const isActive = idx === activeIndex;
