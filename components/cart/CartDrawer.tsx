@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
 import { buildCartPermalink, rewriteCheckoutDomain } from '@/lib/shopifyPermalink';
+import { formatCurrency } from '@/lib/formatCurrency';
 
 export default function CartDrawer() {
   const {
@@ -175,12 +176,12 @@ export default function CartDrawer() {
                           </button>
                         </div>
                         <p className="mt-2 text-sm font-medium">
-                          {line.price
-                            ? new Intl.NumberFormat('en-GB', {
-                                style: 'currency',
-                                currency: line.price.currencyCode,
-                              }).format(Number(line.price.amount))
-                            : 'Price on request'}
+                          {(() => {
+                            if (!line.price) return 'Price on request';
+                            const amount = Number(line.price.amount);
+                            if (!Number.isFinite(amount)) return 'Price on request';
+                            return formatCurrency(amount, line.price.currencyCode) || 'Price on request';
+                          })()}
                         </p>
                       </div>
                     </div>
@@ -195,12 +196,12 @@ export default function CartDrawer() {
           <div className="flex items-center justify-between text-sm">
             <span className="uppercase tracking-[0.18em] text-neutral-500">Subtotal</span>
             <span className="text-base font-medium">
-              {subtotal
-                ? new Intl.NumberFormat('en-GB', {
-                    style: 'currency',
-                    currency: subtotal.currencyCode,
-                  }).format(Number(subtotal.amount))
-                : '--'}
+              {(() => {
+                if (!subtotal) return '--';
+                const amount = Number(subtotal.amount);
+                if (!Number.isFinite(amount)) return '--';
+                return formatCurrency(amount, subtotal.currencyCode) || '--';
+              })()}
             </span>
           </div>
           <p className="mt-2 text-xs text-neutral-500">Taxes and shipping calculated at checkout.</p>

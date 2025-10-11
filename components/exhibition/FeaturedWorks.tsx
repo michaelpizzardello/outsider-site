@@ -1,7 +1,8 @@
 import "server-only";
 
-import FeaturedWorksClient from "./FeaturedWorksClient";
 import { shopifyFetch } from "@/lib/shopify";
+import { formatCurrency } from "@/lib/formatCurrency";
+import FeaturedWorksClient from "./FeaturedWorksClient";
 
 type Money = { amount: string; currencyCode: string };
 type Props = {
@@ -87,14 +88,9 @@ function priceLabel(p: {
   if (isSold) return "Sold";
   if (p.price) {
     const amount = Number(p.price.amount);
-    try {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: p.price.currencyCode,
-        maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-      }).format(amount);
-    } catch {
-      return `${p.price.currencyCode} ${amount.toLocaleString("en-GB")}`;
+    if (Number.isFinite(amount)) {
+      const formatted = formatCurrency(amount, p.price.currencyCode);
+      if (formatted) return formatted;
     }
   }
   return "Price on request";

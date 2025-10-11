@@ -2,6 +2,7 @@ import "server-only";
 
 import ArtistArtworksClient from "./ArtistArtworksClient";
 import { shopifyFetch } from "@/lib/shopify";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 // Data shapes ---------------------------------------------------------------
 
@@ -143,14 +144,9 @@ function priceLabel({
   if (!availableForSale) return "Sold";
   if (price) {
     const amount = Number(price.amount);
-    try {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: price.currencyCode,
-        maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-      }).format(amount);
-    } catch {
-      return `${price.currencyCode} ${amount.toLocaleString("en-GB")}`;
+    if (Number.isFinite(amount)) {
+      const formatted = formatCurrency(amount, price.currencyCode);
+      if (formatted) return formatted;
     }
   }
   return "Price on request";

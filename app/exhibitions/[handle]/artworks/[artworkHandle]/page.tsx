@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { shopifyFetch } from "@/lib/shopify";
 import { toHtml } from "@/lib/richtext";
 import ArtworkLayout from "@/components/exhibition/ArtworkLayout";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 // Static revalidation keeps artwork detail pages fresh without SSR on every hit.
 export const revalidate = 120;
@@ -224,18 +225,10 @@ function formatPriceLabel(product: ArtworkQuery["product"]): string | undefined 
   if (!price) return undefined;
 
   const amount = Number(price.amount);
-  if (Number.isFinite(amount)) {
-    try {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: price.currencyCode,
-        maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-      }).format(amount);
-    } catch {
-      return `${price.currencyCode} ${amount.toLocaleString("en-GB")}`;
-    }
-  }
-  return undefined;
+  if (!Number.isFinite(amount)) return undefined;
+
+  const formatted = formatCurrency(amount, price.currencyCode);
+  return formatted || undefined;
 }
 
 // Server component entry point for the artwork detail view.

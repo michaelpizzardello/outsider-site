@@ -7,6 +7,7 @@ import type { CollectArtwork } from "@/app/collect/page";
 import { useCart } from "@/components/cart/CartContext";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 type Props = {
   artworks: CollectArtwork[];
@@ -18,15 +19,8 @@ function formatMoney(price: CollectArtwork["price"]) {
   if (!price) return "Price on request";
   const amount = Number(price.amount);
   if (!Number.isFinite(amount) || amount <= 0) return "Price on request";
-  try {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: price.currencyCode,
-      maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-    }).format(amount);
-  } catch (error) {
-    return `${price.currencyCode} ${amount.toFixed(0)}`;
-  }
+  const formatted = formatCurrency(amount, price.currencyCode);
+  return formatted || "Price on request";
 }
 
 export default function CollectGrid({ artworks, mediums, artists }: Props) {
