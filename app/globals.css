@@ -27,6 +27,13 @@ body {
   color: var(--foreground);
 }
 
+.bg-neutral-50,
+.bg-neutral-100,
+.bg-neutral-200 {
+  --tw-bg-opacity: 1;
+  background-color: #f7f7f4 !important;
+}
+
 .site-container {
   margin-left: 2rem;
   margin-right: 2rem;

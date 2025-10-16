@@ -5,6 +5,7 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 import { toHtml } from "@/lib/richtext";
+import ContactForm from "@/components/contact/ContactForm";
 
 export const revalidate = 300;
 
@@ -292,48 +293,7 @@ export default async function AboutPage() {
                 <p className="text-xs uppercase tracking-[0.24em] text-black">
                   Enquire
                 </p>
-                <form
-                  className="mt-6 grid gap-6"
-                  method="post"
-                  action="mailto:info@outsidergallery.com.au"
-                  encType="text/plain"
-                >
-                  <label className="flex flex-col text-sm font-medium text-neutral-700">
-                    Name
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      className="mt-2 border border-neutral-300 bg-white px-4 py-3 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500"
-                    />
-                  </label>
-                  <label className="flex flex-col text-sm font-medium text-neutral-700">
-                    Email
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      className="mt-2 border border-neutral-300 bg-white px-4 py-3 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500"
-                    />
-                  </label>
-                  <label className="flex flex-col text-sm font-medium text-neutral-700">
-                    Message
-                    <textarea
-                      name="message"
-                      rows={6}
-                      required
-                      className="mt-2 border border-neutral-300 bg-white px-4 py-3 text-base font-normal text-neutral-900 outline-none transition focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500"
-                    />
-                  </label>
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      className="inline-flex items-center justify-center bg-neutral-900 px-8 py-3 text-sm font-medium uppercase tracking-[0.24em] text-white transition hover:bg-neutral-700"
-                    >
-                      Send
-                    </button>
-                  </div>
-                </form>
+                <ContactForm />
               </div>
             </div>
           </div>

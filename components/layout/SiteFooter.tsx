@@ -32,25 +32,28 @@ export default function SiteFooter({
     e.preventDefault();
     setLoading(true);
     setStatus(null);
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email }),
-      });
-      const json = await res.json().catch(() => ({}));
-      setStatus({
-        ok: res.ok,
-        msg:
-          json?.message ||
-          (res.ok ? "Thanks—please check your email to confirm." : "Something went wrong."),
-      });
-      if (res.ok) {
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-      }
-    } catch {
+      try {
+        const res = await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ firstName, lastName, email }),
+        });
+        const json = await res.json().catch(() => ({}));
+        const partial = Boolean(json?.partial);
+        setStatus({
+          ok: res.ok && !partial,
+          msg:
+            json?.message ||
+            (res.ok
+              ? "Thanks for joining our mailing list. We'll keep you updated."
+              : "Something went wrong."),
+        });
+        if (res.ok && !partial) {
+          setFirstName("");
+          setLastName("");
+          setEmail("");
+        }
+      } catch {
       setStatus({ ok: false, msg: "Network error. Please try again." });
     } finally {
       setLoading(false);

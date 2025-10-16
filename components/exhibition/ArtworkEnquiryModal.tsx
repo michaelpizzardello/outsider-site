@@ -73,20 +73,65 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
-    console.log("Artwork enquiry submitted", payload);
+
+    const subscribe = formData.get("newsletter") === "yes";
+
+    const firstName = formData.get("firstName")?.toString().trim() ?? "";
+    const lastName = formData.get("lastName")?.toString().trim() ?? "";
+    const email = formData.get("email")?.toString().trim() ?? "";
+    const phone = formData.get("phone")?.toString().trim() ?? "";
+    const message = formData.get("message")?.toString().trim() ?? "";
+    const name = [firstName, lastName].filter(Boolean).join(" ");
+
+    const payload = {
+      name,
+      firstName,
+      lastName,
+      email,
+      phone,
+      message,
+      subscribe,
+      artwork: {
+        title: artwork.title,
+        artist: artwork.artist,
+        year: artwork.year,
+        medium: artwork.medium,
+        dimensions: artwork.dimensions,
+        price: artwork.price,
+      },
+    };
 
     setSubmitting(true);
     setFeedback(null);
 
     try {
-      // TODO: integrate with real enquiry endpoint.
-      await new Promise((resolve) => setTimeout(resolve, 900));
-      setFeedback({
-        ok: true,
-        message: "Thank you. We will be in touch shortly.",
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      form.reset();
+      const json = await res
+        .json()
+        .catch(() => ({ message: "Something went wrong. Please try again." }));
+
+      if (!res.ok) {
+        setFeedback({
+          ok: false,
+          message:
+            json?.message ?? "Something went wrong. Please try again.",
+        });
+        return;
+      }
+
+      setFeedback({
+        ok: !json?.partial,
+        message:
+          json?.message ??
+          "Thanks for contacting our team. We will be in touch soon.",
+      });
+      if (!json?.partial) {
+        form.reset();
+      }
     } catch (error) {
       console.error("Failed to send enquiry", error);
       setFeedback({
