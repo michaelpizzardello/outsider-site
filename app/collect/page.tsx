@@ -4,6 +4,7 @@ import Container from "@/components/layout/Container";
 import CollectGrid from "@/components/collect/CollectGrid";
 import { shopifyFetch } from "@/lib/shopify";
 import PageSubheader from "@/components/layout/PageSubheader";
+import { isDraftStatus } from "@/lib/isDraftStatus";
 
 export const revalidate = 120;
 
@@ -37,6 +38,19 @@ type ProductNode = {
   priceRange?: { minVariantPrice?: Money | null } | null;
   variants?: { nodes?: ProductVariantNode[] | null } | null;
   tags?: string[] | null;
+  exhibitions?: {
+    reference?: MetaobjectReference;
+    references?: {
+      nodes?: Array<
+        | {
+            __typename: string;
+            handle?: string | null;
+            type?: string | null;
+          }
+        | null
+      > | null;
+    };
+  } | null;
   artistField?: {
     value?: string | null;
     reference?: MetaobjectReference;
@@ -56,6 +70,7 @@ export type CollectArtwork = {
   id: string;
   handle: string;
   title: string;
+  exhibitionHandle: string | null;
   artist: string | null;
   year: string | null;
   medium: string | null;
@@ -71,7 +86,7 @@ export type CollectArtwork = {
 
 const QUERY = /* GraphQL */ `
   query CollectProducts($first: Int = 60) {
-    products(first: $first, sortKey: UPDATED_AT, reverse: true) {
+    products(first: $first, sortKey: UPDATED_AT, reverse: true, query: "status:active") {
       nodes {
         id
         handle
@@ -80,6 +95,24 @@ const QUERY = /* GraphQL */ `
         availableForSale
         featuredImage { url width height altText }
         priceRange { minVariantPrice { amount currencyCode } }
+        exhibitions: metafield(namespace: "custom", key: "exhibitions") {
+          reference {
+            __typename
+            ... on Metaobject {
+              handle
+              type
+            }
+          }
+          references(first: 10) {
+            nodes {
+              __typename
+              ... on Metaobject {
+                handle
+                type
+              }
+            }
+          }
+        }
         variants(first: 10) {
           nodes {
             id
@@ -161,11 +194,20 @@ function mapProduct(node: ProductNode): CollectArtwork {
   const variant = pickVariant(node.variants?.nodes ?? []);
   const soldFlag = parseBoolean(node.soldField?.value);
   const status = norm(node.statusField?.value);
+  const primaryExhibition =
+    node.exhibitions?.reference?.__typename === "Metaobject"
+      ? norm(node.exhibitions.reference.handle)
+      : null;
+  const secondaryExhibition =
+    node.exhibitions?.references?.nodes?.find(
+      (ref) => ref?.__typename === "Metaobject" && ref?.handle
+    )?.handle ?? null;
   const available = (variant?.availableForSale ?? node.availableForSale) && !soldFlag && status?.toLowerCase() !== "sold";
   return {
     id: node.id,
     handle: node.handle,
     title: node.title,
+    exhibitionHandle: primaryExhibition || norm(secondaryExhibition),
     artist: getArtistName(node),
     year: norm(node.yearField?.value),
     medium: norm(node.mediumField?.value),
@@ -183,7 +225,11 @@ function mapProduct(node: ProductNode): CollectArtwork {
 export default async function CollectPage() {
   const data = await shopifyFetch<QueryResult>(QUERY, { first: 80 });
   const nodes = data.products?.nodes ?? [];
-  const artworks = nodes.map(mapProduct).filter((artwork) => artwork.variantId);
+  const artworks = nodes
+    .map(mapProduct)
+    .filter(
+      (artwork) => artwork.variantId && !isDraftStatus(artwork.status)
+    );
 
   const mediums = Array.from(
     new Set(

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 import PageSubheader from "@/components/layout/PageSubheader";
 import { shopifyFetch } from "@/lib/shopify";
+import { isDraftStatus } from "@/lib/isDraftStatus";
 
 /**
  * Artists index route renders a grid of artist cards sourced from Shopify metaobjects.
@@ -168,9 +169,14 @@ export default async function ArtistsPage() {
   // Pull the raw metaobject list from Shopify.
   const data = await shopifyFetch<ArtistsQuery>(QUERY);
   const nodes = data?.metaobjects?.nodes ?? [];
+  const activeNodes = nodes.filter((node) => {
+    const statusField = node.fields.find((field) => field.key.toLowerCase() === "status");
+    const statusValue = typeof statusField?.value === "string" ? statusField.value : undefined;
+    return !isDraftStatus(statusValue);
+  });
 
   // Massage the raw fields into the flattened shape the UI expects.
-  const artists: ArtistCard[] = nodes
+  const artists: ArtistCard[] = activeNodes
     .map((node) => {
       const { url, alt } = coverFromFields(node.fields);
       const label = labelFromFields(node.fields, node.handle);

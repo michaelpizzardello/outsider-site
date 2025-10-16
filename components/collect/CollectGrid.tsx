@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 import type { CollectArtwork } from "@/app/collect/page";
 import { useCart } from "@/components/cart/CartContext";
@@ -123,26 +124,50 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
           const canPurchase =
             hasPrice && artwork.available && Boolean(artwork.variantId);
           const wrapperAspect = "4 / 5";
+          const detailHref = artwork.exhibitionHandle
+            ? `/exhibitions/${artwork.exhibitionHandle}/artworks/${artwork.handle}`
+            : null;
 
           return (
             <article key={artwork.id} className="flex h-full flex-col">
               <div className="group bg-neutral-100">
-                <div
-                  className="relative w-full"
-                  style={{ aspectRatio: wrapperAspect }}
-                >
-                  {artwork.image?.url ? (
-                    <Image
-                      src={artwork.image.url}
-                      alt={artwork.image.altText || `${artwork.title} artwork`}
-                      fill
-                      sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                      className="object-contain object-bottom"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-neutral-200" />
-                  )}
-                </div>
+                {detailHref ? (
+                  <Link href={detailHref} aria-label={`View artwork ${artwork.title}`} className="block">
+                    <div
+                      className="relative w-full transition group-hover:opacity-90"
+                      style={{ aspectRatio: wrapperAspect }}
+                    >
+                      {artwork.image?.url ? (
+                        <Image
+                          src={artwork.image.url}
+                          alt={artwork.image.altText || `${artwork.title} artwork`}
+                          fill
+                          sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
+                          className="object-contain object-bottom transition duration-300 group-hover:scale-[1.02]"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-neutral-200" />
+                      )}
+                    </div>
+                  </Link>
+                ) : (
+                  <div
+                    className="relative w-full"
+                    style={{ aspectRatio: wrapperAspect }}
+                  >
+                    {artwork.image?.url ? (
+                      <Image
+                        src={artwork.image.url}
+                        alt={artwork.image.altText || `${artwork.title} artwork`}
+                        fill
+                        sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
+                        className="object-contain object-bottom"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-neutral-200" />
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-1 flex-col">
@@ -151,8 +176,20 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                     <p className="text-neutral-900">{artwork.artist}</p>
                   ) : null}
                   <h3 className="text-neutral-900">
-                    <span className="italic">{artwork.title}</span>
-                    {artwork.year ? <span>, {artwork.year}</span> : null}
+                    {detailHref ? (
+                      <Link
+                        href={detailHref}
+                        className="underline-offset-4 transition hover:underline"
+                      >
+                        <span className="italic">{artwork.title}</span>
+                        {artwork.year ? <span>, {artwork.year}</span> : null}
+                      </Link>
+                    ) : (
+                      <>
+                        <span className="italic">{artwork.title}</span>
+                        {artwork.year ? <span>, {artwork.year}</span> : null}
+                      </>
+                    )}
                   </h3>
                   {artwork.medium ? <p>{artwork.medium}</p> : null}
                   {artwork.dimensions ? (

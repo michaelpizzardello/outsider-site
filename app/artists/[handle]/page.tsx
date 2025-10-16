@@ -8,6 +8,7 @@ import ArtistExhibitions from "@/components/artists/ArtistExhibitions";
 import { shopifyFetch } from "@/lib/shopify";
 import { extractLongCopy } from "@/lib/extractLongCopy";
 import { toHtml } from "@/lib/richtext";
+import { isDraftStatus } from "@/lib/isDraftStatus";
 
 export const dynamic = "force-dynamic";
 
@@ -140,6 +141,10 @@ export default async function ArtistPage({ params }: { params: { handle: string 
   const data = await shopifyFetch<ByHandleQuery>(QUERY, { handle: params.handle });
   const mo = data.metaobject;
   if (!mo) notFound();
+
+  const statusField = mo.fields.find((field) => field.key.toLowerCase() === "status");
+  const statusValue = typeof statusField?.value === "string" ? statusField.value : undefined;
+  if (isDraftStatus(statusValue)) notFound();
 
   const valueMap = Object.fromEntries(mo.fields.map((field) => [field.key, field.value]));
   const name = (valueMap.name as string) || (valueMap.title as string) || mo.handle;

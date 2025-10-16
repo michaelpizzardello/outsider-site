@@ -33,6 +33,7 @@ import type { ExhibitionCard } from "@/lib/exhibitions";
 import { heroLabels, type PickHeroLabel } from "@/lib/labels";
 import { isGroupShow } from "@/lib/exhibitions";
 import { extractLongCopy } from "@/lib/extractLongCopy"; // ← helper that picks/normalises long text
+import { isDraftStatus } from "@/lib/isDraftStatus";
 
 export const revalidate = 60;
 export const dynamic = "force-static";
@@ -254,6 +255,7 @@ function toCard(n: Node): ExhibitionCard {
       img(f, "coverimage") ??
       img(f, "coverImage"),
     variant: text(f, "variant"),
+    status: text(f, "status", "state") ?? null,
   };
 }
 
@@ -448,6 +450,178 @@ function extractArtistRef(fields: Field[]) {
   return first || null;
 }
 
+type ArtistCandidate = {
+  handle?: string | null;
+  name?: string | null;
+  fields?: Field[] | null;
+};
+
+function coerceStringValue(value: unknown): string | undefined {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object") {
+    const anyValue: any = value;
+    if (typeof anyValue.value === "string") return anyValue.value;
+    if (typeof anyValue.text === "string") return anyValue.text;
+  }
+  return undefined;
+}
+
+function splitArtistNames(value: unknown): string[] {
+  const raw = coerceStringValue(value);
+  if (!raw) return [];
+  return raw
+    .split(/[\n,;]+/)
+    .map((part) => part.replace(/^[•*\-]+\s*/, "").trim())
+    .filter(Boolean);
+}
+
+function collectArtistCandidates(fields: Field[]): ArtistCandidate[] {
+  const visit = (list: Field[], depth = 0): ArtistCandidate[] => {
+    if (!Array.isArray(list) || !list.length) return [];
+    if (depth > 3) return [];
+    const bucket: ArtistCandidate[] = [];
+
+    for (const field of list) {
+      if (!field?.key) continue;
+      const keyLower = field.key.toLowerCase();
+      const isArtistish = keyLower.includes("artist") || keyLower.includes("member");
+      if (!isArtistish) continue;
+
+      for (const name of splitArtistNames(field.value)) {
+        bucket.push({ name });
+      }
+
+      const ref = field.reference;
+      if (ref && ref.__typename === "Metaobject") {
+        const handle = ref.handle ?? null;
+        let name: string | null = null;
+        const refFields = Array.isArray((ref as any).fields)
+          ? ((ref as any).fields as Field[])
+          : null;
+        if (refFields?.length) {
+          name =
+            text(refFields, "name", "title") ??
+            text(refFields, "full_name", "fullName", "label") ??
+            null;
+          bucket.push(...visit(refFields, depth + 1));
+        }
+        bucket.push({ handle, name });
+      }
+
+      const referencesAny = field.references as any;
+      const nodes: FieldRef[] = Array.isArray(referencesAny?.nodes)
+        ? (referencesAny.nodes as FieldRef[])
+        : Array.isArray(referencesAny)
+        ? (referencesAny as FieldRef[])
+        : [];
+      for (const node of nodes) {
+        if (node?.__typename === "Metaobject") {
+          const meta = node as { handle?: string | null; type?: string | null; fields?: Field[] };
+          bucket.push({
+            handle: meta.handle ?? null,
+            name: null,
+          });
+          if (Array.isArray((meta as any)?.fields)) {
+            bucket.push(...visit((meta as any).fields as Field[], depth + 1));
+          }
+        }
+      }
+
+      const nested = metaobjectFieldsForField(field);
+      if (nested?.length) {
+        bucket.push(...visit(nested, depth + 1));
+      }
+    }
+
+    return bucket;
+  };
+
+  return visit(fields, 0);
+}
+
+function prettifyHandle(handle: string | null | undefined): string {
+  if (!handle) return "";
+  return handle
+    .split(/[-_]/g)
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
+}
+
+async function resolveGroupArtists(fields: Field[]): Promise<
+  Array<{ name: string; handle?: string | null }>
+> {
+  const candidates = collectArtistCandidates(fields);
+  const resolved: Array<{ name: string; handle?: string | null }> = [];
+  const seenHandles = new Set<string>();
+  const seenNames = new Set<string>();
+  const pendingHandles = new Set<string>();
+
+  const push = (name: string, handle?: string | null) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const handleKey = handle ? handle.trim().toLowerCase() : null;
+    if (handleKey) {
+      if (seenHandles.has(handleKey)) return;
+      seenHandles.add(handleKey);
+    } else {
+      const nameKey = trimmed.toLowerCase();
+      if (seenNames.has(nameKey)) return;
+      seenNames.add(nameKey);
+    }
+    resolved.push({ name: trimmed, handle });
+  };
+
+  for (const candidate of candidates) {
+    const name = candidate.name?.trim();
+    const handle = candidate.handle?.trim() ?? null;
+    if (name) {
+      push(name, handle);
+    } else if (handle) {
+      const handleKey = handle.toLowerCase();
+      if (!seenHandles.has(handleKey) && !pendingHandles.has(handleKey)) {
+        pendingHandles.add(handle);
+      }
+    }
+  }
+
+  if (pendingHandles.size) {
+    const results = await Promise.all(
+      Array.from(pendingHandles).map(async (handle) => {
+        try {
+          const data = await shopifyFetch<{ metaobject: Node | null }>(
+            ARTIST_QUERY,
+            { handle }
+          );
+          const meta = data?.metaobject;
+          const name =
+            meta?.fields
+              ? text(meta.fields, "name", "title") ??
+                text(meta.fields, "full_name", "fullName", "label") ??
+                null
+              : null;
+          return { handle, name };
+        } catch (error) {
+          console.warn("[exhibitions/[handle]] resolveGroupArtists fetch error", {
+            handle,
+            error,
+          });
+          return { handle, name: null as string | null };
+        }
+      })
+    );
+
+    for (const { handle, name } of results) {
+      const displayName = name?.trim() || prettifyHandle(handle);
+      if (displayName) {
+        push(displayName, handle);
+      }
+    }
+  }
+
+  return resolved;
+}
+
 function firstPortraitFromFields(fields: Field[]) {
   const f = fields.find((x) => x.key === "portrait");
   return f ? imageFromField(f) : undefined;
@@ -621,6 +795,12 @@ export default async function ExhibitionPage({
   });
   const node = data?.metaobject;
   if (!node) return notFound();
+  const statusField = node.fields.find(
+    (field) => field.key.toLowerCase() === "status"
+  );
+  const statusValue =
+    typeof statusField?.value === "string" ? statusField.value : undefined;
+  if (isDraftStatus(statusValue)) return notFound();
   console.log(
     "[exhibitions/[handle]] loaded metaobject",
     node.handle,
@@ -650,6 +830,7 @@ export default async function ExhibitionPage({
 
   // 2) Build the hero card + phase labels
   const ex = toCard(node);
+  if (isDraftStatus(ex.status)) return notFound();
   const { top, button } = heroLabels(labelFromDates(ex.start, ex.end));
   console.log("[exhibitions/[handle]] ex.title=", ex.title, 
               "artist=", ex.artist, 
@@ -738,6 +919,10 @@ export default async function ExhibitionPage({
     { artistHandle, artistName, hasPortrait: Boolean(portrait), hasBio: Boolean(artistBioHtml), bioLen: artistBioHtml?.length }
   );
 
+  const groupArtists = isGroupShow(ex)
+    ? await resolveGroupArtists(node.fields)
+    : [];
+
   const detailsSectionId = "exhibition-details";
 
   // 4) Render page blocks
@@ -759,6 +944,14 @@ export default async function ExhibitionPage({
         openingInfo={ex.openingInfo ?? null}
         shortText={ex.summary ?? null}
         longTextHtml={longTextHtml}
+        artists={
+          groupArtists.length
+            ? groupArtists.map((artist) => ({
+                name: artist.name,
+                href: artist.handle ? `/artists/${artist.handle}` : undefined,
+              }))
+            : undefined
+        }
       />
 
       {/* Installation Views */}

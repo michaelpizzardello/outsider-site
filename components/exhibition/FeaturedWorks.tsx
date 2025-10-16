@@ -2,6 +2,7 @@ import "server-only";
 
 import { shopifyFetch } from "@/lib/shopify";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { isDraftStatus } from "@/lib/isDraftStatus";
 import FeaturedWorksClient from "./FeaturedWorksClient";
 
 type Money = { amount: string; currencyCode: string };
@@ -163,7 +164,9 @@ export default async function FeaturedWorks({
     artistKey: "artist",
   });
   const all = data?.products?.nodes ?? [];
-  const nodes = all.filter((p) => productMatchesExhibition(p, exhibitionHandle));
+  const nodes = all
+    .filter((p) => productMatchesExhibition(p, exhibitionHandle))
+    .filter((p) => !isDraftStatus(p.status?.value));
 
   if (nodes.length === 0) return null;
 

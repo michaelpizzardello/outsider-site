@@ -1,6 +1,7 @@
 // lib/exhibitions.ts
 import "server-only";
 import { shopifyFetch } from "@/lib/shopify";
+import { isDraftStatus } from "@/lib/isDraftStatus";
 export { formatDates } from "@/lib/formatDates";
 
 // ---------------- Types ----------------
@@ -28,6 +29,7 @@ export type ExhibitionCard = {
   summary?: string; // normalised from short_text / short-text / etc.
   isGroup?: boolean; // optional future flag from Shopify if you add one
   variant?: string; // exhibition template variant (minimal/standard/feature/announcement)
+  status?: string | null;
 };
 
 type HomeQuery = {
@@ -173,6 +175,7 @@ function mapNode(n: Node): ExhibitionCard {
       img(n.fields, "bannerImage") ??
       img(n.fields, "bannerimage"),
     variant: text(n.fields, "variant"),
+    status: text(n.fields, "status", "state") ?? null,
     // if you later add a boolean field, map it here:
     // isGroup: text(n.fields, "is_group", "isGroup") === "true",
   };
@@ -181,7 +184,9 @@ function mapNode(n: Node): ExhibitionCard {
 // -------- Classification (current / upcoming / past) --------
 export function classifyExhibitions(nodes: Node[]) {
   const today = Date.now();
-  const ex = nodes.map(mapNode);
+  const ex = nodes
+    .map(mapNode)
+    .filter((item) => !isDraftStatus(item.status));
 
   const isCurrent = (e: ExhibitionCard) => {
     const s = e.start?.getTime();
@@ -241,7 +246,9 @@ export async function listExhibitions({
 }): Promise<{ items: ExhibitionCard[]; total: number; pageSize: number }> {
   // Reuse your existing fetch + mapping
   const nodes = await fetchHomeExhibitions();   // uses HOME_QUERY you already have
-  const all = nodes.map(mapNode);
+  const all = nodes
+    .map(mapNode)
+    .filter((item) => !isDraftStatus(item.status));
 
   const now = Date.now();
 

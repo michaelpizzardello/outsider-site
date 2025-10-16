@@ -1,9 +1,16 @@
+import Link from "next/link";
+
 import Container from "@/components/layout/Container";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
 import ExpandableText from "./ExpandableText";
 
 type Dateish = Date | string | null | undefined;
+
+type ArtistLink = {
+  name: string;
+  href?: string;
+};
 
 type Props = {
   id?: string;
@@ -13,6 +20,7 @@ type Props = {
   openingInfo?: string | null;
   shortText?: string | null;
   longTextHtml?: string | null; // HTML string
+  artists?: ArtistLink[] | null;
 };
 
 export default function Details({
@@ -23,10 +31,17 @@ export default function Details({
   openingInfo,
   shortText,
   longTextHtml,
+  artists,
 }: Props) {
   const dateRange = formatDates(startDate, endDate);
+  const artistList = (artists ?? []).filter((artist) => artist.name?.trim());
+  const hasArtists = artistList.length > 0;
   const hasMeta = Boolean(
-    startDate || endDate || (location && location.trim()) || (openingInfo && openingInfo.trim())
+    startDate ||
+      endDate ||
+      (location && location.trim()) ||
+      (openingInfo && openingInfo.trim()) ||
+      hasArtists
   );
   const hasText = Boolean(
     (shortText && shortText.trim()) || (longTextHtml && longTextHtml.trim())
@@ -80,6 +95,34 @@ export default function Details({
                   Location
                 </ExhibitionLabel>
                 <div className="text-[1rem] whitespace-pre-wrap">{location}</div>
+              </div>
+            )}
+
+            {hasArtists && (
+              <div>
+                <ExhibitionLabel as="div" className="mb-[2px]">
+                  Artists
+                </ExhibitionLabel>
+                <ul className="space-y-1 text-[1rem]">
+                  {artistList.map((artist) => {
+                    const key = artist.href ?? artist.name;
+                    if (!artist.name?.trim()) return null;
+                    return (
+                      <li key={key}>
+                        {artist.href ? (
+                          <Link
+                            href={artist.href}
+                            className="underline-offset-2 transition hover:underline"
+                          >
+                            {artist.name}
+                          </Link>
+                        ) : (
+                          <span>{artist.name}</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             )}
           </aside>

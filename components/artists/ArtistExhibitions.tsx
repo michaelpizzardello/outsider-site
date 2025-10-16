@@ -9,6 +9,7 @@ import { ArrowCtaInline } from "@/components/ui/ArrowCta";
 import { shopifyFetch } from "@/lib/shopify";
 import { headingParts, formatDates, type ExhibitionCard } from "@/lib/exhibitions";
 import { heroLabels, type PickHeroLabel } from "@/lib/labels";
+import { isDraftStatus } from "@/lib/isDraftStatus";
 
 type FieldRef =
   | {
@@ -138,6 +139,7 @@ function mapNode(node: Node): ExhibitionWithRefs {
 
   const groupFlagRaw = text(fields, "is_group", "isGroup");
   const isGroup = groupFlagRaw ? groupFlagRaw.trim().toLowerCase() === "true" : undefined;
+  const status = text(fields, "status", "state");
 
   const artistHandles = new Set<string>();
   const pushHandle = (handle?: string | null) => {
@@ -169,6 +171,7 @@ function mapNode(node: Node): ExhibitionWithRefs {
     summary,
     hero,
     isGroup,
+    status,
     artistHandles: Array.from(artistHandles),
     artistSearchText: [artist, title]
       .filter((value): value is string => Boolean(value))
@@ -196,7 +199,9 @@ export default async function ArtistExhibitions({ artistHandle, artistName }: Pr
   const targetHandle = artistHandle.trim().toLowerCase();
   const targetName = artistName.trim().toLowerCase();
 
-  const mapped = nodes.map(mapNode);
+  const mapped = nodes
+    .map(mapNode)
+    .filter((ex) => !isDraftStatus(ex.status));
 
   const filtered = mapped.filter((ex) => {
     const handleMatch = ex.artistHandles.some((h) => h === targetHandle);
