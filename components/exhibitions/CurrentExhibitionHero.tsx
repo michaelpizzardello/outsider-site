@@ -63,7 +63,10 @@ export default function CurrentExhibitionHero({
 
           {/* Artist name/ Header 1 */}
           <h1
-            className={["text-display-1 text-balance leading-tight", isGroup ? "italic" : ""]
+            className={[
+              "text-display-1 hero-title-mobile leading-tight text-balance md:whitespace-normal",
+              isGroup ? "italic" : "",
+            ]
               .filter(Boolean)
               .join(" ")}
           >
