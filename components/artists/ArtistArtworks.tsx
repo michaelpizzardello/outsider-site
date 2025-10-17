@@ -1,8 +1,9 @@
 import "server-only";
 
-import ArtistArtworksClient from "./ArtistArtworksClient";
 import { shopifyFetch } from "@/lib/shopify";
 import { formatCurrency } from "@/lib/formatCurrency";
+import ArtistArtworksClient from "./ArtistArtworksClient";
+import { isDraftStatus } from "@/lib/isDraftStatus";
 
 // Data shapes ---------------------------------------------------------------
 
@@ -14,6 +15,7 @@ type ProductNode = {
   title: string;
   vendor?: string | null;
   availableForSale: boolean;
+  onlineStoreUrl?: string | null;
   featuredImage?: {
     url: string;
     width?: number | null;
@@ -22,6 +24,7 @@ type ProductNode = {
   } | null;
   priceRange?: { minVariantPrice?: Money | null } | null;
   year?: { value?: string | null } | null;
+  status?: { value?: string | null } | null;
   artistMeta?: {
     value?: string | null;
     reference?: {
@@ -39,6 +42,12 @@ type ProductNode = {
       } | null> | null;
     } | null;
   } | null;
+  variants?: {
+    nodes?: Array<{
+      id: string;
+      availableForSale?: boolean | null;
+    } | null> | null;
+  } | null;
 };
 
 type QueryResult = {
@@ -52,10 +61,14 @@ type Props = {
 
 type ArtworkPayload = {
   id: string;
+  handle: string;
   artist: string | null;
   title: string;
   year: string | null;
   priceLabel: string;
+  sold: boolean;
+  canPurchase: boolean;
+  variantId?: string | null;
   featureImage?: {
     url: string;
     width?: number | null;
@@ -66,10 +79,7 @@ type ArtworkPayload = {
   heightFactor: number;
   type: "L" | "P" | "S";
   href?: string | null;
-  enquireHref: string;
 };
-
-type LayoutRow = { layout: "full" | "pair" | "triple"; indexes: number[] };
 
 // GraphQL -------------------------------------------------------------------
 
@@ -86,6 +96,7 @@ const QUERY = /* GraphQL */ `
         title
         vendor
         availableForSale
+        onlineStoreUrl
         featuredImage {
           url
           width
@@ -99,6 +110,7 @@ const QUERY = /* GraphQL */ `
           }
         }
         year: metafield(namespace: $ns, key: "year") { value }
+        status: metafield(namespace: $ns, key: "status") { value }
         artistMeta: metafield(namespace: $ns, key: $artistKey) {
           value
           reference {
@@ -127,6 +139,12 @@ const QUERY = /* GraphQL */ `
             }
           }
         }
+        variants(first: 1) {
+          nodes {
+            id
+            availableForSale
+          }
+        }
       }
     }
   }
@@ -136,12 +154,19 @@ const QUERY = /* GraphQL */ `
 
 function priceLabel({
   price,
+  status,
   availableForSale,
 }: {
   price?: Money | null;
+  status?: string | null;
   availableForSale: boolean;
 }): string {
-  if (!availableForSale) return "Sold";
+  const normalizedStatus = (status || "").trim().toLowerCase();
+  const isSold =
+    normalizedStatus === "sold" ||
+    normalizedStatus === "reserved" ||
+    availableForSale === false;
+  if (isSold) return "Sold";
   if (price) {
     const amount = Number(price.amount);
     if (Number.isFinite(amount)) {
@@ -191,48 +216,6 @@ function classifyType(width?: number | null, height?: number | null): {
   };
 }
 
-function buildRows(items: ArtworkPayload[]): LayoutRow[] {
-  if (!items.length) return [];
-  const rows: LayoutRow[] = [];
-  const normType = (t: ArtworkPayload["type"]) => (t === "P" ? "P" : "L");
-
-  for (let i = 0; i < items.length; ) {
-    const remaining = items.length - i;
-    const currentType = normType(items[i].type);
-    const nextTypeMatches = (count: number) => {
-      if (remaining < count) return false;
-      for (let j = 0; j < count; j++) {
-        if (normType(items[i + j].type) !== currentType) return false;
-      }
-      return true;
-    };
-
-    if (nextTypeMatches(4)) {
-      rows.push({ layout: "pair", indexes: [i, i + 1] });
-      rows.push({ layout: "pair", indexes: [i + 2, i + 3] });
-      i += 4;
-      continue;
-    }
-
-    if (nextTypeMatches(3)) {
-      rows.push({ layout: "triple", indexes: [i, i + 1, i + 2] });
-      i += 3;
-      continue;
-    }
-
-    if (nextTypeMatches(2)) {
-      rows.push({ layout: "pair", indexes: [i, i + 1] });
-      i += 2;
-      continue;
-    }
-
-    rows.push({ layout: "full", indexes: [i] });
-    i += 1;
-  }
-
-  return rows;
-}
-
 // Component -----------------------------------------------------------------
 
 export default async function ArtistArtworks({ artistHandle, artistName }: Props) {
@@ -243,14 +226,27 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
   });
 
   const products = data?.products?.nodes ?? [];
-  const filtered = products.filter((node) => matchesArtist(node, artistHandle, artistName));
+  const filtered = products
+    .filter((node) => matchesArtist(node, artistHandle, artistName))
+    .filter((node) => !isDraftStatus(node.status?.value));
   if (!filtered.length) return null;
 
   const artworks: ArtworkPayload[] = filtered.map((product) => {
-    const pricing = priceLabel({
-      price: product.priceRange?.minVariantPrice ?? null,
+    const price = product.priceRange?.minVariantPrice ?? undefined;
+    const priceText = priceLabel({
+      price,
+      status: product.status?.value,
       availableForSale: product.availableForSale,
     });
+    const isSold = priceText.trim().toLowerCase() === "sold";
+    const displayPriceLabel = isSold ? "" : priceText;
+    const amount = price ? Number(price.amount) : NaN;
+    const hasPrice = Number.isFinite(amount) && amount > 0;
+    const primaryVariant =
+      product.variants?.nodes?.find((variant) => Boolean(variant?.id)) ?? null;
+    const variantAvailable =
+      primaryVariant?.availableForSale !== false && Boolean(primaryVariant?.id);
+    const isPublishedOnline = Boolean(product.onlineStoreUrl);
     const exhibitionHandle = firstExhibitionHandle(product);
     const { aspectRatio, heightFactor, type } = classifyType(
       product.featuredImage?.width ?? undefined,
@@ -259,10 +255,20 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
 
     return {
       id: product.id,
+      handle: product.handle,
       artist: artistName || null,
       title: product.title,
       year: product.year?.value ?? null,
-      priceLabel: pricing,
+      priceLabel: displayPriceLabel,
+      sold: isSold,
+      canPurchase: Boolean(
+        product.availableForSale &&
+          hasPrice &&
+          isPublishedOnline &&
+          variantAvailable &&
+          !isSold
+      ),
+      variantId: (primaryVariant?.id as string | undefined) ?? null,
       featureImage: product.featuredImage ?? undefined,
       aspectRatio,
       heightFactor,
@@ -270,11 +276,18 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
       href: exhibitionHandle
         ? `/exhibitions/${exhibitionHandle}/artworks/${product.handle}`
         : null,
-      enquireHref: `/enquire?artwork=${encodeURIComponent(product.id)}`,
     };
   });
 
-  const rows = buildRows(artworks);
+  const availableArtworks = artworks.filter((artwork) => !artwork.sold);
+  const soldArtworks = artworks.filter((artwork) => artwork.sold);
 
-  return <ArtistArtworksClient artworks={artworks} rows={rows} />;
+  if (!availableArtworks.length && !soldArtworks.length) return null;
+
+  return (
+    <ArtistArtworksClient
+      availableArtworks={availableArtworks}
+      soldArtworks={soldArtworks}
+    />
+  );
 }

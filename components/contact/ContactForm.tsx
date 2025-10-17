@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
+import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 
 type Status =
   | { state: "idle" }
@@ -123,13 +124,13 @@ export default function ContactForm() {
       ) : null}
 
       <div className="flex justify-end">
-        <button
+        <OutlineLabelButton
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center justify-center bg-neutral-900 px-8 py-3 text-sm font-medium uppercase tracking-[0.24em] text-white transition hover:bg-neutral-700 disabled:opacity-60"
+          className="px-6"
         >
           {isSubmitting ? "Sending…" : "Send"}
-        </button>
+        </OutlineLabelButton>
       </div>
     </form>
   );

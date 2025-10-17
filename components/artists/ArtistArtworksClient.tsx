@@ -6,14 +6,19 @@ import Link from "next/link";
 
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import Container from "@/components/layout/Container";
-import { ArrowCtaLink } from "@/components/ui/ArrowCta";
+import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
+import { useCart } from "@/components/cart/CartContext";
 
 type ArtworkPayload = {
   id: string;
+  handle: string;
   artist: string | null;
   title: string;
   year: string | null;
   priceLabel: string;
+  sold: boolean;
+  canPurchase: boolean;
+  variantId?: string | null;
   featureImage?: {
     url: string;
     width?: number | null;
@@ -24,10 +29,7 @@ type ArtworkPayload = {
   heightFactor: number;
   type: "L" | "P" | "S";
   href?: string | null;
-  enquireHref: string;
 };
-
-type LayoutRow = { layout: "full" | "pair" | "triple"; indexes: number[] };
 
 type RenderOptions = {
   span: "full" | "half" | "third";
@@ -37,18 +39,26 @@ type RenderOptions = {
 };
 
 type Props = {
-  artworks: ArtworkPayload[];
-  rows: LayoutRow[];
+  availableArtworks: ArtworkPayload[];
+  soldArtworks: ArtworkPayload[];
 };
 
 function ArtworkCard({
   artwork,
   options,
   onEnquire,
+  onPurchase,
+  isPurchasing,
+  showActions = true,
+  layout = "available",
 }: {
   artwork: ArtworkPayload;
   options: RenderOptions;
   onEnquire: (artwork: ArtworkPayload) => void;
+  onPurchase?: (artwork: ArtworkPayload) => void | Promise<void>;
+  isPurchasing?: boolean;
+  showActions?: boolean;
+  layout?: "available" | "featured";
 }) {
   const href = artwork.href ?? undefined;
   const sizeAttr = options.sizeOverride
@@ -97,13 +107,16 @@ function ArtworkCard({
     <div className={`bg-neutral-100 ${aspectClass}`} />
   );
 
+  const showYearInline = layout !== "featured";
   const titleBlock = (
     <>
       <p className="artwork-card__title mt-1 break-words underline-offset-4">
         <span className="italic">{artwork.title}</span>
-        {artwork.year && <span>, {artwork.year}</span>}
+        {showYearInline && artwork.year ? <span>, {artwork.year}</span> : null}
       </p>
-      <p className="mt-2 font-medium">{artwork.priceLabel}</p>
+      {artwork.priceLabel ? (
+        <p className="mt-2 font-medium">{artwork.priceLabel}</p>
+      ) : null}
     </>
   );
 
@@ -123,52 +136,66 @@ function ArtworkCard({
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-tight md:mt-5">
+      <div
+        className={`mt-4 flex flex-wrap items-start gap-y-4 text-[15px] leading-tight md:mt-5 ${
+          layout === "featured"
+            ? "flex-col items-center text-center gap-x-0"
+            : "justify-between gap-x-8"
+        }`}
+      >
         {href ? (
           <Link
             href={href}
             data-artwork-link="title"
-            className="min-w-[200px] flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+            className={`focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
+              layout === "featured" ? "w-full max-w-xs" : "min-w-[200px] flex-1"
+            }`}
           >
             {titleBlock}
+            {!showYearInline && artwork.year ? (
+              <p className="mt-1 text-sm text-neutral-600">{artwork.year}</p>
+            ) : null}
           </Link>
         ) : (
-          <div className="min-w-[200px] flex-1">{titleBlock}</div>
+          <div
+            className={
+              layout === "featured" ? "w-full max-w-xs" : "min-w-[200px] flex-1"
+            }
+          >
+            {titleBlock}
+            {!showYearInline && artwork.year ? (
+              <p className="mt-1 text-sm text-neutral-600">{artwork.year}</p>
+            ) : null}
+          </div>
         )}
 
-        <div className="flex shrink-0 items-center gap-x-6 text-sm">
-          {href ? (
-            <ArrowCtaLink
-              href={href}
-              label="View work"
-              className="hidden sm:inline-flex hover:opacity-85"
-              underline={false}
-            />
-          ) : null}
-          <Link
-            href={artwork.enquireHref}
-            className="group inline-flex items-center gap-4 text-sm font-medium md:text-base hover:opacity-85 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-            onClick={(event) => {
-              if (event.defaultPrevented) return;
-              if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
-              event.preventDefault();
-              onEnquire(artwork);
-            }}
-          >
-            <span className="underline-offset-[6px] group-hover:underline group-focus-visible:underline">
-              Enquire
-            </span>
-          </Link>
-        </div>
+        {showActions ? (
+          <div className="flex shrink-0 items-center gap-x-6 text-sm">
+            {artwork.canPurchase && artwork.variantId && onPurchase ? (
+              <OutlineLabelButton
+                onClick={() => {
+                  if (onPurchase) {
+                    void onPurchase(artwork);
+                  }
+                }}
+                disabled={isPurchasing}
+              >
+                {isPurchasing ? "Adding..." : "Purchase"}
+              </OutlineLabelButton>
+            ) : (
+              <OutlineLabelButton onClick={() => onEnquire(artwork)}>
+                Enquire
+              </OutlineLabelButton>
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   );
 }
 
-export default function ArtistArtworksClient({ artworks, rows: _rows }: Props) {
-  const [enquiryArtwork, setEnquiryArtwork] = useState<ArtworkPayload | null>(null);
-  void _rows;
-  const uniformAspect = useMemo(() => {
+function useUniformAspect(artworks: ArtworkPayload[]) {
+  return useMemo(() => {
     const factors = artworks
       .map((artwork) => artwork.heightFactor)
       .filter((value): value is number => typeof value === "number" && value > 0);
@@ -176,37 +203,81 @@ export default function ArtistArtworksClient({ artworks, rows: _rows }: Props) {
     const maxFactor = Math.max(...factors);
     return maxFactor > 0 ? 1 / maxFactor : undefined;
   }, [artworks]);
+}
+
+export default function ArtistArtworksClient({
+  availableArtworks,
+  soldArtworks,
+}: Props) {
+  const [enquiryArtwork, setEnquiryArtwork] = useState<ArtworkPayload | null>(null);
+  const [addingId, setAddingId] = useState<string | null>(null);
+  const { addLine, openCart } = useCart();
+
+  const availableAspect = useUniformAspect(availableArtworks);
+  const soldAspect = useUniformAspect(soldArtworks);
 
   const closeEnquiry = () => setEnquiryArtwork(null);
 
+  const handlePurchase = async (artwork: ArtworkPayload) => {
+    if (!artwork.variantId) return;
+    setAddingId(artwork.id);
+    try {
+      await addLine({ merchandiseId: artwork.variantId, quantity: 1 });
+      openCart();
+    } catch (error) {
+      console.error("[ArtistArtworks] Failed to add artwork to cart", error);
+    } finally {
+      setAddingId(null);
+    }
+  };
+
+  const renderSection = (
+    title: string,
+    artworks: ArtworkPayload[],
+    forcedAspect?: number,
+    showActions = true
+  ) => {
+    if (!artworks.length) return null;
+
+    return (
+      <section className="w-full border-t border-neutral-200 pt-6 pb-16 sm:pt-8 md:pt-10 md:pb-20">
+        <Container>
+          <div className="pt-3 sm:pt-6 md:pt-8">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:mb-8 lg:mb-12">
+              <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">
+                {title}
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
+              {artworks.map((artwork) => (
+                <ArtworkCard
+                  key={artwork.id}
+                  artwork={artwork}
+                  options={{
+                    span: "third",
+                    forcedAspectRatio: forcedAspect,
+                    sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
+                    centerImage: true,
+                  }}
+                  onEnquire={(selected) => setEnquiryArtwork(selected)}
+                  onPurchase={showActions ? handlePurchase : undefined}
+                  isPurchasing={addingId === artwork.id}
+                  showActions={showActions}
+                  layout={showActions ? "available" : "featured"}
+                />
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
+    );
+  };
+
   return (
-    <section className="w-full border-t border-neutral-200 pt-8 pb-16 md:pt-10 md:pb-20">
-      <Container>
-        <div className="pt-6 md:pt-8">
-          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:mb-12">
-            <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">
-              Artworks
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
-            {artworks.map((artwork) => (
-              <ArtworkCard
-                key={artwork.id}
-                artwork={artwork}
-                options={{
-                  span: "third",
-                  forcedAspectRatio: uniformAspect,
-                  sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
-                  centerImage: true,
-                }}
-                onEnquire={(selected) => setEnquiryArtwork(selected)}
-              />
-            ))}
-          </div>
-
-        </div>
-      </Container>
+    <>
+      {renderSection("Available Works", availableArtworks, availableAspect, true)}
+      {renderSection("Featured Works", soldArtworks, soldAspect, false)}
       <ArtworkEnquiryModal
         open={Boolean(enquiryArtwork)}
         onClose={closeEnquiry}
@@ -223,6 +294,6 @@ export default function ArtistArtworksClient({ artworks, rows: _rows }: Props) {
             : undefined,
         }}
       />
-    </section>
+    </>
   );
 }

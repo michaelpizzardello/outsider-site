@@ -5,6 +5,7 @@ import { useState, type ComponentPropsWithoutRef } from "react";
 import { usePathname } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Link from "next/link";
+import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 
 const defaultLinks = [
   { href: "/exhibitions", label: "Exhibitions" },
@@ -152,13 +153,13 @@ export default function SiteFooter({
                 />
               </div>
 
-              <button
+              <OutlineLabelButton
                 type="submit"
                 disabled={loading}
-                className="h-11 w-full md:w-auto px-6 rounded-xl bg-black text-white text-sm font-medium hover:bg-black/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
+                className="w-full md:w-auto px-6"
               >
                 {loading ? "Submitting…" : "Subscribe"}
-              </button>
+              </OutlineLabelButton>
 
               {status?.msg ? (
                 <p

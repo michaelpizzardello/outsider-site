@@ -8,6 +8,7 @@ import type {
 } from "react";
 import Image from "next/image";
 import clsx from "clsx";
+import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 
 type ArtworkSummary = {
   title: string;
@@ -300,13 +301,13 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
                     </div>
                   )}
 
-                  <button
+                  <OutlineLabelButton
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex h-12 w-full items-center justify-center bg-black px-6 text-sm font-medium uppercase tracking-[0.25em] text-white transition hover:bg-black/90 disabled:opacity-60 sm:w-auto"
+                    className="w-full sm:w-auto px-6"
                   >
                     {submitting ? "Sending…" : "Send enquiry"}
-                  </button>
+                  </OutlineLabelButton>
                 </form>
               </section>
             </section>

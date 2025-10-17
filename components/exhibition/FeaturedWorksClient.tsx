@@ -55,6 +55,7 @@ function ArtworkCard({
   onPurchase,
   isPurchasing,
   showActions = true,
+  layout = "available",
 }: {
   artwork: ArtworkPayload;
   exhibitionHandle: string;
@@ -63,6 +64,7 @@ function ArtworkCard({
   onPurchase?: (artwork: ArtworkPayload) => void | Promise<void>;
   isPurchasing?: boolean;
   showActions?: boolean;
+  layout?: "available" | "featured";
 }) {
   const href = `/exhibitions/${exhibitionHandle}/artworks/${artwork.handle}`;
   const image = artwork.featureImage;
@@ -98,6 +100,26 @@ function ArtworkCard({
     options.centerImage ? " flex items-center justify-center sm:block" : ""
   }`;
 
+  const showYearInline = layout !== "featured";
+
+  const content = (
+    <>
+      {artwork.artist ? (
+        <p className={`font-medium ${layout === "featured" ? "" : ""}`}>{artwork.artist}</p>
+      ) : null}
+      <p className="artwork-card__title mt-1 break-words underline-offset-4">
+        <span className="italic">{artwork.title}</span>
+        {showYearInline && artwork.year ? <span>, {artwork.year}</span> : null}
+      </p>
+      {!showYearInline && artwork.year ? (
+        <p className="mt-1 text-sm text-neutral-600">{artwork.year}</p>
+      ) : null}
+      {artwork.priceLabel ? (
+        <p className="mt-2 font-medium">{artwork.priceLabel}</p>
+      ) : null}
+    </>
+  );
+
   return (
     <div className="artwork-card flex h-full flex-col">
       <div>
@@ -122,20 +144,21 @@ function ArtworkCard({
         </Link>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-tight md:mt-5">
+      <div
+        className={`mt-4 flex flex-wrap items-start gap-y-4 text-[15px] leading-tight md:mt-5 ${
+          layout === "featured"
+            ? "flex-col items-center text-center gap-x-0"
+            : "justify-between gap-x-8"
+        }`}
+      >
         <Link
           href={href}
           data-artwork-link="title"
-          className="min-w-[200px] flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          className={`focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
+            layout === "featured" ? "w-full max-w-xs" : "min-w-[200px] flex-1"
+          }`}
         >
-          {artwork.artist && <p className="font-medium">{artwork.artist}</p>}
-          <p className="artwork-card__title mt-1 break-words underline-offset-4">
-            <span className="italic">{artwork.title}</span>
-            {artwork.year && <span>, {artwork.year}</span>}
-          </p>
-          {artwork.priceLabel ? (
-            <p className="mt-2 font-medium">{artwork.priceLabel}</p>
-          ) : null}
+          {content}
         </Link>
 
         {showActions ? (
@@ -202,14 +225,14 @@ export default function FeaturedWorksClient({
   const headingClasses = "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between";
 
   return (
-    <section className="w-full border-t border-neutral-200 pt-8 pb-16 md:pt-10 md:pb-20">
+    <section className="w-full border-t border-neutral-200 pt-6 pb-16 sm:pt-8 md:pt-10 md:pb-20">
       <Container>
-        <div className="pt-6 md:pt-8">
-          <div className={`${headingClasses} mb-8 lg:mb-12`}>
+        <div className="pt-3 sm:pt-6 md:pt-8">
+          <div className={`${headingClasses} mb-6 sm:mb-8 lg:mb-12`}>
             <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
             {artworks.map((artwork) => (
               <ArtworkCard
                 key={artwork.id}
@@ -225,6 +248,7 @@ export default function FeaturedWorksClient({
                 onPurchase={handlePurchase}
                 isPurchasing={addingId === artwork.id}
                 showActions={showActions}
+                layout={showActions ? "available" : "featured"}
               />
             ))}
           </div>
