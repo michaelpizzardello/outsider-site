@@ -89,9 +89,6 @@ export default function ExhibitionFeature({
 
           <div className="mt-3 space-y-[2px] text-[14px] text-neutral-700 md:text-[16px] xl:text-[17px]">
             <div>{hasDates ? formatDates(ex.start, ex.end) : null}</div>
-            {ex.location ? (
-              <div className="whitespace-pre-wrap">{ex.location}</div>
-            ) : null}
           </div>
 
           {ex.summary ? (

@@ -1,7 +1,7 @@
 // components/layout/SiteFooter.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, type ComponentPropsWithoutRef } from "react";
 import { usePathname } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Link from "next/link";
@@ -10,9 +10,32 @@ const defaultLinks = [
   { href: "/exhibitions", label: "Exhibitions" },
   { href: "/artists", label: "Artists" },
   { href: "/about", label: "About" },
-  { href: "/visit", label: "Visit" },
-  { href: "/contact", label: "Contact" },
+  { href: "/about#contact", label: "Contact" },
 ];
+
+type IconProps = ComponentPropsWithoutRef<"svg">;
+
+function InstagramIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path
+        fill="currentColor"
+        d="M8 2h8a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6Zm0 2a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4H8Zm4 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm5.25-3.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Z"
+      />
+    </svg>
+  );
+}
+
+function LinkedinIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path
+        fill="currentColor"
+        d="M4.98 3.5a2.5 2.5 0 1 1-.001 5.001A2.5 2.5 0 0 1 4.98 3.5ZM3 9h3.96v12H3V9Zm6.602 0H14.4v1.64h.056c.534-1.013 1.836-2.084 3.78-2.084 4.043 0 4.784 2.66 4.784 6.118V21H19v-5.52c0-1.317-.025-3.01-1.836-3.01-1.84 0-2.122 1.435-2.122 2.915V21h-3.96V9Z"
+      />
+    </svg>
+  );
+}
 
 export default function SiteFooter({
   links = defaultLinks,
@@ -150,42 +173,75 @@ export default function SiteFooter({
 
           {/* --- Info BELOW newsletter with divider --- */}
           <div className="mt-10 pt-8 border-t border-neutral-200">
-            <div className="grid gap-8 sm:grid-cols-3">
-              {/* Visit */}
+            <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-5">
+              {/* Location */}
               <div>
-                <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-500">Visit</h3>
+                <h3 className="text-sm font-medium text-neutral-900">Location</h3>
                 <address className="not-italic mt-2 text-sm text-neutral-700 space-y-0.5">
                   <div>144 Commonwealth St</div>
                   <div>Surry Hills, NSW 2010</div>
                   <div>Australia</div>
                 </address>
-                <div className="mt-2 space-y-0.5">
-                  <a href="tel:+61422509508" className="text-sm underline underline-offset-4">
-                    +61 422 509 508
-                  </a>
-                  <div>
-                    <a
-                      href="mailto:info@outsidergallery.com.au"
-                      className="text-sm underline underline-offset-4"
-                    >
-                      info@outsidergallery.com.au
-                    </a>
-                  </div>
-                </div>
               </div>
 
               {/* Hours */}
               <div>
-                <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-500">Hours</h3>
+                <h3 className="text-sm font-medium text-neutral-900">Hours</h3>
                 <ul className="mt-2 text-sm text-neutral-700 space-y-0.5">
                   <li>Wed–Sat: 10am–6pm</li>
                   <li>Or by appointment</li>
                 </ul>
               </div>
 
+              {/* Contact */}
+              <div>
+                <h3 className="text-sm font-medium text-neutral-900">Contact</h3>
+                <div className="mt-2 space-y-1">
+                  <a
+                    href="tel:+61422509508"
+                    className="text-sm text-neutral-700 underline underline-offset-4 hover:text-neutral-900"
+                  >
+                    Call
+                  </a>
+                  <a
+                    href="mailto:info@outsidergallery.com.au"
+                    className="block text-sm text-neutral-700 underline underline-offset-4 hover:text-neutral-900"
+                  >
+                    Email
+                  </a>
+                </div>
+              </div>
+
+              {/* Social */}
+              <div>
+                <h3 className="text-sm font-medium text-neutral-900">Social</h3>
+                <div className="mt-2 flex flex-col gap-3">
+                  <a
+                    href="https://www.instagram.com/outsidergallery_"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-neutral-700 hover:text-neutral-900"
+                    aria-label="Follow Outsider Gallery on Instagram"
+                  >
+                    <InstagramIcon className="h-4 w-4" />
+                    <span>Instagram</span>
+                  </a>
+                  <a
+                    href="https://au.linkedin.com/company/outsider-gallery"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-neutral-700 hover:text-neutral-900"
+                    aria-label="Connect with Outsider Gallery on LinkedIn"
+                  >
+                    <LinkedinIcon className="h-4 w-4" />
+                    <span>LinkedIn</span>
+                  </a>
+                </div>
+              </div>
+
               {/* Menu */}
               <div>
-                <h3 className="text-xs uppercase tracking-[0.2em] text-neutral-500">Menu</h3>
+                <h3 className="text-sm font-medium text-neutral-900">Menu</h3>
                 <ul className="mt-2 space-y-1.5">
                   {links.map((l) => (
                     <li key={l.href}>
