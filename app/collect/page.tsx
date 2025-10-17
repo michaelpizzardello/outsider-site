@@ -60,6 +60,9 @@ type ProductNode = {
   dimensionsField?: { value?: string | null } | null;
   soldField?: { value?: string | null } | null;
   statusField?: { value?: string | null } | null;
+  widthField?: { value?: string | null } | null;
+  heightField?: { value?: string | null } | null;
+  depthField?: { value?: string | null } | null;
 };
 
 type QueryResult = {
@@ -82,6 +85,9 @@ export type CollectArtwork = {
   status: string | null;
   variantId: string | null;
   quantityAvailable: number | null;
+  widthCm: number | null;
+  heightCm: number | null;
+  depthCm: number | null;
 };
 
 const QUERY = /* GraphQL */ `
@@ -138,6 +144,9 @@ const QUERY = /* GraphQL */ `
         dimensionsField: metafield(namespace: "custom", key: "dimensions") { value }
         soldField: metafield(namespace: "custom", key: "sold") { value }
         statusField: metafield(namespace: "custom", key: "status") { value }
+        widthField: metafield(namespace: "custom", key: "width") { value }
+        heightField: metafield(namespace: "custom", key: "height") { value }
+        depthField: metafield(namespace: "custom", key: "depth") { value }
       }
     }
   }
@@ -190,6 +199,28 @@ function getArtistName(node: ProductNode): string | null {
   return norm(node.vendor);
 }
 
+function metafieldNumber(field: { value?: string | null } | null | undefined) {
+  const value = norm(field?.value);
+  if (!value) return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function formatDimensionsCm(
+  width?: number | null,
+  height?: number | null,
+  depth?: number | null
+): string | null {
+  const formatValue = (value: number) =>
+    Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+  const parts: string[] = [];
+  if (typeof width === "number" && Number.isFinite(width)) parts.push(formatValue(width));
+  if (typeof height === "number" && Number.isFinite(height)) parts.push(formatValue(height));
+  if (typeof depth === "number" && Number.isFinite(depth)) parts.push(formatValue(depth));
+  if (!parts.length) return null;
+  return `${parts.join(" x ")} cm`;
+}
+
 function mapProduct(node: ProductNode): CollectArtwork {
   const variant = pickVariant(node.variants?.nodes ?? []);
   const soldFlag = parseBoolean(node.soldField?.value);
@@ -203,6 +234,11 @@ function mapProduct(node: ProductNode): CollectArtwork {
       (ref) => ref?.__typename === "Metaobject" && ref?.handle
     )?.handle ?? null;
   const available = (variant?.availableForSale ?? node.availableForSale) && !soldFlag && status?.toLowerCase() !== "sold";
+  const widthCm = metafieldNumber(node.widthField);
+  const heightCm = metafieldNumber(node.heightField);
+  const depthCm = metafieldNumber(node.depthField);
+  const dimensionsLabel =
+    formatDimensionsCm(widthCm, heightCm, depthCm) ?? norm(node.dimensionsField?.value);
   return {
     id: node.id,
     handle: node.handle,
@@ -211,7 +247,7 @@ function mapProduct(node: ProductNode): CollectArtwork {
     artist: getArtistName(node),
     year: norm(node.yearField?.value),
     medium: norm(node.mediumField?.value),
-    dimensions: norm(node.dimensionsField?.value),
+    dimensions: dimensionsLabel,
     price: node.priceRange?.minVariantPrice ?? null,
     image: node.featuredImage ?? null,
     available,
@@ -219,6 +255,9 @@ function mapProduct(node: ProductNode): CollectArtwork {
     status,
     variantId: variant?.id ?? null,
     quantityAvailable: variant?.quantityAvailable ?? null,
+    widthCm,
+    heightCm,
+    depthCm,
   };
 }
 

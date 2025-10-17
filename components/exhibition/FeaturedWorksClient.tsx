@@ -55,7 +55,6 @@ function ArtworkCard({
   onPurchase,
   isPurchasing,
   showActions = true,
-  layout = "available",
 }: {
   artwork: ArtworkPayload;
   exhibitionHandle: string;
@@ -64,7 +63,6 @@ function ArtworkCard({
   onPurchase?: (artwork: ArtworkPayload) => void | Promise<void>;
   isPurchasing?: boolean;
   showActions?: boolean;
-  layout?: "available" | "featured";
 }) {
   const href = `/exhibitions/${exhibitionHandle}/artworks/${artwork.handle}`;
   const image = artwork.featureImage;
@@ -100,26 +98,6 @@ function ArtworkCard({
     options.centerImage ? " flex items-center justify-center sm:block" : ""
   }`;
 
-  const showYearInline = layout !== "featured";
-
-  const content = (
-    <>
-      {artwork.artist ? (
-        <p className={`font-medium ${layout === "featured" ? "" : ""}`}>{artwork.artist}</p>
-      ) : null}
-      <p className="artwork-card__title mt-1 break-words underline-offset-4">
-        <span className="italic">{artwork.title}</span>
-        {showYearInline && artwork.year ? <span>, {artwork.year}</span> : null}
-      </p>
-      {!showYearInline && artwork.year ? (
-        <p className="mt-1 text-sm text-neutral-600">{artwork.year}</p>
-      ) : null}
-      {artwork.priceLabel ? (
-        <p className="mt-2 font-medium">{artwork.priceLabel}</p>
-      ) : null}
-    </>
-  );
-
   return (
     <div className="artwork-card flex h-full flex-col">
       <div>
@@ -145,20 +123,32 @@ function ArtworkCard({
       </div>
 
       <div
-        className={`mt-4 flex flex-wrap items-start gap-y-4 text-[15px] leading-tight md:mt-5 ${
-          layout === "featured"
-            ? "flex-col items-center text-center gap-x-0"
-            : "justify-between gap-x-8"
-        }`}
+        className={
+          showActions
+            ? "mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-tight md:mt-5"
+            : "mt-4 flex flex-col items-center gap-y-4 text-center text-[15px] leading-tight md:mt-5"
+        }
       >
         <Link
           href={href}
           data-artwork-link="title"
-          className={`focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
-            layout === "featured" ? "w-full max-w-xs" : "min-w-[200px] flex-1"
-          }`}
+          className={
+            showActions
+              ? "min-w-[200px] flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+              : "w-full max-w-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          }
         >
-          {content}
+          {artwork.artist ? <p className="font-medium">{artwork.artist}</p> : null}
+          <p className="artwork-card__title mt-2 break-words underline-offset-4">
+            <span className="italic">{artwork.title}</span>
+            {showActions && artwork.year ? <span>, {artwork.year}</span> : null}
+          </p>
+          {!showActions && artwork.year ? (
+            <p className="mt-1 text-sm text-neutral-600">{artwork.year}</p>
+          ) : null}
+          {artwork.priceLabel ? (
+            <p className="mt-2 font-medium">{artwork.priceLabel}</p>
+          ) : null}
         </Link>
 
         {showActions ? (
@@ -248,7 +238,6 @@ export default function FeaturedWorksClient({
                 onPurchase={handlePurchase}
                 isPurchasing={addingId === artwork.id}
                 showActions={showActions}
-                layout={showActions ? "available" : "featured"}
               />
             ))}
           </div>
