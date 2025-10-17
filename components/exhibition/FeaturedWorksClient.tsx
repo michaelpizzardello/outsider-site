@@ -81,37 +81,34 @@ function ArtworkCard({
       : artwork.aspectRatio ?? undefined;
 
   return (
-    <div className="artwork-card flex h-full flex-col justify-end gap-y-8 md:gap-y-10">
-      <Link
-        href={href}
-        data-artwork-link="image"
-        className="group block flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-      >
-        {image ? (
-          <div
-            className={`relative w-full overflow-hidden bg-white${
-              options.centerImage ? " flex h-full items-center" : ""
-            }`}
-            style={
-              wrapperAspect
-                ? { aspectRatio: wrapperAspect }
-                : { aspectRatio: options.span === "full" ? "4 / 3" : "4 / 5" }
-            }
-          >
-            <Image
-              src={image.url}
-              alt={image.altText || artwork.title}
-              fill
-              className="object-contain object-center transition duration-300 group-hover:scale-[1.01]"
-              sizes={sizeAttr}
-            />
-          </div>
-        ) : (
-          <div className="bg-neutral-100" style={{ aspectRatio: options.span === "full" ? "4 / 3" : "4 / 5" }} />
-        )}
-      </Link>
+    <div className="artwork-card flex h-full flex-col">
+      <div>
+        <Link
+          href={href}
+          data-artwork-link="image"
+          className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+        >
+          {image ? (
+            <div
+              className={`relative w-full overflow-hidden bg-white ${
+                options.span === "full" ? "aspect-[4/3]" : "aspect-[4/5]"
+              }${options.centerImage ? " flex h-full items-center" : ""}`}
+            >
+              <Image
+                src={image.url}
+                alt={image.altText || artwork.title}
+                fill
+                className="object-contain object-bottom transition duration-300 group-hover:scale-[1.01]"
+                sizes={sizeAttr}
+              />
+            </div>
+          ) : (
+            <div className={`bg-neutral-100 ${options.span === "full" ? "aspect-[4/3]" : "aspect-[4/5]"}`} />
+          )}
+        </Link>
+      </div>
 
-      <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 text-[15px] leading-snug">
+      <div className="mt-8 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-snug md:mt-10">
         <Link
           href={href}
           data-artwork-link="title"
@@ -152,28 +149,25 @@ function ArtworkCard({
   );
 }
 
-export default function FeaturedWorksClient({ title, exhibitionHandle, artworks, rows, showActions = true }: Props) {
-  const [viewAll, setViewAll] = React.useState(false);
-  const [isBelowMd, setIsBelowMd] = React.useState(false);
+export default function FeaturedWorksClient({
+  title,
+  exhibitionHandle,
+  artworks,
+  rows: _rows,
+  showActions = true,
+}: Props) {
   const [enquiryArtwork, setEnquiryArtwork] = React.useState<ArtworkPayload | null>(null);
   const [addingId, setAddingId] = React.useState<string | null>(null);
   const { addLine, openCart } = useCart();
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsBelowMd(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  React.useEffect(() => {
-    if (isBelowMd && viewAll) {
-      setViewAll(false);
-    }
-  }, [isBelowMd, viewAll]);
-
-  const handleToggle = () => setViewAll((prev) => !prev);
+  void _rows;
+  const uniformAspect = React.useMemo(() => {
+    const factors = artworks
+      .map((artwork) => artwork.heightFactor)
+      .filter((value): value is number => typeof value === "number" && value > 0);
+    if (!factors.length) return undefined;
+    const maxFactor = Math.max(...factors);
+    return maxFactor > 0 ? 1 / maxFactor : undefined;
+  }, [artworks]);
   const closeEnquiry = () => setEnquiryArtwork(null);
   const handlePurchase = React.useCallback(
     async (artwork: ArtworkPayload) => {
@@ -193,151 +187,33 @@ export default function FeaturedWorksClient({ title, exhibitionHandle, artworks,
 
   const headingClasses = "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between";
 
-  const showToggle = !isBelowMd;
-
   return (
     <section className="w-full border-t border-neutral-200 pt-8 pb-16 md:pt-10 md:pb-20">
       <Container>
         <div className="pt-6 md:pt-8">
           <div className={`${headingClasses} mb-8 lg:mb-12`}>
             <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
-            {showToggle && (
-              <button
-                type="button"
-                onClick={handleToggle}
-                aria-pressed={viewAll}
-                className="group inline-flex items-center gap-3 self-start text-sm font-medium text-neutral-900 transition-opacity hover:opacity-85 sm:self-auto md:text-base"
-              >
-                {viewAll ? (
-                  <>
-                    <span className="inline-flex h-4 w-4 items-center justify-center md:h-5 md:w-5">
-                      <svg
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        aria-hidden
-                        className="h-full w-full"
-                      >
-                        <path d="M5 5l10 10M15 5L5 15" />
-                      </svg>
-                    </span>
-                    <span className="underline-offset-4 group-hover:underline">Collapse all</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="grid h-3 w-3 grid-cols-3 gap-[0.5px] md:h-4 md:w-4">
-                      {Array.from({ length: 9 }).map((_, idx) => (
-                        <span key={idx} className="block h-full w-full bg-current" />
-                      ))}
-                    </span>
-                    <span className="underline-offset-4 group-hover:underline">View all</span>
-                  </>
-                )}
-              </button>
-            )}
           </div>
 
-          {viewAll ? (
-            <div className="hidden grid-cols-1 gap-x-8 gap-y-20 sm:grid sm:grid-cols-2 sm:gap-x-10 sm:gap-y-22 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-24">
-              {artworks.map((artwork) => (
-                <ArtworkCard
-                  key={artwork.id}
-                  artwork={artwork}
-                  exhibitionHandle={exhibitionHandle}
-                  options={{
-                    span: "third",
-                    forcedAspectRatio: undefined,
-                    sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
-                    centerImage: true,
-                  }}
-                  onEnquire={(selected) => setEnquiryArtwork(selected)}
-                  onPurchase={handlePurchase}
-                  isPurchasing={addingId === artwork.id}
-                  showActions={showActions}
-                />
-              ))}
-            </div>
-          ) : null}
-
-          {(!viewAll || !showToggle) && (
-            <div className="flex flex-col gap-y-24">
-              {rows.map((row, idx) => {
-                const maxHeightFactor = Math.max(
-                  ...row.indexes.map((itemIdx) => artworks[itemIdx]?.heightFactor || 1)
-                );
-                const forcedAspect = maxHeightFactor > 0 ? 1 / maxHeightFactor : undefined;
-
-                if (row.layout === "full") {
-                  const artwork = artworks[row.indexes[0]];
-                  return (
-                    <div key={`full-${idx}`} className="grid grid-cols-1">
-                      {artwork && (
-                      <ArtworkCard
-                        artwork={artwork}
-                        exhibitionHandle={exhibitionHandle}
-                        options={{ span: "full", forcedAspectRatio: forcedAspect }}
-                        onEnquire={(selected) => setEnquiryArtwork(selected)}
-                        onPurchase={handlePurchase}
-                        isPurchasing={addingId === artwork.id}
-                        showActions={showActions}
-                      />
-                    )}
-                  </div>
-                );
-              }
-
-                if (row.layout === "pair") {
-                  return (
-                    <div
-                      key={`pair-${idx}`}
-                      className="grid grid-cols-1 gap-y-16 sm:grid-cols-2 sm:items-end sm:gap-x-[5rem] lg:gap-x-[8rem] xl:gap-x-[9.5rem]"
-                    >
-                      {row.indexes.map((itemIdx) => {
-                        const artwork = artworks[itemIdx];
-                        return artwork ? (
-                          <ArtworkCard
-                            key={artwork.id}
-                          artwork={artwork}
-                          exhibitionHandle={exhibitionHandle}
-                          options={{ span: "half", forcedAspectRatio: forcedAspect }}
-                          onEnquire={(selected) => setEnquiryArtwork(selected)}
-                          onPurchase={handlePurchase}
-                          isPurchasing={addingId === artwork.id}
-                          showActions={showActions}
-                        />
-                      ) : null;
-                    })}
-                  </div>
-                );
-                }
-
-                return (
-                  <div
-                    key={`triple-${idx}`}
-                    className="grid grid-cols-1 gap-y-16 sm:grid-cols-2 sm:items-end sm:gap-x-[5rem] lg:grid-cols-3 lg:gap-x-[8.5rem] xl:gap-x-[9.5rem]"
-                  >
-                    {row.indexes.map((itemIdx) => {
-                      const artwork = artworks[itemIdx];
-                      return artwork ? (
-                        <ArtworkCard
-                          key={artwork.id}
-                        artwork={artwork}
-                        exhibitionHandle={exhibitionHandle}
-                        options={{ span: "third", forcedAspectRatio: forcedAspect }}
-                        onEnquire={(selected) => setEnquiryArtwork(selected)}
-                        onPurchase={handlePurchase}
-                        isPurchasing={addingId === artwork.id}
-                        showActions={showActions}
-                      />
-                    ) : null;
-                  })}
-                </div>
-              );
-              })}
-            </div>
-          )}
+          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-16">
+            {artworks.map((artwork) => (
+              <ArtworkCard
+                key={artwork.id}
+                artwork={artwork}
+                exhibitionHandle={exhibitionHandle}
+                options={{
+                  span: "third",
+                  forcedAspectRatio: uniformAspect,
+                  sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
+                  centerImage: true,
+                }}
+                onEnquire={(selected) => setEnquiryArtwork(selected)}
+                onPurchase={handlePurchase}
+                isPurchasing={addingId === artwork.id}
+                showActions={showActions}
+              />
+            ))}
+          </div>
         </div>
       </Container>
       <ArtworkEnquiryModal
