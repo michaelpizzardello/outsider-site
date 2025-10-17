@@ -123,7 +123,7 @@ function ArtworkCard({
         )}
       </div>
 
-      <div className="mt-8 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-snug md:mt-10">
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-snug md:mt-5">
         {href ? (
           <Link
             href={href}
