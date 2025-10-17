@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 
 import type { CollectArtwork } from "@/app/collect/page";
@@ -9,6 +9,7 @@ import { useCart } from "@/components/cart/CartContext";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type Props = {
   artworks: CollectArtwork[];
@@ -52,45 +53,44 @@ function getSizeValue(artwork: CollectArtwork) {
   return values[0] * values[1];
 }
 
-type MultiSelectDropdownProps = {
+type FilterCheckboxGroupProps = {
+  id: string;
   label: string;
   options: string[];
   selected: string[];
   onChange: (next: string[]) => void;
 };
 
-function MultiSelectDropdown({
+type IconProps = {
+  className?: string;
+};
+
+function FilterIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 5.5H17M5.5 10H14.5M8 14.5H12"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function FilterCheckboxGroup({
+  id,
   label,
   options,
   selected,
   onChange,
-}: MultiSelectDropdownProps) {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function handleClick(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-    function handleKey(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [open]);
-
+}: FilterCheckboxGroupProps) {
   function toggleOption(option: string) {
     const exists = selected.includes(option);
     if (exists) {
@@ -100,76 +100,59 @@ function MultiSelectDropdown({
     }
   }
 
-  function clearSelection() {
-    onChange([]);
-  }
-
-  const summary = selected.length
-    ? `${label} (${selected.length})`
-    : `${label} (All)`;
+  const hasSelection = selected.length > 0;
+  const selectionLabel = hasSelection
+    ? `${selected.length} selected`
+    : "All available";
 
   return (
-    <div ref={containerRef} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 transition hover:border-neutral-500 focus:border-neutral-900 focus:outline-none"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-      >
-        <span>{summary}</span>
-        <svg
-          className="h-4 w-4 text-neutral-500"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-      {open ? (
-        <div className="absolute left-0 right-0 z-20 mt-2 max-h-64 overflow-hidden rounded-sm border border-neutral-300 bg-white shadow-lg">
-          <div className="max-h-60 overflow-y-auto py-2">
-            {options.map((option) => {
-              const checked = selected.includes(option);
-              return (
-                <label
-                  key={option}
-                  className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-neutral-800 hover:bg-neutral-100"
-                >
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 accent-neutral-900"
-                    checked={checked}
-                    onChange={() => toggleOption(option)}
-                  />
-                  <span>{option}</span>
-                </label>
-              );
-            })}
-            {options.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-neutral-500">
-                No options available.
-              </div>
-            ) : null}
-          </div>
-          <div className="border-t border-neutral-200 px-3 py-2">
-            <button
-              type="button"
-              onClick={clearSelection}
-              className="text-xs font-medium uppercase tracking-wide text-neutral-600 transition hover:text-neutral-900 disabled:opacity-40"
-              disabled={selected.length === 0}
-            >
-              Clear
-            </button>
-          </div>
+    <section aria-labelledby={`${id}-label`} className="space-y-3">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <span
+            id={`${id}-label`}
+            className="text-sm font-semibold text-neutral-800"
+          >
+            {label}
+          </span>
+          <p className="mt-1 text-xs text-neutral-500">{selectionLabel}</p>
         </div>
-      ) : null}
-    </div>
+        {hasSelection ? (
+          <button
+            type="button"
+            onClick={() => onChange([])}
+            className="text-xs font-medium text-neutral-500 transition hover:text-neutral-900"
+          >
+            Clear
+          </button>
+        ) : null}
+      </div>
+      <div className="max-h-60 overflow-y-auto pr-1">
+        {options.map((option, index) => {
+          const checkboxId = `${id}-${index}`;
+          const checked = selected.includes(option);
+          return (
+            <label
+              key={option}
+              htmlFor={checkboxId}
+              className="flex cursor-pointer items-center gap-2 border-b border-neutral-100 py-2 text-sm text-neutral-700 last:border-b-0 hover:text-neutral-900"
+            >
+              <input
+                type="checkbox"
+                id={checkboxId}
+                className="h-4 w-4 accent-neutral-900"
+                checked={checked}
+                onChange={() => toggleOption(option)}
+              />
+              <span>{option}</span>
+            </label>
+          );
+        })}
+        {options.length === 0 ? (
+          <p className="pt-2 text-xs text-neutral-500">No options available.</p>
+        ) : null}
+      </div>
+    </section>
   );
 }
 
@@ -182,6 +165,36 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
   const [enquiryArtwork, setEnquiryArtwork] = useState<CollectArtwork | null>(
     null
   );
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [showMobileFilterButton, setShowMobileFilterButton] = useState(false);
+
+  useEffect(() => {
+    if (isDesktop) {
+      setMobileFiltersOpen(false);
+      setShowMobileFilterButton(false);
+      return;
+    }
+    function handleScroll() {
+      setShowMobileFilterButton(window.scrollY > 160);
+    }
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isDesktop]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (!mobileFiltersOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileFiltersOpen]);
 
   const filtered = useMemo(() => {
     const mediumFilters = selectedMediums.map((value) => value.toLowerCase());
@@ -288,212 +301,397 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
     await addLine({ merchandiseId: artwork.variantId, quantity: 1 });
   }
 
+  const appliedFilterCount =
+    selectedMediums.length +
+    selectedArtists.length +
+    (search.trim() ? 1 : 0) +
+    (sortBy !== "recent" ? 1 : 0);
+  const hasActiveFilters = appliedFilterCount > 0;
+
+  function resetFilters() {
+    setSelectedMediums([]);
+    setSelectedArtists([]);
+    setSearch("");
+    setSortBy("recent");
+  }
+
   return (
-    <div className="space-y-20">
-      <div className="bg-neutral-100 pb-2 pt-0">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 sm:flex-row sm:items-end sm:gap-5">
-          <div className="sm:flex-1">
-            <span className="sr-only">Filter by medium</span>
-            <MultiSelectDropdown
+    <>
+      <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
+        <aside className="hidden lg:block">
+          <div className="sticky top-28 space-y-7 border border-neutral-200 bg-white/90 p-6 shadow-sm backdrop-blur">
+            <div className="space-y-5">
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-neutral-600">
+                  Search
+                </span>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search artworks..."
+                  className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 placeholder-neutral-500 focus:border-neutral-900 focus:outline-none"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-neutral-600">
+                  Sort
+                </span>
+                <select
+                  value={sortBy}
+                  onChange={(event) => setSortBy(event.target.value as SortKey)}
+                  className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 focus:border-neutral-900 focus:outline-none"
+                >
+                  <option value="recent">Recently added</option>
+                  <option value="price-asc">Price (low to high)</option>
+                  <option value="size">Size (largest first)</option>
+                  <option value="artist">Artist (A–Z)</option>
+                </select>
+              </label>
+            </div>
+            <FilterCheckboxGroup
+              id="desktop-mediums"
               label="Medium"
               options={mediums}
               selected={selectedMediums}
               onChange={setSelectedMediums}
             />
-          </div>
-          <div className="sm:flex-1">
-            <span className="sr-only">Filter by artist</span>
-            <MultiSelectDropdown
+            <FilterCheckboxGroup
+              id="desktop-artists"
               label="Artist"
               options={artists}
               selected={selectedArtists}
               onChange={setSelectedArtists}
             />
-          </div>
-          <label className="sm:flex-1 text-sm text-neutral-600">
-            <span className="sr-only">Sort artworks</span>
-            <select
-              value={sortBy}
-              onChange={(event) => setSortBy(event.target.value as SortKey)}
-              className="w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
+            <button
+              type="button"
+              onClick={resetFilters}
+              disabled={!hasActiveFilters}
+              className="h-11 w-full border border-neutral-300 px-3 text-sm font-medium text-neutral-600 transition hover:border-neutral-400 hover:text-neutral-900 disabled:opacity-40"
             >
-              <option value="recent">Sort by</option>
-              <option value="price-asc">Sort by price (low to high)</option>
-              <option value="size">Sort by size (largest first)</option>
-              <option value="artist">Sort by artist (A–Z)</option>
-            </select>
-          </label>
-          <label className="sm:flex-1 text-sm text-neutral-600">
-            <span className="sr-only">Search</span>
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search..."
-              className="w-full border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
-            />
-          </label>
-        </div>
-      </div>
+              Reset filters
+            </button>
+          </div>
+        </aside>
 
-      <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:grid-cols-4 xl:gap-x-20 xl:gap-y-14">
-        {sorted.map((artwork, index) => {
-          const priceLabel = formatMoney(artwork.price);
-          const hasPrice =
-            artwork.price &&
-            Number.isFinite(Number(artwork.price.amount)) &&
-            Number(artwork.price.amount) > 0;
-          const canPurchase =
-            hasPrice && artwork.available && Boolean(artwork.variantId);
-          const image = artwork.image;
-          const naturalAspect =
-            image?.width && image?.height && image.height > 0
-              ? `${image.width} / ${image.height}`
-              : undefined;
-          const aspectStyles: CSSProperties = {};
-          if (naturalAspect) {
-            aspectStyles["--artwork-aspect-mobile"] = naturalAspect;
-          }
-          const smAspect = aspectSets.sm[index];
-          const lgAspect = aspectSets.lg[index];
-          const xlAspect = aspectSets.xl[index];
-          if (typeof smAspect === "number" && Number.isFinite(smAspect)) {
-            aspectStyles["--artwork-aspect-sm"] = `${smAspect}`;
-          }
-          if (typeof lgAspect === "number" && Number.isFinite(lgAspect)) {
-            aspectStyles["--artwork-aspect-lg"] = `${lgAspect}`;
-          }
-          if (typeof xlAspect === "number" && Number.isFinite(xlAspect)) {
-            aspectStyles["--artwork-aspect-xl"] = `${xlAspect}`;
-          }
-          const aspectClass =
-            "relative w-full overflow-hidden transition group-hover:opacity-90 aspect-[var(--artwork-aspect-mobile,_4/5)] sm:aspect-[var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5))] lg:aspect-[var(--artwork-aspect-lg,var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5)))] xl:aspect-[var(--artwork-aspect-xl,var(--artwork-aspect-lg,var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5)))))] flex items-center justify-center sm:items-end sm:justify-start";
-          const divStyle =
-            Object.keys(aspectStyles).length > 0 ? aspectStyles : undefined;
-          const detailHref = artwork.exhibitionHandle
-            ? `/exhibitions/${artwork.exhibitionHandle}/artworks/${artwork.handle}`
-            : null;
-
-          return (
-            <article key={artwork.id} className="flex h-full flex-col">
-              <div className="group bg-neutral-100">
-                {detailHref ? (
-                  <Link href={detailHref} aria-label={`View artwork ${artwork.title}`} className="block">
-                    <div className={aspectClass} style={divStyle}>
-                      {image?.url ? (
-                        <Image
-                          src={image.url}
-                          alt={image.altText || `${artwork.title} artwork`}
-                          fill
-                          sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                          className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.02]"
-                        />
-                      ) : (
-                        <div className="h-full w-full bg-neutral-200" />
-                      )}
-                    </div>
-                  </Link>
-                ) : (
-                  <div className={aspectClass} style={divStyle}>
-                    {image?.url ? (
-                      <Image
-                        src={image.url}
-                        alt={image.altText || `${artwork.title} artwork`}
-                        fill
-                        sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                        className="object-contain object-center sm:object-bottom"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-neutral-200" />
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-1 flex-col">
-                <div className="mt-3 space-y-1 text-[0.95rem] leading-snug text-neutral-800">
-                  {artwork.artist ? (
-                    <p className="font-semibold text-neutral-900">
-                      {artwork.artist}
-                    </p>
+        <div className="space-y-20">
+          <div className="border-y border-neutral-200 bg-neutral-50 lg:hidden">
+            <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                <button
+                  type="button"
+                  onClick={() => setMobileFiltersOpen(true)}
+                  className="inline-flex h-11 items-center gap-2 border border-neutral-300 bg-white px-3 text-sm font-medium text-neutral-700 shadow-sm transition hover:border-neutral-400 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-0"
+                >
+                  <FilterIcon className="h-4 w-4 text-neutral-500" />
+                  <span>Filters</span>
+                  {appliedFilterCount ? (
+                    <span className="ml-1 flex h-[18px] min-w-[18px] items-center justify-center bg-neutral-900 px-1 text-[11px] font-medium text-white">
+                      {appliedFilterCount}
+                    </span>
                   ) : null}
-                  <h3 className="text-neutral-900">
+                </button>
+                <label className="sm:w-56">
+                  <span className="sr-only">Sort artworks</span>
+                  <select
+                    value={sortBy}
+                    onChange={(event) => setSortBy(event.target.value as SortKey)}
+                    className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 focus:border-neutral-900 focus:outline-none"
+                  >
+                    <option value="recent">Recently added</option>
+                    <option value="price-asc">Price (low to high)</option>
+                    <option value="size">Size (largest first)</option>
+                    <option value="artist">Artist (A–Z)</option>
+                  </select>
+                </label>
+              </div>
+              <label className="block">
+                <span className="sr-only">Search artworks</span>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search artworks..."
+                  className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 placeholder-neutral-500 focus:border-neutral-900 focus:outline-none"
+                />
+              </label>
+              {hasActiveFilters ? (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-sm font-medium text-neutral-500 transition hover:text-neutral-900"
+                >
+                  Reset filters
+                </button>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:grid-cols-4 xl:gap-x-20 xl:gap-y-14">
+            {sorted.map((artwork, index) => {
+              const priceLabel = formatMoney(artwork.price);
+              const hasPrice =
+                artwork.price &&
+                Number.isFinite(Number(artwork.price.amount)) &&
+                Number(artwork.price.amount) > 0;
+              const canPurchase =
+                hasPrice && artwork.available && Boolean(artwork.variantId);
+              const image = artwork.image;
+              const naturalAspect =
+                image?.width && image?.height && image.height > 0
+                  ? `${image.width} / ${image.height}`
+                  : undefined;
+              const aspectStyles: CSSProperties = {};
+              if (naturalAspect) {
+                aspectStyles["--artwork-aspect-mobile"] = naturalAspect;
+              }
+              const smAspect = aspectSets.sm[index];
+              const lgAspect = aspectSets.lg[index];
+              const xlAspect = aspectSets.xl[index];
+              if (typeof smAspect === "number" && Number.isFinite(smAspect)) {
+                aspectStyles["--artwork-aspect-sm"] = `${smAspect}`;
+              }
+              if (typeof lgAspect === "number" && Number.isFinite(lgAspect)) {
+                aspectStyles["--artwork-aspect-lg"] = `${lgAspect}`;
+              }
+              if (typeof xlAspect === "number" && Number.isFinite(xlAspect)) {
+                aspectStyles["--artwork-aspect-xl"] = `${xlAspect}`;
+              }
+              const aspectClass =
+                "relative w-full overflow-hidden transition group-hover:opacity-90 aspect-[var(--artwork-aspect-mobile,_4/5)] sm:aspect-[var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5))] lg:aspect-[var(--artwork-aspect-lg,var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5)))] xl:aspect-[var(--artwork-aspect-xl,var(--artwork-aspect-lg,var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5)))))] flex items-center justify-center sm:items-end sm:justify-start";
+              const divStyle =
+                Object.keys(aspectStyles).length > 0 ? aspectStyles : undefined;
+              const detailHref = artwork.exhibitionHandle
+                ? `/exhibitions/${artwork.exhibitionHandle}/artworks/${artwork.handle}`
+                : null;
+
+              return (
+                <article key={artwork.id} className="flex h-full flex-col">
+                  <div className="group bg-neutral-100">
                     {detailHref ? (
-                      <Link
-                        href={detailHref}
-                        className="underline-offset-4 transition hover:underline"
-                      >
-                        <span className="italic">{artwork.title}</span>
-                        {artwork.year ? <span>, {artwork.year}</span> : null}
+                      <Link href={detailHref} aria-label={`View artwork ${artwork.title}`} className="block">
+                        <div className={aspectClass} style={divStyle}>
+                          {image?.url ? (
+                            <Image
+                              src={image.url}
+                              alt={image.altText || `${artwork.title} artwork`}
+                              fill
+                              sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
+                              className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.02]"
+                            />
+                          ) : (
+                            <div className="h-full w-full bg-neutral-200" />
+                          )}
+                        </div>
                       </Link>
                     ) : (
-                      <>
-                        <span className="italic">{artwork.title}</span>
-                        {artwork.year ? <span>, {artwork.year}</span> : null}
-                      </>
+                      <div className={aspectClass} style={divStyle}>
+                        {image?.url ? (
+                          <Image
+                            src={image.url}
+                            alt={image.altText || `${artwork.title} artwork`}
+                            fill
+                            sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
+                            className="object-contain object-center sm:object-bottom"
+                          />
+                        ) : (
+                          <div className="h-full w-full bg-neutral-200" />
+                        )}
+                      </div>
                     )}
-                  </h3>
-                  {artwork.medium ? (
-                    <p className="text-sm text-neutral-700">{artwork.medium}</p>
-                  ) : null}
-                  {artwork.dimensions ? (
-                    <p className="text-sm text-neutral-500">{artwork.dimensions}</p>
-                  ) : null}
-                </div>
+                  </div>
 
-                <div className="mt-auto space-y-4 pt-4 text-sm text-neutral-700 sm:pt-5">
-                  <p className="font-bold text-neutral-900">{priceLabel}</p>
-                  {canPurchase ? (
-                    <OutlineLabelButton
-                      onClick={() => {
-                        void handleAddToCart(artwork);
-                      }}
-                    >
-                      Purchase
-                    </OutlineLabelButton>
-                  ) : (
-                    <OutlineLabelButton onClick={() => setEnquiryArtwork(artwork)}>
-                      Enquire
-                    </OutlineLabelButton>
-                  )}
-                </div>
-              </div>
-            </article>
-          );
-        })}
+                  <div className="flex flex-1 flex-col">
+                    <div className="mt-3 space-y-1 text-[0.95rem] leading-snug text-neutral-800">
+                      {artwork.artist ? (
+                        <p className="font-semibold text-neutral-900">
+                          {artwork.artist}
+                        </p>
+                      ) : null}
+                      <h3 className="text-neutral-900">
+                        {detailHref ? (
+                          <Link
+                            href={detailHref}
+                            className="underline-offset-4 transition hover:underline"
+                          >
+                            <span className="italic">{artwork.title}</span>
+                            {artwork.year ? <span>, {artwork.year}</span> : null}
+                          </Link>
+                        ) : (
+                          <>
+                            <span className="italic">{artwork.title}</span>
+                            {artwork.year ? <span>, {artwork.year}</span> : null}
+                          </>
+                        )}
+                      </h3>
+                      {artwork.medium ? (
+                        <p className="text-sm text-neutral-700">{artwork.medium}</p>
+                      ) : null}
+                      {artwork.dimensions ? (
+                        <p className="text-sm text-neutral-500">{artwork.dimensions}</p>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-auto space-y-4 pt-4 text-sm text-neutral-700 sm:pt-5">
+                      <p className="font-bold text-neutral-900">{priceLabel}</p>
+                      {canPurchase ? (
+                        <OutlineLabelButton
+                          onClick={() => {
+                            void handleAddToCart(artwork);
+                          }}
+                        >
+                          Purchase
+                        </OutlineLabelButton>
+                      ) : (
+                        <OutlineLabelButton onClick={() => setEnquiryArtwork(artwork)}>
+                          Enquire
+                        </OutlineLabelButton>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {filtered.length === 0 ? (
+            <div className="border border-dashed border-neutral-300 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
+              No works match your filters. Adjust the filters or contact our team
+              for tailored recommendations.
+            </div>
+          ) : null}
+
+          <ArtworkEnquiryModal
+            open={Boolean(enquiryArtwork)}
+            onClose={() => setEnquiryArtwork(null)}
+            artwork={
+              enquiryArtwork
+                ? {
+                    title: enquiryArtwork.title,
+                    artist: enquiryArtwork.artist ?? undefined,
+                    year: enquiryArtwork.year ?? undefined,
+                    medium: enquiryArtwork.medium ?? undefined,
+                    dimensions: enquiryArtwork.dimensions ?? undefined,
+                    price: formatMoney(enquiryArtwork.price),
+                    image: enquiryArtwork.image
+                      ? {
+                          url: enquiryArtwork.image.url,
+                          alt: enquiryArtwork.image.altText ?? enquiryArtwork.title,
+                        }
+                      : undefined,
+                  }
+                : {
+                    title: "",
+                  }
+            }
+          />
+        </div>
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="border border-dashed border-neutral-300 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
-          No works match your filters. Adjust the filters or contact our team
-          for tailored recommendations.
-        </div>
+      {!isDesktop && showMobileFilterButton && !mobileFiltersOpen ? (
+        <button
+          type="button"
+          onClick={() => setMobileFiltersOpen(true)}
+          aria-label="Open filters"
+          className="fixed bottom-6 left-4 z-30 flex items-center gap-2 border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-700 shadow-md transition hover:border-neutral-400 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-0 sm:left-6"
+        >
+          <FilterIcon className="h-4 w-4 text-neutral-500" />
+          <span>Filters</span>
+          {hasActiveFilters ? (
+            <span className="flex h-[18px] min-w-[18px] items-center justify-center bg-neutral-900 px-1 text-[11px] font-medium text-white">
+              {appliedFilterCount}
+            </span>
+          ) : null}
+        </button>
       ) : null}
 
-      <ArtworkEnquiryModal
-        open={Boolean(enquiryArtwork)}
-        onClose={() => setEnquiryArtwork(null)}
-        artwork={
-          enquiryArtwork
-            ? {
-                title: enquiryArtwork.title,
-                artist: enquiryArtwork.artist ?? undefined,
-                year: enquiryArtwork.year ?? undefined,
-                medium: enquiryArtwork.medium ?? undefined,
-                dimensions: enquiryArtwork.dimensions ?? undefined,
-                price: formatMoney(enquiryArtwork.price),
-                image: enquiryArtwork.image
-                  ? {
-                      url: enquiryArtwork.image.url,
-                      alt: enquiryArtwork.image.altText ?? enquiryArtwork.title,
-                    }
-                  : undefined,
-              }
-            : {
-                title: "",
-              }
-        }
-      />
-    </div>
+      {mobileFiltersOpen ? (
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/40 backdrop-blur-sm lg:hidden">
+          <div
+            className="flex-1"
+            onClick={() => setMobileFiltersOpen(false)}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Artwork filters"
+            className="max-h-[85vh] overflow-hidden bg-white p-6 shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
+              <h2 className="text-sm font-semibold text-neutral-700">
+                Filters
+              </h2>
+              <button
+                type="button"
+                onClick={() => setMobileFiltersOpen(false)}
+                className="text-sm font-medium text-neutral-500 transition hover:text-neutral-900"
+              >
+                Close
+              </button>
+            </div>
+            <div className="mt-6 max-h-[60vh] space-y-6 overflow-y-auto pr-1">
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-neutral-600">
+                  Search
+                </span>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search artworks..."
+                  className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 placeholder-neutral-500 focus:border-neutral-900 focus:outline-none"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-neutral-600">
+                  Sort
+                </span>
+                <select
+                  value={sortBy}
+                  onChange={(event) => setSortBy(event.target.value as SortKey)}
+                  className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 focus:border-neutral-900 focus:outline-none"
+                >
+                  <option value="recent">Recently added</option>
+                  <option value="price-asc">Price (low to high)</option>
+                  <option value="size">Size (largest first)</option>
+                  <option value="artist">Artist (A–Z)</option>
+                </select>
+              </label>
+              <FilterCheckboxGroup
+                id="mobile-mediums"
+                label="Medium"
+                options={mediums}
+                selected={selectedMediums}
+                onChange={setSelectedMediums}
+              />
+              <FilterCheckboxGroup
+                id="mobile-artists"
+                label="Artist"
+                options={artists}
+                selected={selectedArtists}
+                onChange={setSelectedArtists}
+              />
+            </div>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={resetFilters}
+                disabled={!hasActiveFilters}
+                className="h-11 border border-neutral-300 px-4 text-sm font-medium text-neutral-600 transition hover:border-neutral-400 hover:text-neutral-900 disabled:opacity-40"
+              >
+                Reset filters
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileFiltersOpen(false)}
+                className="h-11 bg-neutral-900 px-6 text-sm font-medium text-white transition hover:bg-neutral-800"
+              >
+                Apply filters
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
