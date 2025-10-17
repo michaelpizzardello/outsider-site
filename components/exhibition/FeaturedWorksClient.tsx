@@ -338,23 +338,6 @@ export default function FeaturedWorksClient({ title, exhibitionHandle, artworks,
               })}
             </div>
           )}
-
-          {isBelowMd ? (
-            <div className="mt-8 flex justify-center">
-              <button
-                type="button"
-                onClick={() => setViewAll(true)}
-                className="group inline-flex items-center gap-3 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-85 md:text-base"
-              >
-                <span className="grid h-3 w-3 grid-cols-3 gap-[0.5px] md:h-4 md:w-4">
-                  {Array.from({ length: 9 }).map((_, idx) => (
-                    <span key={idx} className="block h-full w-full bg-current" />
-                  ))}
-                </span>
-                <span className="underline-offset-4 group-hover:underline">View all</span>
-              </button>
-            </div>
-          ) : null}
         </div>
       </Container>
       <ArtworkEnquiryModal

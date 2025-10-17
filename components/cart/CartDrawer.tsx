@@ -116,6 +116,24 @@ export default function CartDrawer() {
               {cart?.lines.map((line) => {
                 const product = line.product;
                 const image = product?.featuredImage;
+                const artist = product?.artist;
+                const title = product?.title || line.merchandiseTitle;
+                const additionalInfoLines = product?.additionalInfo
+                  ? product.additionalInfo.split(/\n+/).filter(Boolean)
+                  : [];
+                const quantityAvailable = line.quantityAvailable;
+                const showQuantityControls =
+                  typeof quantityAvailable === "number"
+                    ? quantityAvailable > 1 || line.quantity > 1
+                    : true;
+                const canIncrease =
+                  typeof quantityAvailable === "number" ? line.quantity < quantityAvailable : true;
+                const priceLabel = (() => {
+                  if (!line.price) return "Price on request";
+                  const amount = Number(line.price.amount);
+                  if (!Number.isFinite(amount)) return "Price on request";
+                  return formatCurrency(amount, line.price.currencyCode) || "Price on request";
+                })();
                 return (
                   <li key={line.id} className="py-6">
                     <div className="grid grid-cols-[96px_1fr] gap-4">
@@ -131,58 +149,30 @@ export default function CartDrawer() {
                         ) : null}
                       </div>
                       <div className="flex flex-col">
-                        <h3 className="text-sm font-medium">{product?.title || line.merchandiseTitle}</h3>
-                        {product?.artist ? (
-                          <p className="text-sm text-neutral-500">{product.artist}</p>
-                        ) : null}
-                        <div className="mt-2 text-sm text-neutral-600">
-                          {product?.medium && <p>{product.medium}</p>}
-                          {product?.dimensions && <p>{product.dimensions}</p>}
-                          {product?.year && <p>{product.year}</p>}
+                        <div className="space-y-1.5 text-sm leading-snug text-neutral-700">
+                          {artist ? (
+                            <p className="font-medium text-neutral-900">{artist}</p>
+                          ) : null}
+                          <p className="text-neutral-900">
+                            <span className="italic">{title}</span>
+                            {product?.year ? <span>, {product.year}</span> : null}
+                          </p>
+                          {product?.medium ? <p>{product.medium}</p> : null}
+                          {product?.dimensions ? <p>{product.dimensions}</p> : null}
+                          {additionalInfoLines.map((infoLine, idx) => (
+                            <p key={idx} className="text-neutral-500">
+                              {infoLine}
+                            </p>
+                          ))}
+                          <p className="pt-1 font-medium text-neutral-900">{priceLabel}</p>
                         </div>
-                <div className="mt-3 flex items-center justify-between text-sm">
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const next = line.quantity - 1;
-                                if (next <= 0) {
-                                  removeLine(line.id);
-                                } else {
-                                  updateLine({ id: line.id, quantity: next });
-                                }
-                              }}
-                              className="flex h-8 w-8 items-center justify-center border border-neutral-300"
-                              aria-label="Decrease quantity"
-                            >
-                              -
-                            </button>
-                            <span>{line.quantity}</span>
-                            <button
-                              type="button"
-                              onClick={() => updateLine({ id: line.id, quantity: line.quantity + 1 })}
-                              className="flex h-8 w-8 items-center justify-center border border-neutral-300"
-                              aria-label="Increase quantity"
-                            >
-                              +
-                            </button>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeLine(line.id)}
-                            className="text-xs uppercase tracking-[0.2em] text-neutral-500 underline-offset-4 hover:underline"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                        <p className="mt-2 text-sm font-medium">
-                          {(() => {
-                            if (!line.price) return 'Price on request';
-                            const amount = Number(line.price.amount);
-                            if (!Number.isFinite(amount)) return 'Price on request';
-                            return formatCurrency(amount, line.price.currencyCode) || 'Price on request';
-                          })()}
-                        </p>
+                        <button
+                          type="button"
+                          onClick={() => removeLine(line.id)}
+                          className="mt-4 self-start text-xs uppercase tracking-[0.2em] text-neutral-500 underline-offset-4 hover:underline"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   </li>

@@ -1,4 +1,5 @@
 import { shopifyFetch } from "@/lib/shopify";
+import { toHtml } from "@/lib/richtext";
 
 const CART_FRAGMENT = /* GraphQL */ `
   fragment CartFields on Cart {
@@ -21,6 +22,7 @@ const CART_FRAGMENT = /* GraphQL */ `
             id
             title
             availableForSale
+            quantityAvailable
             price {
               amount
               currencyCode
@@ -31,10 +33,22 @@ const CART_FRAGMENT = /* GraphQL */ `
               handle
               featuredImage { url width height altText }
               vendor
-              artistField: metafield(namespace: "custom", key: "artist") { value }
+              artistField: metafield(namespace: "custom", key: "artist") {
+                value
+                reference {
+                  __typename
+                  ... on Metaobject {
+                    fields { key value }
+                  }
+                }
+              }
               yearField: metafield(namespace: "custom", key: "year") { value }
               mediumField: metafield(namespace: "custom", key: "medium") { value }
               dimensionsField: metafield(namespace: "custom", key: "dimensions") { value }
+              widthField: metafield(namespace: "custom", key: "width") { value }
+              heightField: metafield(namespace: "custom", key: "height") { value }
+              depthField: metafield(namespace: "custom", key: "depth") { value }
+              additionalInfoField: metafield(namespace: "custom", key: "additional_info") { value type }
             }
           }
         }
@@ -58,6 +72,7 @@ export type CartVariantProduct = {
   year?: string | null;
   medium?: string | null;
   dimensions?: string | null;
+  additionalInfo?: string | null;
 };
 
 export type CartLine = {
@@ -66,6 +81,7 @@ export type CartLine = {
   merchandiseId: string;
   merchandiseTitle: string;
   availableForSale: boolean;
+  quantityAvailable: number | null;
   price: MoneyV2 | null;
   costTotal: MoneyV2 | null;
   product: CartVariantProduct | null;
@@ -82,28 +98,112 @@ export type Cart = {
   lines: CartLine[];
 };
 
+function norm(value?: string | null): string | null {
+  if (!value) return null;
+  const trimmed = String(value).trim();
+  return trimmed.length ? trimmed : null;
+}
+
+function looksLikeHtml(value: string) {
+  return /<\s*[a-z][\s\S]*>/i.test(value);
+}
+
+function htmlToPlainText(html: string): string | null {
+  const withBreaks = html
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, " ");
+  const normalised = withBreaks
+    .replace(/\r/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
+  return normalised.length ? normalised : null;
+}
+
+function metafieldToPlainText(field: any): string | null {
+  const value = norm(field?.value);
+  if (!value) return null;
+  const type = field?.type ?? "";
+  if (typeof type === "string" && type.includes("rich_text")) {
+    const html = toHtml(value);
+    return html ? htmlToPlainText(html) : null;
+  }
+  if (looksLikeHtml(value)) {
+    return htmlToPlainText(value);
+  }
+  return value;
+}
+
+function getArtistName(field: any, fallback?: string | null): string | null {
+  const direct = norm(field?.value);
+  const ref = field?.reference;
+  if (ref?.__typename === "Metaobject" && Array.isArray(ref.fields)) {
+    const fields = ref.fields as Array<{ key?: string | null; value?: string | null }>;
+    const byKey = (key: string) =>
+      fields.find((entry) => entry?.key?.toLowerCase() === key.toLowerCase())?.value ?? null;
+    const possible = [
+      byKey("name"),
+      byKey("full_name"),
+      byKey("fullName"),
+      byKey("title"),
+    ]
+      .map(norm)
+      .find(Boolean);
+    if (possible) return possible;
+  }
+  return direct ?? norm(fallback);
+}
+
+function metafieldNumber(field: any): number | null {
+  const value = norm(field?.value);
+  if (!value) return null;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+}
+
+function formatDimensionsCm(width?: number | null, height?: number | null, depth?: number | null): string | null {
+  const format = (value: number) =>
+    Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+  const parts = [];
+  if (typeof width === "number" && Number.isFinite(width)) parts.push(format(width));
+  if (typeof height === "number" && Number.isFinite(height)) parts.push(format(height));
+  if (typeof depth === "number" && Number.isFinite(depth)) parts.push(format(depth));
+  if (!parts.length) return null;
+  return `${parts.join(" x ")} cm`;
+}
+
 function mapCartLine(node: any): CartLine {
   const merchandise = node?.merchandise ?? null;
-  const product = merchandise?.product;
+  const productNode = merchandise?.product;
+  const widthCm = metafieldNumber(productNode?.widthField);
+  const heightCm = metafieldNumber(productNode?.heightField);
+  const depthCm = metafieldNumber(productNode?.depthField);
+  const dimensionsLabel =
+    formatDimensionsCm(widthCm, heightCm, depthCm) ?? norm(productNode?.dimensionsField?.value);
   return {
     id: node?.id,
     quantity: node?.quantity ?? 0,
     merchandiseId: merchandise?.id,
     merchandiseTitle: merchandise?.title ?? "",
     availableForSale: merchandise?.availableForSale ?? false,
+    quantityAvailable: merchandise?.quantityAvailable ?? null,
     price: merchandise?.price ?? null,
     costTotal: node?.cost?.totalAmount ?? null,
-    product: product
+    product: productNode
       ? {
-          id: product.id,
-          title: product.title,
-          handle: product.handle,
-          vendor: product.vendor,
-          featuredImage: product.featuredImage ?? null,
-          artist: product.artistField?.value ?? null,
-          year: product.yearField?.value ?? null,
-          medium: product.mediumField?.value ?? null,
-          dimensions: product.dimensionsField?.value ?? null,
+          id: productNode.id,
+          title: productNode.title,
+          handle: productNode.handle,
+          vendor: productNode.vendor,
+          featuredImage: productNode.featuredImage ?? null,
+          artist: getArtistName(productNode.artistField, productNode.vendor),
+          year: norm(productNode.yearField?.value),
+          medium: norm(productNode.mediumField?.value),
+          dimensions: dimensionsLabel,
+          additionalInfo: metafieldToPlainText(productNode.additionalInfoField),
         }
       : null,
   };

@@ -228,7 +228,10 @@ export default async function CollectPage() {
   const artworks = nodes
     .map(mapProduct)
     .filter(
-      (artwork) => artwork.variantId && !isDraftStatus(artwork.status)
+      (artwork) =>
+        artwork.available &&
+        artwork.variantId &&
+        !isDraftStatus(artwork.status)
     );
 
   const mediums = Array.from(
