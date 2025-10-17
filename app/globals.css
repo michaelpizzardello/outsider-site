@@ -115,6 +115,10 @@ body {
     letter-spacing: -0.015em;
     font-size: clamp(0.5rem, 0.8rem + 0.8vw, 1.5rem);
   }
+
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
 @media (min-width: 1536px) {

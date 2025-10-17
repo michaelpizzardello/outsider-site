@@ -53,7 +53,7 @@ export default function CurrentExhibitionHero({
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
       <div className="short-hero-content absolute inset-0 grid place-items-center px-4 text-center sm:px-6 lg:px-8">
-        <div className="short-hero-main z-10 max-w-[80ch] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
+        <div className="short-hero-main z-10 mx-auto w-full max-w-[min(96vw,1150px)] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,.45)]">
           <ExhibitionLabel
             as="p"
             className="mb-6 md:text-[1rem] lg:text-[1.15rem] opacity-80 text-white"
@@ -63,7 +63,7 @@ export default function CurrentExhibitionHero({
 
           {/* Artist name/ Header 1 */}
           <h1
-            className={["text-display-1", isGroup ? "italic" : ""]
+            className={["text-display-1 text-balance leading-tight", isGroup ? "italic" : ""]
               .filter(Boolean)
               .join(" ")}
           >
@@ -74,7 +74,7 @@ export default function CurrentExhibitionHero({
           {secondary ? (
             <h2
               className={[
-                "mt-3 text-display-2 text-white/90",
+                "mt-3 text-display-2 text-balance text-white/90",
                 !isGroup ? "italic" : "",
               ]
                 .filter(Boolean)
