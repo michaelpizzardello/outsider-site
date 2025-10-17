@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -51,7 +51,6 @@ function ArtworkCard({
   onEnquire: (artwork: ArtworkPayload) => void;
 }) {
   const href = artwork.href ?? undefined;
-  const image = artwork.featureImage;
   const sizeAttr = options.sizeOverride
     ? options.sizeOverride
     : options.span === "full"
@@ -60,29 +59,42 @@ function ArtworkCard({
     ? "(min-width:1024px) 33vw, 100vw"
     : "(min-width:1024px) 50vw, 100vw";
 
-  const wrapperAspect =
-    typeof options.forcedAspectRatio === "number"
-      ? `${options.forcedAspectRatio}`
+  const image = artwork.featureImage;
+  const naturalAspect =
+    image?.width && image?.height && image.height > 0
+      ? `${image.width} / ${image.height}`
       : artwork.aspectRatio ?? undefined;
+  const forcedAspect =
+    typeof options.forcedAspectRatio === "number" && options.forcedAspectRatio > 0
+      ? `${options.forcedAspectRatio}`
+      : undefined;
+  const aspectStyles: CSSProperties = {};
+  if (naturalAspect) {
+    aspectStyles["--artwork-aspect-mobile"] = naturalAspect;
+  }
+  if (forcedAspect) {
+    aspectStyles["--artwork-aspect-desktop"] = forcedAspect;
+  }
+  const aspectClass =
+    options.span === "full"
+      ? "aspect-[var(--artwork-aspect-mobile,_4/3)] sm:aspect-[var(--artwork-aspect-desktop,_4/3)]"
+      : "aspect-[var(--artwork-aspect-mobile,_4/5)] sm:aspect-[var(--artwork-aspect-desktop,_4/5)]";
+  const wrapperClass = `relative w-full overflow-hidden bg-white ${aspectClass}${
+    options.centerImage ? " flex items-center justify-center sm:block" : ""
+  }`;
 
-  const media = (
-    image ? (
-      <div
-        className={`relative w-full overflow-hidden bg-white ${
-          options.span === "full" ? "aspect-[4/3]" : "aspect-[4/5]"
-        }${options.centerImage ? " flex h-full items-center" : ""}`}
-      >
-        <Image
-          src={image.url}
-          alt={image.altText || artwork.title}
-          fill
-          className="object-contain object-bottom transition duration-300 group-hover:scale-[1.01]"
-          sizes={sizeAttr}
-        />
-      </div>
-    ) : (
-      <div className={`bg-neutral-100 ${options.span === "full" ? "aspect-[4/3]" : "aspect-[4/5]"}`} />
-    )
+  const media = image ? (
+    <div className={wrapperClass} style={Object.keys(aspectStyles).length ? aspectStyles : undefined}>
+      <Image
+        src={image.url}
+        alt={image.altText || artwork.title}
+        fill
+        className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.01]"
+        sizes={sizeAttr}
+      />
+    </div>
+  ) : (
+    <div className={`bg-neutral-100 ${aspectClass}`} />
   );
 
   const titleBlock = (

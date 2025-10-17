@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -75,10 +75,28 @@ function ArtworkCard({
     ? "(min-width:1024px) 33vw, 100vw"
     : "(min-width:1024px) 50vw, 100vw";
 
-  const wrapperAspect =
-    typeof options.forcedAspectRatio === "number"
-      ? `${options.forcedAspectRatio}`
+  const naturalAspect =
+    image?.width && image?.height && image.height > 0
+      ? `${image.width} / ${image.height}`
       : artwork.aspectRatio ?? undefined;
+  const forcedAspect =
+    typeof options.forcedAspectRatio === "number" && options.forcedAspectRatio > 0
+      ? `${options.forcedAspectRatio}`
+      : undefined;
+  const aspectStyles: CSSProperties = {};
+  if (naturalAspect) {
+    aspectStyles["--artwork-aspect-mobile"] = naturalAspect;
+  }
+  if (forcedAspect) {
+    aspectStyles["--artwork-aspect-desktop"] = forcedAspect;
+  }
+  const aspectClass =
+    options.span === "full"
+      ? "aspect-[var(--artwork-aspect-mobile,_4/3)] sm:aspect-[var(--artwork-aspect-desktop,_4/3)]"
+      : "aspect-[var(--artwork-aspect-mobile,_4/5)] sm:aspect-[var(--artwork-aspect-desktop,_4/5)]";
+  const wrapperClass = `relative w-full overflow-hidden bg-white ${aspectClass}${
+    options.centerImage ? " flex items-center justify-center sm:block" : ""
+  }`;
 
   return (
     <div className="artwork-card flex h-full flex-col">
@@ -89,21 +107,17 @@ function ArtworkCard({
           className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
         >
           {image ? (
-            <div
-              className={`relative w-full overflow-hidden bg-white ${
-                options.span === "full" ? "aspect-[4/3]" : "aspect-[4/5]"
-              }${options.centerImage ? " flex h-full items-center" : ""}`}
-            >
+            <div className={wrapperClass} style={Object.keys(aspectStyles).length ? aspectStyles : undefined}>
               <Image
                 src={image.url}
                 alt={image.altText || artwork.title}
                 fill
-                className="object-contain object-bottom transition duration-300 group-hover:scale-[1.01]"
+                className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.01]"
                 sizes={sizeAttr}
               />
             </div>
           ) : (
-            <div className={`bg-neutral-100 ${options.span === "full" ? "aspect-[4/3]" : "aspect-[4/5]"}`} />
+            <div className={`bg-neutral-100 ${aspectClass}`} />
           )}
         </Link>
       </div>
