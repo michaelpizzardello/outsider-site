@@ -9,6 +9,8 @@ import NavLinks from "@/components/layout/NavLinks";
 import MobileMenu from "@/components/layout/MobileMenu";
 import Container from "@/components/layout/Container";
 import { usePathname } from "next/navigation";
+import { useCart } from "@/components/cart/CartContext";
+import { CartIcon } from "@/components/cart/CartToggle";
 
 // ---------------------------------------------------------------------------
 // Component props
@@ -37,6 +39,14 @@ export default function Header({
     (pathname?.split("/")?.length ?? 0) >= 5;
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { cart, openCart, status } = useCart();
+  const cartCount = cart?.totalQuantity ?? 0;
+  const showCartIcon = cartCount > 0;
+  const isCartLoading = status === "loading";
+  const cartLabel =
+    cartCount === 1
+      ? "Open cart with 1 item"
+      : `Open cart with ${cartCount} items`;
 
   // ---------------------------------------------------------------------------
   // Determine header styling for transparent vs. solid backgrounds
@@ -77,6 +87,17 @@ export default function Header({
   const textClass = solid ? "text-neutral-900" : "text-white";
   const headerPaddingDesktop = scrolled ? "py-4 md:py-5" : "py-8 md:py-12";
   const headerPaddingMobile = scrolled ? "py-3" : "py-5";
+  const cartButtonClass = clsx(
+    "relative inline-flex h-11 w-11 items-center justify-center transition focus:outline-none focus-visible:ring-2",
+    solid
+      ? "text-neutral-900 hover:text-black focus-visible:ring-neutral-800 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+      : "text-white hover:text-white focus-visible:ring-white focus-visible:ring-offset-0"
+  );
+  const cartBadgeClass = clsx(
+    "absolute right-0 top-0 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-semibold leading-none text-white",
+    "bg-[#e63946]"
+  );
+  const cartBadgeText = isCartLoading ? "…" : cartCount > 99 ? "99+" : String(cartCount);
 
   // ---------------------------------------------------------------------------
   // Track the rendered header height for layout spacing on transparent routes
@@ -197,13 +218,25 @@ export default function Header({
             {/* Right column: secondary navigation links */}
             <nav
               aria-label="Secondary navigation"
-              className="hidden min-w-0 md:flex md:items-center md:justify-end"
+              className="hidden min-w-0 md:flex md:items-center md:justify-end md:gap-6"
             >
               <NavLinks
                 items={secondaryNav}
                 className={clsx("flex items-center", navGap)}
                 linkClassName={navLinkSize}
               />
+              {showCartIcon ? (
+                <button
+                  type="button"
+                  onClick={openCart}
+                  aria-label={cartLabel}
+                  className={cartButtonClass}
+                >
+                  <CartIcon className="h-6 w-6" />
+                  <span className={cartBadgeClass}>{cartBadgeText}</span>
+                  <span className="sr-only">{cartLabel}</span>
+                </button>
+              ) : null}
             </nav>
           </div>
 
