@@ -322,9 +322,6 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
           <div className="sticky top-28 space-y-7 border border-neutral-200 bg-white/90 p-6 shadow-sm backdrop-blur">
             <div className="space-y-5">
               <label className="block">
-                <span className="mb-2 block text-sm font-medium text-neutral-600">
-                  Search
-                </span>
                 <input
                   type="search"
                   value={search}
@@ -406,7 +403,6 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                 </label>
               </div>
               <label className="block">
-                <span className="sr-only">Search artworks</span>
                 <input
                   type="search"
                   value={search}
@@ -631,9 +627,6 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
             </div>
             <div className="mt-6 max-h-[60vh] space-y-6 overflow-y-auto pr-1">
               <label className="block">
-                <span className="mb-2 block text-sm font-medium text-neutral-600">
-                  Search
-                </span>
                 <input
                   type="search"
                   value={search}
