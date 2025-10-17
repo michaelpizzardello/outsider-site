@@ -122,7 +122,7 @@ function ArtworkCard({
         </Link>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-snug md:mt-5">
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-tight md:mt-5">
         <Link
           href={href}
           data-artwork-link="title"
@@ -209,7 +209,7 @@ export default function FeaturedWorksClient({
             <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-16">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
             {artworks.map((artwork) => (
               <ArtworkCard
                 key={artwork.id}

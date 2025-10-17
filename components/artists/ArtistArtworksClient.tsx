@@ -123,7 +123,7 @@ function ArtworkCard({
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-snug md:mt-5">
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-tight md:mt-5">
         {href ? (
           <Link
             href={href}
@@ -189,7 +189,7 @@ export default function ArtistArtworksClient({ artworks, rows: _rows }: Props) {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-16">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
             {artworks.map((artwork) => (
               <ArtworkCard
                 key={artwork.id}

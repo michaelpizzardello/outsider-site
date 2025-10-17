@@ -171,7 +171,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
               </div>
 
               <div className="flex flex-1 flex-col">
-                <div className="mt-3 space-y-1.5 text-[0.95rem] leading-snug text-neutral-800">
+                <div className="mt-3 space-y-1.5 text-[0.95rem] leading-tight text-neutral-800">
                   {artwork.artist ? (
                     <p className="text-neutral-900">{artwork.artist}</p>
                   ) : null}
