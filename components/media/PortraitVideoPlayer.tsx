@@ -86,6 +86,15 @@ export default function PortraitVideoPlayer({
       video.muted = next;
       if (!next) {
         video.volume = 1;
+        video.currentTime = 0;
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => {
+            setIsPlaying(false);
+          });
+        } else {
+          setIsPlaying(!video.paused);
+        }
       }
       return next;
     });

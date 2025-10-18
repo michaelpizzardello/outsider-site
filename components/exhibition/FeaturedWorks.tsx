@@ -103,7 +103,7 @@ function priceLabel(p: {
   if (isSold) return "Sold";
   if (p.price) {
     const amount = Number(p.price.amount);
-    if (Number.isFinite(amount)) {
+    if (Number.isFinite(amount) && amount > 0) {
       const formatted = formatCurrency(amount, p.price.currencyCode);
       if (formatted) return formatted;
     }

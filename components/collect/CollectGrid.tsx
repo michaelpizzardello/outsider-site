@@ -459,28 +459,16 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                 Object.keys(aspectStyles).length > 0 ? aspectStyles : undefined;
               const detailHref = artwork.exhibitionHandle
                 ? `/exhibitions/${artwork.exhibitionHandle}/artworks/${artwork.handle}`
-                : null;
+                : `/artworks/${artwork.handle}`;
 
               return (
                 <article key={artwork.id} className="flex h-full flex-col">
                   <div className="group bg-neutral-100">
-                    {detailHref ? (
-                      <Link href={detailHref} aria-label={`View artwork ${artwork.title}`} className="block">
-                        <div className={aspectClass} style={divStyle}>
-                          {image?.url ? (
-                            <Image
-                              src={image.url}
-                              alt={image.altText || `${artwork.title} artwork`}
-                              fill
-                              sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                              className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.02]"
-                            />
-                          ) : (
-                            <div className="h-full w-full bg-neutral-200" />
-                          )}
-                        </div>
-                      </Link>
-                    ) : (
+                    <Link
+                      href={detailHref}
+                      aria-label={`View artwork ${artwork.title}`}
+                      className="block"
+                    >
                       <div className={aspectClass} style={divStyle}>
                         {image?.url ? (
                           <Image
@@ -488,13 +476,13 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                             alt={image.altText || `${artwork.title} artwork`}
                             fill
                             sizes="(min-width:1600px) 18vw, (min-width:1200px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
-                            className="object-contain object-center sm:object-bottom"
+                            className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.02]"
                           />
                         ) : (
                           <div className="h-full w-full bg-neutral-200" />
                         )}
                       </div>
-                    )}
+                    </Link>
                   </div>
 
                   <div className="flex flex-1 flex-col">
@@ -505,20 +493,13 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                         </p>
                       ) : null}
                       <h3 className="text-neutral-900">
-                        {detailHref ? (
-                          <Link
-                            href={detailHref}
-                            className="underline-offset-4 transition hover:underline"
-                          >
-                            <span className="italic">{artwork.title}</span>
-                            {artwork.year ? <span>, {artwork.year}</span> : null}
-                          </Link>
-                        ) : (
-                          <>
-                            <span className="italic">{artwork.title}</span>
-                            {artwork.year ? <span>, {artwork.year}</span> : null}
-                          </>
-                        )}
+                        <Link
+                          href={detailHref}
+                          className="underline-offset-4 transition hover:underline"
+                        >
+                          <span className="italic">{artwork.title}</span>
+                          {artwork.year ? <span>, {artwork.year}</span> : null}
+                        </Link>
                       </h3>
                       {artwork.medium ? (
                         <p className="text-sm text-neutral-700">{artwork.medium}</p>

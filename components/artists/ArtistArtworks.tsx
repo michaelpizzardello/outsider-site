@@ -169,7 +169,7 @@ function priceLabel({
   if (isSold) return "Sold";
   if (price) {
     const amount = Number(price.amount);
-    if (Number.isFinite(amount)) {
+    if (Number.isFinite(amount) && amount > 0) {
       const formatted = formatCurrency(amount, price.currencyCode);
       if (formatted) return formatted;
     }
