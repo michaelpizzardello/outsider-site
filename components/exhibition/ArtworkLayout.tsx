@@ -23,7 +23,7 @@ type GalleryImage = {
 
 // UI props received from the server component.
 type Props = {
-  exhibitionHandle: string;
+  exhibitionHandle?: string | null;
   title: string;
   gallery: GalleryImage[];
   artist?: string;
@@ -51,6 +51,8 @@ export default function ArtworkLayout({
   canPurchase,
   variantId,
 }: Props) {
+  const fallbackHref = exhibitionHandle ? `/exhibitions/${exhibitionHandle}` : "/collect";
+
   // Track currently selected slide; used by both carousel and desktop hero image.
   const [activeIndex, setActiveIndex] = useState(0);
   const activeImage = useMemo(
@@ -266,7 +268,7 @@ export default function ArtworkLayout({
       {/* Mobile info rail */}
       <section className="relative w-full bg-white px-4 pb-6 pt-12 sm:px-6 md:px-10 lg:hidden lg:bg-neutral-100">
         <CloseArtworkButton
-          fallbackHref={`/exhibitions/${exhibitionHandle}`}
+          fallbackHref={fallbackHref}
           className="absolute right-4 top-4 text-[2.5rem] leading-none text-neutral-900 font-light transition sm:right-6 sm:top-6"
         />
         {hasHeading && <>{renderHeading("mt-2")}</>}
@@ -361,7 +363,7 @@ export default function ArtworkLayout({
       {/* Right column: artwork info */}
       <aside className="relative hidden w-full max-w-md shrink-0 flex-col border-t border-neutral-200 bg-neutral-100 px-6 pb-12 pt-10 sm:px-8 lg:flex lg:border-t-0 lg:border-l lg:px-[clamp(2.5rem,3vw,3.5rem)] lg:py-12 lg:h-screen lg:max-w-none lg:flex-[0_0_clamp(380px,34vw,680px)] lg:overflow-y-auto xl:flex-[0_0_clamp(440px,38vw,780px)] xl:px-[clamp(3rem,3.2vw,4rem)] 2xl:flex-[0_0_clamp(500px,34vw,840px)] 2xl:px-[clamp(3.5rem,2.8vw,4.5rem)]">
         <CloseArtworkButton
-          fallbackHref={`/exhibitions/${exhibitionHandle}`}
+          fallbackHref={fallbackHref}
           className="absolute right-6 top-6 hidden text-[2.5rem] leading-none text-neutral-900 font-light transition lg:right-8 lg:top-8 lg:block xl:text-[2.75rem]"
         />
 

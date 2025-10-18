@@ -457,9 +457,7 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                 "relative w-full overflow-hidden transition group-hover:opacity-90 aspect-[var(--artwork-aspect-mobile,_4/5)] sm:aspect-[var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5))] lg:aspect-[var(--artwork-aspect-lg,var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5)))] xl:aspect-[var(--artwork-aspect-xl,var(--artwork-aspect-lg,var(--artwork-aspect-sm,var(--artwork-aspect-mobile,_4/5)))))] flex items-center justify-center sm:items-end sm:justify-start";
               const divStyle =
                 Object.keys(aspectStyles).length > 0 ? aspectStyles : undefined;
-              const detailHref = artwork.exhibitionHandle
-                ? `/exhibitions/${artwork.exhibitionHandle}/artworks/${artwork.handle}`
-                : `/artworks/${artwork.handle}`;
+              const detailHref = `/artworks/${artwork.handle}`;
 
               return (
                 <article key={artwork.id} className="flex h-full flex-col">

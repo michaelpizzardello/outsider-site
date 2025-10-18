@@ -34,9 +34,7 @@ export default function Header({
   // Routing context and visibility logic
   // ---------------------------------------------------------------------------
   const pathname = usePathname();
-  const hideHeader =
-    pathname?.startsWith("/exhibitions/") &&
-    (pathname?.split("/")?.length ?? 0) >= 5;
+  const hideHeader = Boolean(pathname?.includes("/artworks/"));
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { cart, openCart, status } = useCart();
@@ -51,8 +49,7 @@ export default function Header({
   // ---------------------------------------------------------------------------
   // Determine header styling for transparent vs. solid backgrounds
   // ---------------------------------------------------------------------------
-  const isTransparentRoute =
-    pathname === "/" || pathname?.startsWith("/exhibitions/");
+  const isTransparentRoute = pathname === "/" || pathname?.startsWith("/exhibitions/");
   const overlayFinal = isTransparentRoute;
 
   // ---------------------------------------------------------------------------

@@ -64,7 +64,7 @@ function ArtworkCard({
   isPurchasing?: boolean;
   showActions?: boolean;
 }) {
-  const href = `/exhibitions/${exhibitionHandle}/artworks/${artwork.handle}`;
+  const href = `/artworks/${artwork.handle}`;
   const image = artwork.featureImage;
 
   const sizeAttr = options.sizeOverride

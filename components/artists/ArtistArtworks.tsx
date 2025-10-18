@@ -273,9 +273,7 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
       aspectRatio,
       heightFactor,
       type,
-      href: exhibitionHandle
-        ? `/exhibitions/${exhibitionHandle}/artworks/${product.handle}`
-        : null,
+      href: `/artworks/${product.handle}`,
     };
   });
 

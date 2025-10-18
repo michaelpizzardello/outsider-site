@@ -210,18 +210,6 @@ function getArtistName(meta?: MaybeMetafield | null): string | undefined {
   return fromValue || undefined;
 }
 
-// Confirm the product is linked to the requested exhibition handle before rendering.
-function productBelongsToExhibition(
-  product: ArtworkQuery["product"],
-  exhibitionHandle: string
-): boolean {
-  if (!product?.exhibitions) return false;
-  const ref = product.exhibitions.reference;
-  if (ref?.__typename === "Metaobject" && ref.handle === exhibitionHandle) return true;
-  const nodes = product.exhibitions.references?.nodes || [];
-  return nodes?.some((node) => node?.__typename === "Metaobject" && node.handle === exhibitionHandle) ?? false;
-}
-
 function deriveCommerceState(product: ArtworkQuery["product"]) {
   const price = product?.priceRange?.minVariantPrice;
   const status = metafieldString(product?.status)?.toLowerCase();
@@ -271,9 +259,14 @@ function deriveCommerceState(product: ArtworkQuery["product"]) {
 export default async function ArtworkPage({
   params,
 }: {
-  params: { handle: string; artworkHandle: string };
+  params: { handle: string; artworkHandle?: string };
 }) {
-  const { handle: exhibitionHandle, artworkHandle } = params;
+  const { handle: firstSegment, artworkHandle: nestedArtworkHandle } = params;
+  const hasNestedHandle = typeof nestedArtworkHandle === "string" && nestedArtworkHandle.length > 0;
+  const exhibitionHandle = hasNestedHandle ? firstSegment : null;
+  const artworkHandle = hasNestedHandle ? nestedArtworkHandle : firstSegment;
+
+  if (!artworkHandle) notFound();
 
   // Fetch the artwork product with the relevant metafields in a single request.
   const data = await shopifyFetch<ArtworkQuery>(ARTWORK_QUERY, {
@@ -285,13 +278,6 @@ export default async function ArtworkPage({
 
   const product = data.product;
   if (!product) notFound();
-
-  // Safety check: log when the handle is mismatched so editors catch incorrect URL slugs.
-  if (!productBelongsToExhibition(product, exhibitionHandle)) {
-    console.log(
-      `[artworks] product ${product.handle} does not reference exhibition ${exhibitionHandle} — continuing anyway.`
-    );
-  }
 
   // Pull the headline metadata that drives the detail template.
   const artist = getArtistName(product.artistMeta);
@@ -331,7 +317,7 @@ export default async function ArtworkPage({
   // Pass the cleaned data to the client layout component which renders the full UI.
   return (
     <ArtworkLayout
-      exhibitionHandle={exhibitionHandle}
+      exhibitionHandle={exhibitionHandle ?? undefined}
       title={product.title}
       gallery={gallery}
       artist={artist}

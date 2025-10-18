@@ -49,7 +49,7 @@ export default function SiteFooter({
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<null | { ok: boolean; msg: string }>(null);
-  const hideOnArtworkPage = pathname?.startsWith("/exhibitions/") && pathname.includes("/artworks/");
+  const hideOnArtworkPage = Boolean(pathname?.includes("/artworks/"));
   if (hideOnArtworkPage) return null;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
