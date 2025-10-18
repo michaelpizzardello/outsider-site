@@ -110,11 +110,10 @@ function fallbackBioHtml(fields: Field[]): string | null {
   return extractLongCopy(bioLike);
 }
 
-function coverFromFields(fields: Field[]): CoverImage | null {
-  const f = fields.find((field) => field.key === "coverimage");
-  if (!f) return null;
+function imageFromField(field?: Field): CoverImage | null {
+  if (!field) return null;
 
-  const ref = f.reference;
+  const ref = field.reference;
 
   if (ref && ref.__typename === "MediaImage" && "image" in ref && ref.image?.url) {
     return {
@@ -130,9 +129,22 @@ function coverFromFields(fields: Field[]): CoverImage | null {
     if (ref.previewImage?.url) return { url: ref.previewImage.url };
   }
 
-  if (typeof f.value === "string" && f.value.startsWith("http")) {
-    return { url: f.value };
+  if (typeof field.value === "string" && field.value.startsWith("http")) {
+    return { url: field.value };
   }
+
+  return null;
+}
+
+function coverFromFields(fields: Field[]): CoverImage | null {
+  // Prefer a portrait image when available so the hero matches exhibition layouts.
+  const portraitField = fieldByKeys(fields, ["portrait", "portrait_image", "portraitimage"]);
+  const portraitImage = imageFromField(portraitField);
+  if (portraitImage) return portraitImage;
+
+  const coverField = fieldByKeys(fields, ["coverimage", "cover_image", "cover"]);
+  const coverImage = imageFromField(coverField);
+  if (coverImage) return coverImage;
 
   return null;
 }
