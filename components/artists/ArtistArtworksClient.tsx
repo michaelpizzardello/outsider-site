@@ -140,7 +140,7 @@ function ArtworkCard({
         className={
           layout === "featured"
             ? "mt-4 flex flex-col items-center gap-y-4 text-center text-[15px] leading-tight md:mt-5"
-            : "mt-4 flex flex-col items-center gap-y-4 text-center text-[15px] leading-tight md:mt-5 sm:flex-wrap sm:flex-row sm:items-start sm:justify-between sm:gap-x-8 sm:gap-y-4 sm:text-left"
+            : "mt-4 flex flex-col items-start gap-y-4 text-left text-[15px] leading-tight md:mt-5 sm:flex-wrap sm:flex-row sm:items-start sm:justify-between sm:gap-x-8 sm:gap-y-4"
         }
       >
         {href ? (
@@ -150,7 +150,7 @@ function ArtworkCard({
             className={`focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
               layout === "featured"
                 ? "w-full max-w-xs text-center"
-                : "min-w-[200px] flex-1 text-center sm:text-left"
+                : "min-w-[200px] flex-1 text-left"
             }`}
           >
             {titleBlock}
@@ -163,7 +163,7 @@ function ArtworkCard({
             className={
               layout === "featured"
                 ? "w-full max-w-xs text-center"
-                : "min-w-[200px] flex-1 text-center sm:text-left"
+                : "min-w-[200px] flex-1 text-left"
             }
           >
             {titleBlock}
