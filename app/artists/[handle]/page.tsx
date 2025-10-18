@@ -5,6 +5,7 @@ import ArtistHero from "@/components/artists/ArtistHero";
 import ArtistBioSection from "@/components/artists/ArtistBioSection";
 import ArtistArtworks from "@/components/artists/ArtistArtworks";
 import ArtistExhibitions from "@/components/artists/ArtistExhibitions";
+import type { PortraitVideoSource } from "@/components/media/PortraitVideoPlayer";
 import { shopifyFetch } from "@/lib/shopify";
 import { extractLongCopy } from "@/lib/extractLongCopy";
 import { toHtml } from "@/lib/richtext";
@@ -23,6 +24,16 @@ type FieldRef =
       };
     }
   | { __typename: "GenericFile"; url?: string; previewImage?: { url: string } }
+  | {
+      __typename: "Video";
+      sources?: Array<{ url: string; mimeType?: string | null } | null> | null;
+      previewImage?: {
+        url: string | null;
+        width?: number | null;
+        height?: number | null;
+        altText?: string | null;
+      } | null;
+    }
   | { __typename: string };
 
 type Field = { key: string; type: string; value: string; reference: FieldRef | null };
@@ -58,6 +69,10 @@ const QUERY = /* GraphQL */ `
           ... on GenericFile {
             url
             previewImage { url }
+          }
+          ... on Video {
+            sources { url mimeType }
+            previewImage { url width height altText }
           }
         }
       }
@@ -136,6 +151,66 @@ function imageFromField(field?: Field): CoverImage | null {
   return null;
 }
 
+function isProbablyVideo(url: string) {
+  return /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(url);
+}
+
+function videoFromField(field?: Field): PortraitVideoSource | null {
+  if (!field) return null;
+
+  const ref = field.reference;
+  if (ref && ref.__typename === "Video") {
+    const sources = Array.isArray(ref.sources) ? ref.sources : [];
+    const source = sources.find((item) => item?.url);
+    if (source?.url) {
+      return {
+        url: source.url,
+        mimeType: source.mimeType ?? undefined,
+        poster: ref.previewImage?.url
+          ? {
+              url: ref.previewImage.url,
+              width:
+                typeof ref.previewImage.width === "number"
+                  ? ref.previewImage.width
+                  : undefined,
+              height:
+                typeof ref.previewImage.height === "number"
+                  ? ref.previewImage.height
+                  : undefined,
+              alt: ref.previewImage.altText ?? undefined,
+            }
+          : undefined,
+      };
+    }
+  }
+
+  if (ref && ref.__typename === "GenericFile") {
+    const fileUrl =
+      ref.url ||
+      (typeof field.value === "string" && field.value.startsWith("http")
+        ? field.value
+        : null);
+    if (fileUrl && isProbablyVideo(fileUrl)) {
+      return {
+        url: fileUrl,
+        poster: ref.previewImage?.url
+          ? {
+              url: ref.previewImage.url,
+            }
+          : undefined,
+      };
+    }
+  }
+
+  if (typeof field.value === "string" && field.value.startsWith("http")) {
+    if (isProbablyVideo(field.value)) {
+      return { url: field.value };
+    }
+  }
+
+  return null;
+}
+
 function coverFromFields(fields: Field[]): CoverImage | null {
   // Prefer a portrait image when available so the hero matches exhibition layouts.
   const portraitField = fieldByKeys(fields, ["portrait", "portrait_image", "portraitimage"]);
@@ -171,6 +246,8 @@ export default async function ArtistPage({ params }: { params: { handle: string 
     valueMap.born ??
     valueMap.birthdate
   ) as string | undefined;
+  const portraitVideo =
+    videoFromField(fieldByKeys(mo.fields, ["video", "portrait_video", "artist_video"])) ?? null;
   const shortBioHtml =
     fieldToHtml(fieldByKeys(mo.fields, ["short_bio", "shortbio", "bio_short"])) ?? null;
   const longBioHtml =
@@ -188,7 +265,12 @@ export default async function ArtistPage({ params }: { params: { handle: string 
         birthYear={birthYear}
         cover={cover}
       />
-      <ArtistBioSection shortHtml={shortBioHtml} longHtml={longBioHtml} />
+      <ArtistBioSection
+        shortHtml={shortBioHtml}
+        longHtml={longBioHtml}
+        portraitVideo={portraitVideo}
+        artistName={name}
+      />
       <ArtistArtworks artistHandle={mo.handle} artistName={name} />
       <ArtistExhibitions artistHandle={mo.handle} artistName={name} />
     </main>

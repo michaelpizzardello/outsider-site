@@ -62,7 +62,7 @@ export default function ArtistHero({
           // image doesn't overwhelm the viewport, but allows full bleed at `lg+`.
           <figure className="relative flex w-full max-w-[360px] flex-col items-center self-center pt-1 pb-6 text-center sm:max-w-[460px] sm:pt-0 sm:pb-0 md:max-w-[560px] justify-self-center lg:max-w-none lg:order-2 lg:justify-self-end lg:my-auto">
             <div
-              className="relative w-full"
+              className="relative w-full xl:max-h-[50vh] xl:overflow-hidden"
               style={{ aspectRatio: aspectRatio ?? "4 / 5" }}
             >
               <Image

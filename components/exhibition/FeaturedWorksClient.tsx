@@ -125,7 +125,7 @@ function ArtworkCard({
       <div
         className={
           showActions
-            ? "mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-tight md:mt-5"
+            ? "mt-4 flex flex-col items-center gap-y-4 text-center text-[15px] leading-tight md:mt-5 sm:flex-wrap sm:flex-row sm:items-start sm:justify-between sm:gap-x-8 sm:gap-y-4 sm:text-left"
             : "mt-4 flex flex-col items-center gap-y-4 text-center text-[15px] leading-tight md:mt-5"
         }
       >
@@ -134,7 +134,7 @@ function ArtworkCard({
           data-artwork-link="title"
           className={
             showActions
-              ? "min-w-[200px] flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+              ? "min-w-[200px] flex-1 text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-black sm:text-left"
               : "w-full max-w-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
           }
         >

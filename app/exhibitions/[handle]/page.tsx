@@ -27,6 +27,7 @@ import Details from "@/components/exhibition/Details";
 import InstallationViews from "@/components/exhibition/InstallationViews";
 import FeaturedWorks from "@/components/exhibition/FeaturedWorks";
 import AboutArtistWithPortrait from "@/components/exhibition/AboutArtistWithPortrait";
+import type { PortraitVideoSource } from "@/components/media/PortraitVideoPlayer";
 
 import { shopifyFetch } from "@/lib/shopify";
 import type { ExhibitionCard } from "@/lib/exhibitions";
@@ -68,6 +69,18 @@ const QUERY = /* GraphQL */ `
               url
             }
           }
+          ... on Video {
+            sources {
+              url
+              mimeType
+            }
+            previewImage {
+              url
+              width
+              height
+              altText
+            }
+          }
           ... on Metaobject {
             handle
             type
@@ -79,12 +92,20 @@ const QUERY = /* GraphQL */ `
                 __typename
                 ... on MediaImage { image { url width height altText } }
                 ... on GenericFile { url previewImage { url } }
+                ... on Video {
+                  sources { url mimeType }
+                  previewImage { url }
+                }
               }
               references(first: 50) {
                 nodes {
                   __typename
                   ... on MediaImage { image { url width height altText } }
                   ... on GenericFile { url previewImage { url } }
+                  ... on Video {
+                    sources { url mimeType }
+                    previewImage { url }
+                  }
                 }
               }
             }
@@ -98,6 +119,10 @@ const QUERY = /* GraphQL */ `
             }
             ... on GenericFile {
               url
+              previewImage { url }
+            }
+            ... on Video {
+              sources { url mimeType }
               previewImage { url }
             }
             ... on Metaobject { handle type }
@@ -148,6 +173,16 @@ type FieldRef =
       __typename: "GenericFile";
       url?: string;
       previewImage?: { url: string | null } | null;
+    }
+  | {
+      __typename: "Video";
+      sources?: Array<{ url: string; mimeType?: string | null } | null> | null;
+      previewImage?: {
+        url: string | null;
+        width?: number | null;
+        height?: number | null;
+        altText?: string | null;
+      } | null;
     }
   | {
       __typename: "Metaobject";
@@ -306,6 +341,61 @@ function imageFromField(f: Field) {
     return { url: ref.url as string };
   if (typeof f.value === "string" && f.value.startsWith("http"))
     return { url: f.value };
+}
+
+function isProbablyVideo(url: string) {
+  return /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(url);
+}
+
+function videoFromField(f?: Field): PortraitVideoSource | undefined {
+  if (!f) return undefined;
+  const ref: any = f.reference;
+
+  if (ref?.__typename === "Video" && Array.isArray(ref.sources)) {
+    const source = ref.sources.find((item: any) => item?.url);
+    if (source?.url) {
+      return {
+        url: source.url as string,
+        mimeType: source.mimeType ?? undefined,
+        poster: ref.previewImage?.url
+          ? {
+              url: ref.previewImage.url as string,
+              width:
+                typeof ref.previewImage.width === "number"
+                  ? (ref.previewImage.width as number)
+                  : undefined,
+              height:
+                typeof ref.previewImage.height === "number"
+                  ? (ref.previewImage.height as number)
+                  : undefined,
+              alt: ref.previewImage.altText ?? undefined,
+            }
+          : undefined,
+      };
+    }
+  }
+
+  if (ref?.__typename === "GenericFile") {
+    const candidate =
+      (typeof ref.url === "string" && ref.url) ||
+      (typeof f.value === "string" && f.value.startsWith("http") ? f.value : null);
+    if (candidate && isProbablyVideo(candidate)) {
+      return {
+        url: candidate,
+        poster: ref.previewImage?.url
+          ? {
+              url: ref.previewImage.url as string,
+            }
+          : undefined,
+      };
+    }
+  }
+
+  if (typeof f.value === "string" && f.value.startsWith("http") && isProbablyVideo(f.value)) {
+    return { url: f.value };
+  }
+
+  return undefined;
 }
 
 function imageFromRefNode(ref: any) {
@@ -718,8 +808,13 @@ async function resolveGroupArtists(fields: Field[]): Promise<
 }
 
 function firstPortraitFromFields(fields: Field[]) {
-  const f = fields.find((x) => x.key === "portrait");
+  const f = fieldByKeysCaseInsensitive(fields, ["portrait", "portrait_image", "portraitimage"]);
   return f ? imageFromField(f) : undefined;
+}
+
+function firstPortraitVideoFromFields(fields: Field[]) {
+  const f = fieldByKeysCaseInsensitive(fields, ["video", "portrait_video", "artist_video"]);
+  return f ? videoFromField(f) : undefined;
 }
 
 const HTML_TAG_REGEX = /<\s*[a-z][\s\S]*>/i;
@@ -830,12 +925,20 @@ const ARTIST_QUERY = /* GraphQL */ `
           __typename
           ... on MediaImage { image { url width height altText } }
           ... on GenericFile { url previewImage { url } }
+          ... on Video {
+            sources { url mimeType }
+            previewImage { url width height altText }
+          }
         }
         references(first: 50) {
           nodes {
             __typename
             ... on MediaImage { image { url width height altText } }
             ... on GenericFile { url previewImage { url } }
+            ... on Video {
+              sources { url mimeType }
+              previewImage { url }
+            }
           }
         }
       }
@@ -853,21 +956,29 @@ const ARTIST_BY_ID_QUERY = /* GraphQL */ `
           key
           type
           value
-          reference {
+        reference {
+          __typename
+          ... on MediaImage { image { url width height altText } }
+          ... on GenericFile { url previewImage { url } }
+          ... on Video {
+            sources { url mimeType }
+            previewImage { url width height altText }
+          }
+        }
+        references(first: 50) {
+          nodes {
             __typename
             ... on MediaImage { image { url width height altText } }
             ... on GenericFile { url previewImage { url } }
-          }
-          references(first: 50) {
-            nodes {
-              __typename
-              ... on MediaImage { image { url width height altText } }
-              ... on GenericFile { url previewImage { url } }
+            ... on Video {
+              sources { url mimeType }
+              previewImage { url }
             }
           }
         }
       }
     }
+  }
   }
 `;
 
@@ -1008,10 +1119,20 @@ export default async function ExhibitionPage({
   }
   const artistName = text(artistFields as any, "name", "title") ?? ex.artist ?? undefined;
   const portrait = artistFields.length ? firstPortraitFromFields(artistFields as any) : undefined;
+  const portraitVideo = artistFields.length
+    ? firstPortraitVideoFromFields(artistFields as any)
+    : undefined;
   const artistBioHtml = artistFields.length ? extractBioHtmlFromArtistFields(artistFields as any) : null;
   console.log(
     "[exhibitions/[handle]] artist",
-    { artistHandle, artistName, hasPortrait: Boolean(portrait), hasBio: Boolean(artistBioHtml), bioLen: artistBioHtml?.length }
+    {
+      artistHandle,
+      artistName,
+      hasPortrait: Boolean(portrait),
+      hasVideo: Boolean(portraitVideo),
+      hasBio: Boolean(artistBioHtml),
+      bioLen: artistBioHtml?.length,
+    }
   );
 
   const groupArtists = isGroupShow(ex)
@@ -1065,12 +1186,13 @@ export default async function ExhibitionPage({
       <FeaturedWorks exhibitionHandle={node.handle} fallbackArtist={ex.artist ?? null} />
 
       {/* About the Artist (suppressed for group shows) */}
-      {!isGroupShow(ex) && (artistBioHtml || portrait) && (
+      {!isGroupShow(ex) && (artistBioHtml || portrait || portraitVideo) && (
         <AboutArtistWithPortrait
           name={artistName}
           bioHtml={artistBioHtml}
           handle={artistHandle}
           portrait={portrait ?? null}
+          portraitVideo={portraitVideo ?? null}
         />
       )}
     </>

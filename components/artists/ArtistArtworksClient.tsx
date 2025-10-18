@@ -137,18 +137,20 @@ function ArtworkCard({
       </div>
 
       <div
-        className={`mt-4 flex flex-wrap items-start gap-y-4 text-[15px] leading-tight md:mt-5 ${
+        className={
           layout === "featured"
-            ? "flex-col items-center text-center gap-x-0"
-            : "justify-between gap-x-8"
-        }`}
+            ? "mt-4 flex flex-col items-center gap-y-4 text-center text-[15px] leading-tight md:mt-5"
+            : "mt-4 flex flex-wrap items-start justify-between gap-x-8 gap-y-4 text-[15px] leading-tight md:mt-5"
+        }
       >
         {href ? (
           <Link
             href={href}
             data-artwork-link="title"
             className={`focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
-              layout === "featured" ? "w-full max-w-xs" : "min-w-[200px] flex-1"
+              layout === "featured"
+                ? "w-full max-w-xs text-center"
+                : "min-w-[200px] flex-1"
             }`}
           >
             {titleBlock}
@@ -159,7 +161,9 @@ function ArtworkCard({
         ) : (
           <div
             className={
-              layout === "featured" ? "w-full max-w-xs" : "min-w-[200px] flex-1"
+              layout === "featured"
+                ? "w-full max-w-xs text-center"
+                : "min-w-[200px] flex-1"
             }
           >
             {titleBlock}

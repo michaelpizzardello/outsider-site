@@ -3,6 +3,9 @@ import type { CSSProperties } from "react";
 import Container from "@/components/layout/Container";
 import Image from "next/image";
 import { ArrowCtaLink } from "@/components/ui/ArrowCta";
+import PortraitVideoPlayer, {
+  type PortraitVideoSource,
+} from "@/components/media/PortraitVideoPlayer";
 
 type Img = { url: string; width?: number; height?: number; alt?: string };
 
@@ -12,6 +15,7 @@ export default function AboutArtistWithPortrait({
   bioHtml,
   handle,
   portrait,
+  portraitVideo,
   captionHtml,
 }: {
   title?: string;
@@ -19,17 +23,32 @@ export default function AboutArtistWithPortrait({
   bioHtml?: string | null;
   handle?: string | null;
   portrait?: Img | null;
+  portraitVideo?: PortraitVideoSource | null;
   captionHtml?: string | null;
 }) {
-  if (!bioHtml && !portrait && !handle) return null;
+  if (!bioHtml && !portrait && !portraitVideo && !handle) return null;
 
-  const figAlt = portrait?.alt || (name ? `Portrait of ${name}` : "Portrait");
+  const figAlt =
+    portrait?.alt ||
+    portraitVideo?.poster?.alt ||
+    (name ? `Portrait of ${name}` : "Portrait");
   const hasDimensions = Boolean(
     portrait && typeof portrait.width === "number" && portrait.width > 0 && typeof portrait.height === "number" && portrait.height > 0
   );
   const portraitAspectRatio = hasDimensions && portrait?.width && portrait?.height
     ? Math.max(portrait.width / portrait.height, 0.1)
     : 0.75;
+  const videoHasDimensions = Boolean(
+    portraitVideo?.poster?.width &&
+      portraitVideo.poster?.height &&
+      portraitVideo.poster.width > 0 &&
+      portraitVideo.poster.height > 0
+  );
+  const videoAspectRatio =
+    videoHasDimensions && portraitVideo?.poster?.width && portraitVideo.poster?.height
+      ? Math.max(portraitVideo.poster.width / portraitVideo.poster.height, 0.1)
+      : null;
+  const mediaAspectRatio = videoAspectRatio ?? portraitAspectRatio;
   const portraitBoxStyle: CSSProperties | undefined = portrait
     ? {
         aspectRatio: portraitAspectRatio,
@@ -45,7 +64,22 @@ export default function AboutArtistWithPortrait({
 
           <div className="mt-8 grid grid-cols-1 items-center gap-y-8 md:grid-cols-2 md:gap-x-[clamp(32px,4vw,72px)]">
             {/* Portrait occupies full column */}
-            {portrait ? (
+            {portraitVideo ? (
+              <figure className="flex w-full flex-col items-center md:items-start">
+                <PortraitVideoPlayer
+                  source={portraitVideo}
+                  aspectRatio={mediaAspectRatio || undefined}
+                  posterAlt={portraitVideo.poster?.alt || figAlt}
+                  className="w-full"
+                />
+                {captionHtml ? (
+                  <figcaption
+                    className="mt-3 max-w-prose text-sm leading-relaxed [&_a]:underline"
+                    dangerouslySetInnerHTML={{ __html: captionHtml }}
+                  />
+                ) : null}
+              </figure>
+            ) : portrait ? (
               <figure className="flex w-full flex-col items-center md:items-start">
                 <div className="relative max-w-full" style={portraitBoxStyle}>
                   <Image
