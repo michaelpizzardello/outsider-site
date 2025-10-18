@@ -71,6 +71,7 @@ export default function AboutArtistWithPortrait({
                   aspectRatio={mediaAspectRatio || undefined}
                   posterAlt={portraitVideo.poster?.alt || figAlt}
                   className="w-full"
+                  maxHeight="56vh"
                 />
                 {captionHtml ? (
                   <figcaption

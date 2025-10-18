@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import clsx from "clsx";
 
 export type PortraitVideoSource = {
@@ -19,6 +19,7 @@ type PortraitVideoPlayerProps = {
   aspectRatio?: string | number;
   className?: string;
   posterAlt?: string;
+  maxHeight?: string | number;
 };
 
 export default function PortraitVideoPlayer({
@@ -26,6 +27,7 @@ export default function PortraitVideoPlayer({
   aspectRatio,
   className,
   posterAlt,
+  maxHeight,
 }: PortraitVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
@@ -104,11 +106,23 @@ export default function PortraitVideoPlayer({
     }
   };
 
+  const computedContainerStyle = useMemo<CSSProperties>(() => {
+    const style: CSSProperties = {
+      aspectRatio: computedAspectRatio,
+    };
+    if (typeof maxHeight === "number" && Number.isFinite(maxHeight)) {
+      style.maxHeight = `${maxHeight}px`;
+    } else if (typeof maxHeight === "string" && maxHeight.trim()) {
+      style.maxHeight = maxHeight;
+    }
+    return style;
+  }, [computedAspectRatio, maxHeight]);
+
   return (
     <div className={clsx("group/portrait-video relative w-full", className)}>
       <div
         className="relative w-full overflow-hidden rounded-none"
-        style={{ aspectRatio: computedAspectRatio }}
+        style={computedContainerStyle}
       >
         <video
           ref={videoRef}
@@ -126,7 +140,7 @@ export default function PortraitVideoPlayer({
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/portrait-video:opacity-100" />
       </div>
 
-      <div className="absolute bottom-3 right-3 flex gap-2">
+      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
         <button
           type="button"
           onClick={togglePlay}
