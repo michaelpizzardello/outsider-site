@@ -10,6 +10,7 @@ type Dateish = Date | string | null | undefined;
 type ArtistLink = {
   name: string;
   href?: string;
+  represented?: boolean;
 };
 
 type Props = {
@@ -107,9 +108,11 @@ export default function Details({
                   {artistList.map((artist) => {
                     const key = artist.href ?? artist.name;
                     if (!artist.name?.trim()) return null;
+                    const canLink =
+                      Boolean(artist.href) && artist.represented === true;
                     return (
                       <li key={key}>
-                        {artist.href ? (
+                        {canLink ? (
                           <Link
                             href={artist.href}
                             className="underline-offset-2 transition hover:underline"

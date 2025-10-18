@@ -454,10 +454,13 @@ type ArtistCandidate = {
   handle?: string | null;
   name?: string | null;
   fields?: Field[] | null;
+  represented?: boolean | null;
 };
 
 function coerceStringValue(value: unknown): string | undefined {
   if (typeof value === "string") return value;
+  if (typeof value === "boolean") return value ? "true" : "false";
+  if (typeof value === "number" && Number.isFinite(value)) return String(value);
   if (value && typeof value === "object") {
     const anyValue: any = value;
     if (typeof anyValue.value === "string") return anyValue.value;
@@ -466,13 +469,40 @@ function coerceStringValue(value: unknown): string | undefined {
   return undefined;
 }
 
+function extractRepresentedFlag(
+  fields: Field[] | null | undefined
+): boolean | null {
+  if (!fields?.length) return null;
+  const entry = fields.find(
+    (field) => field.key.toLowerCase() === "represented"
+  );
+  const raw = entry ? coerceStringValue(entry.value) : undefined;
+  if (!raw) return null;
+  const lower = raw.trim().toLowerCase();
+  if (!lower) return null;
+  if (["true", "1", "yes", "y"].includes(lower)) return true;
+  if (["false", "0", "no", "n"].includes(lower)) return false;
+  return null;
+}
+
+function isLikelyArtistName(name: string | null | undefined): boolean {
+  if (!name) return false;
+  const trimmed = name.trim();
+  if (!trimmed) return false;
+  const lower = trimmed.toLowerCase();
+  if (lower === "group exhibition" || lower === "group show") return false;
+  if (trimmed.includes("gid://")) return false;
+  if (/^\[[\s\S]*gid:\/\//i.test(trimmed)) return false;
+  return true;
+}
+
 function splitArtistNames(value: unknown): string[] {
   const raw = coerceStringValue(value);
   if (!raw) return [];
   return raw
     .split(/[\n,;]+/)
     .map((part) => part.replace(/^[•*\-]+\s*/, "").trim())
-    .filter(Boolean);
+    .filter((part) => part && isLikelyArtistName(part));
 }
 
 function collectArtistCandidates(fields: Field[]): ArtistCandidate[] {
@@ -498,6 +528,7 @@ function collectArtistCandidates(fields: Field[]): ArtistCandidate[] {
         const refFields = Array.isArray((ref as any).fields)
           ? ((ref as any).fields as Field[])
           : null;
+        const represented = extractRepresentedFlag(refFields);
         if (refFields?.length) {
           name =
             text(refFields, "name", "title") ??
@@ -505,7 +536,7 @@ function collectArtistCandidates(fields: Field[]): ArtistCandidate[] {
             null;
           bucket.push(...visit(refFields, depth + 1));
         }
-        bucket.push({ handle, name });
+        bucket.push({ handle, name, represented });
       }
 
       const referencesAny = field.references as any;
@@ -520,6 +551,9 @@ function collectArtistCandidates(fields: Field[]): ArtistCandidate[] {
           bucket.push({
             handle: meta.handle ?? null,
             name: null,
+            represented: extractRepresentedFlag(
+              (meta as any)?.fields as Field[] | undefined
+            ),
           });
           if (Array.isArray((meta as any)?.fields)) {
             bucket.push(...visit((meta as any).fields as Field[], depth + 1));
@@ -549,45 +583,101 @@ function prettifyHandle(handle: string | null | undefined): string {
 }
 
 async function resolveGroupArtists(fields: Field[]): Promise<
-  Array<{ name: string; handle?: string | null }>
+  Array<{ name: string; handle?: string | null; represented?: boolean }>
 > {
   const candidates = collectArtistCandidates(fields);
-  const resolved: Array<{ name: string; handle?: string | null }> = [];
-  const seenHandles = new Set<string>();
-  const seenNames = new Set<string>();
-  const pendingHandles = new Set<string>();
+  const resolved: Array<{ name: string; handle?: string | null; represented?: boolean }> = [];
+  const indexByHandle = new Map<string, number>();
+  const indexByName = new Map<string, number>();
+  const pendingHandles = new Map<string, { handle: string; represented?: boolean }>();
 
-  const push = (name: string, handle?: string | null) => {
+  const push = (name: string, handle?: string | null, represented?: boolean | null) => {
     const trimmed = name.trim();
-    if (!trimmed) return;
-    const handleKey = handle ? handle.trim().toLowerCase() : null;
+    if (!trimmed || !isLikelyArtistName(trimmed)) return;
+    const handleTrimmed = handle?.trim() ?? null;
+    const handleKey = handleTrimmed ? handleTrimmed.toLowerCase() : null;
+    const nameKey = trimmed.toLowerCase();
+
     if (handleKey) {
-      if (seenHandles.has(handleKey)) return;
-      seenHandles.add(handleKey);
-    } else {
-      const nameKey = trimmed.toLowerCase();
-      if (seenNames.has(nameKey)) return;
-      seenNames.add(nameKey);
+      const existingByHandle = indexByHandle.get(handleKey);
+      if (existingByHandle !== undefined) {
+        const existing = resolved[existingByHandle];
+        if (!existing.name) existing.name = trimmed;
+        if (!existing.handle) existing.handle = handleTrimmed;
+        if (represented !== null && represented !== undefined) {
+          existing.represented = represented;
+        }
+        return;
+      }
+
+      const existingByName = indexByName.get(nameKey);
+      if (existingByName !== undefined) {
+        const existing = resolved[existingByName];
+        if (!existing.handle) existing.handle = handleTrimmed;
+        if (represented !== null && represented !== undefined) {
+          existing.represented = represented;
+        }
+        indexByHandle.set(handleKey, existingByName);
+        if (!existing.name) existing.name = trimmed;
+        return;
+      }
+
+      const entry = {
+        name: trimmed,
+        handle: handleTrimmed,
+        represented: represented ?? undefined,
+      };
+      const idx = resolved.length;
+      resolved.push(entry);
+      indexByHandle.set(handleKey, idx);
+      indexByName.set(nameKey, idx);
+      return;
     }
-    resolved.push({ name: trimmed, handle });
+
+    if (indexByName.has(nameKey)) return;
+    const entry = { name: trimmed } as {
+      name: string;
+      handle?: string | null;
+      represented?: boolean;
+    };
+    const idx = resolved.length;
+    resolved.push(entry);
+    indexByName.set(nameKey, idx);
   };
 
   for (const candidate of candidates) {
     const name = candidate.name?.trim();
     const handle = candidate.handle?.trim() ?? null;
+    const represented =
+      candidate.represented !== undefined && candidate.represented !== null
+        ? Boolean(candidate.represented)
+        : undefined;
     if (name) {
-      push(name, handle);
+      push(name, handle, represented ?? null);
     } else if (handle) {
       const handleKey = handle.toLowerCase();
-      if (!seenHandles.has(handleKey) && !pendingHandles.has(handleKey)) {
-        pendingHandles.add(handle);
+      if (!indexByHandle.has(handleKey)) {
+        const existingPending = pendingHandles.get(handleKey);
+        if (existingPending) {
+          if (
+            represented !== undefined &&
+            existingPending.represented === undefined
+          ) {
+            existingPending.represented = represented;
+          }
+        } else {
+          pendingHandles.set(handleKey, {
+            handle,
+            represented,
+          });
+        }
       }
     }
   }
 
   if (pendingHandles.size) {
     const results = await Promise.all(
-      Array.from(pendingHandles).map(async (handle) => {
+      Array.from(pendingHandles.values()).map(async ({ handle, represented }) => {
         try {
           const data = await shopifyFetch<{ metaobject: Node | null }>(
             ARTIST_QUERY,
@@ -600,21 +690,26 @@ async function resolveGroupArtists(fields: Field[]): Promise<
                 text(meta.fields, "full_name", "fullName", "label") ??
                 null
               : null;
-          return { handle, name };
+          const representedFromFields = extractRepresentedFlag(meta?.fields ?? null);
+          return { handle, name, represented: representedFromFields ?? represented };
         } catch (error) {
           console.warn("[exhibitions/[handle]] resolveGroupArtists fetch error", {
             handle,
             error,
           });
-          return { handle, name: null as string | null };
+          return {
+            handle,
+            name: null as string | null,
+            represented,
+          };
         }
       })
     );
 
-    for (const { handle, name } of results) {
+    for (const { handle, name, represented } of results) {
       const displayName = name?.trim() || prettifyHandle(handle);
       if (displayName) {
-        push(displayName, handle);
+        push(displayName, handle, represented ?? null);
       }
     }
   }
@@ -946,10 +1041,17 @@ export default async function ExhibitionPage({
         longTextHtml={longTextHtml}
         artists={
           groupArtists.length
-            ? groupArtists.map((artist) => ({
-                name: artist.name,
-                href: artist.handle ? `/artists/${artist.handle}` : undefined,
-              }))
+            ? groupArtists.map((artist) => {
+                const represented = artist.represented === true;
+                return {
+                  name: artist.name,
+                  href:
+                    represented && artist.handle
+                      ? `/artists/${artist.handle}`
+                      : undefined,
+                  represented,
+                };
+              })
             : undefined
         }
       />
