@@ -119,6 +119,7 @@ export async function POST(request: Request) {
       subscribe,
       artwork: { title: artworkDetails.title },
       env: {
+        notifyViaResend: process.env.NOTIFY_VIA_RESEND === "true",
         resendKey: Boolean(process.env.RESEND_API_KEY),
         resendFrom: Boolean(process.env.RESEND_FROM_EMAIL),
         enquiryRecipient: Boolean(
@@ -192,14 +193,21 @@ export async function POST(request: Request) {
 
   try {
     console.log("[enquiry][notify] attempt");
-    await sendArtworkEnquiryNotificationEmail({
-      name,
-      email,
-      phone,
-      message,
-      artwork: artworkDetails,
-    });
-    console.log("[enquiry][notify] success");
+    const notifyDirect = process.env.NOTIFY_VIA_RESEND === "true";
+    if (notifyDirect) {
+      await sendArtworkEnquiryNotificationEmail({
+        name,
+        email,
+        phone,
+        message,
+        artwork: artworkDetails,
+      });
+      console.log("[enquiry][notify] success");
+    } else {
+      console.log(
+        "[enquiry][notify] skipped (NOTIFY_VIA_RESEND not enabled)"
+      );
+    }
   } catch (error) {
     console.error("[enquiry][notify]", error);
     outcomes.push(

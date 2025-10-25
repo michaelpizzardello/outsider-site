@@ -67,6 +67,7 @@ export async function POST(request: Request) {
       email,
       subscribe,
       env: {
+        notifyViaResend: process.env.NOTIFY_VIA_RESEND === "true",
         resendKey: Boolean(process.env.RESEND_API_KEY),
         resendFrom: Boolean(process.env.RESEND_FROM_EMAIL),
         contactRecipient: Boolean(process.env.CONTACT_NOTIFICATION_EMAIL),

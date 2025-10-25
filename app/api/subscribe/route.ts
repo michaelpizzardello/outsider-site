@@ -43,6 +43,7 @@ export async function POST(request: Request) {
       hasFirstName: Boolean(firstName),
       hasLastName: Boolean(lastName),
       env: {
+        notifyViaResend: process.env.NOTIFY_VIA_RESEND === "true",
         resendKey: Boolean(process.env.RESEND_API_KEY),
         resendFrom: Boolean(process.env.RESEND_FROM_EMAIL),
         newsletterRecipient: Boolean(
@@ -141,12 +142,19 @@ export async function POST(request: Request) {
 
     try {
       console.log("[subscribe][notify] attempt");
-      await sendNewsletterNotificationEmail({
-        firstName,
-        lastName,
-        email,
-      });
-      console.log("[subscribe][notify] success");
+      const notifyDirect = process.env.NOTIFY_VIA_RESEND === "true";
+      if (notifyDirect) {
+        await sendNewsletterNotificationEmail({
+          firstName,
+          lastName,
+          email,
+        });
+        console.log("[subscribe][notify] success");
+      } else {
+        console.log(
+          "[subscribe][notify] skipped (NOTIFY_VIA_RESEND not enabled)"
+        );
+      }
     } catch (error) {
       console.error("[subscribe][notify]", error);
       partialMessages.push(
