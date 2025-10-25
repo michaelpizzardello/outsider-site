@@ -111,9 +111,36 @@ export async function POST(request: Request) {
     price: normaliseString(artwork.price),
   };
 
+  // Debug: log request summary and env presence (not values)
   try {
+    console.log("[enquiry] request", {
+      name,
+      email,
+      subscribe,
+      artwork: { title: artworkDetails.title },
+      env: {
+        resendKey: Boolean(process.env.RESEND_API_KEY),
+        resendFrom: Boolean(process.env.RESEND_FROM_EMAIL),
+        enquiryRecipient: Boolean(
+          process.env.ENQUIRY_NOTIFICATION_EMAIL ||
+            process.env.CONTACT_NOTIFICATION_EMAIL
+        ),
+        hubspotToken: Boolean(process.env.HUBSPOT_PRIVATE_APP_TOKEN),
+        mailchimpKey: Boolean(process.env.MAILCHIMP_API_KEY),
+        mailchimpAudience: Boolean(process.env.MAILCHIMP_AUDIENCE_ID),
+        mailchimpDc: Boolean(
+          process.env.MAILCHIMP_DC || process.env.MAILCHIMP_API_KEY
+        ),
+      },
+    });
+  } catch {}
+
+  try {
+    console.log("[enquiry][hubspot-contact] upsert attempt");
     await upsertContact(properties);
+    console.log("[enquiry][hubspot-contact] upsert success");
     const contactId = await getContactIdByEmail(email);
+    console.log("[enquiry][note] create attempt");
     const noteLines = [
       "Artwork enquiry received via website.",
       "",
@@ -136,8 +163,8 @@ export async function POST(request: Request) {
     ]
       .filter(Boolean)
       .join("\n");
-
     await createContactNote({ contactId, body: noteLines });
+    console.log("[enquiry][note] create success");
   } catch (error) {
     console.error("[enquiry][hubspot]", error);
     return NextResponse.json(
@@ -148,11 +175,13 @@ export async function POST(request: Request) {
 
   if (subscribe) {
     try {
+      console.log("[enquiry][mailchimp] attempt");
       await upsertMailchimpSubscriber({
         email,
         firstName: properties.firstname ?? "",
         lastName: properties.lastname ?? "",
       });
+      console.log("[enquiry][mailchimp] success");
     } catch (error) {
       console.error("[enquiry][mailchimp]", error);
       outcomes.push(
@@ -162,6 +191,7 @@ export async function POST(request: Request) {
   }
 
   try {
+    console.log("[enquiry][notify] attempt");
     await sendArtworkEnquiryNotificationEmail({
       name,
       email,
@@ -169,6 +199,7 @@ export async function POST(request: Request) {
       message,
       artwork: artworkDetails,
     });
+    console.log("[enquiry][notify] success");
   } catch (error) {
     console.error("[enquiry][notify]", error);
     outcomes.push(

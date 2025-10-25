@@ -36,6 +36,32 @@ export async function POST(request: Request) {
 
   const partialMessages: string[] = [];
 
+  // Debug: log request summary and env presence (not values)
+  try {
+    console.log("[subscribe] request", {
+      email,
+      hasFirstName: Boolean(firstName),
+      hasLastName: Boolean(lastName),
+      env: {
+        resendKey: Boolean(process.env.RESEND_API_KEY),
+        resendFrom: Boolean(process.env.RESEND_FROM_EMAIL),
+        newsletterRecipient: Boolean(
+          process.env.NEWSLETTER_NOTIFICATION_EMAIL ||
+            process.env.CONTACT_NOTIFICATION_EMAIL
+        ),
+        hubspotToken: Boolean(process.env.HUBSPOT_PRIVATE_APP_TOKEN),
+        mailchimpKey: Boolean(process.env.MAILCHIMP_API_KEY),
+        mailchimpAudience: Boolean(process.env.MAILCHIMP_AUDIENCE_ID),
+        mailchimpDc: Boolean(
+          process.env.MAILCHIMP_DC || process.env.MAILCHIMP_API_KEY
+        ),
+        hsSubIdNumeric: Number.isFinite(
+          Number(process.env.HUBSPOT_NEWSLETTER_SUBSCRIPTION_ID || "")
+        ),
+      },
+    });
+  } catch {}
+
   try {
     const properties: Record<string, string> = { email };
     if (firstName) properties.firstname = firstName;
@@ -50,11 +76,13 @@ export async function POST(request: Request) {
     }
 
     try {
+      console.log("[subscribe][mailchimp] attempt");
       await upsertMailchimpSubscriber({
         email,
         firstName,
         lastName,
       });
+      console.log("[subscribe][mailchimp] success");
     } catch (mailchimpError) {
       console.error("[subscribe][mailchimp]", mailchimpError);
       partialMessages.push(
@@ -62,15 +90,19 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log("[subscribe][hubspot-contact] upsert attempt");
     await upsertContact(properties);
+    console.log("[subscribe][hubspot-contact] upsert success");
 
     try {
+      console.log("[subscribe][note] create attempt");
       const contactId = await getContactIdByEmail(email);
       const fullName = [firstName, lastName].filter(Boolean).join(" ") || "N/A";
       await createContactNote({
         contactId,
         body: `Newsletter subscription via website footer.\n\nName: ${fullName}\nEmail: ${email}`,
       });
+      console.log("[subscribe][note] create success");
     } catch (error) {
       console.error("[subscribe][note]", error);
       partialMessages.push(
@@ -86,12 +118,20 @@ export async function POST(request: Request) {
         const legalBasis = process.env.HUBSPOT_NEWSLETTER_LEGAL_BASIS;
         const legalBasisExplanation =
           process.env.HUBSPOT_NEWSLETTER_LEGAL_BASIS_EXPLANATION;
+        console.log("[subscribe][hubspot-subscription] update attempt", {
+          subscriptionId,
+          hasLegalBasis: Boolean(process.env.HUBSPOT_NEWSLETTER_LEGAL_BASIS),
+          hasExplanation: Boolean(
+            process.env.HUBSPOT_NEWSLETTER_LEGAL_BASIS_EXPLANATION
+          ),
+        });
         await updateEmailSubscriptionStatus({
           email,
           subscriptionId,
           legalBasis,
           legalBasisExplanation,
         });
+        console.log("[subscribe][hubspot-subscription] update success");
       } else {
         console.warn(
           "[subscribe] HUBSPOT_NEWSLETTER_SUBSCRIPTION_ID is not numeric"
@@ -100,11 +140,13 @@ export async function POST(request: Request) {
     }
 
     try {
+      console.log("[subscribe][notify] attempt");
       await sendNewsletterNotificationEmail({
         firstName,
         lastName,
         email,
       });
+      console.log("[subscribe][notify] success");
     } catch (error) {
       console.error("[subscribe][notify]", error);
       partialMessages.push(
@@ -120,6 +162,13 @@ export async function POST(request: Request) {
   }
 
   const partial = partialMessages.length > 0;
+
+  try {
+    console.log("[subscribe] response", {
+      partial,
+      messages: partialMessages,
+    });
+  } catch {}
 
   return NextResponse.json({
     message: partial

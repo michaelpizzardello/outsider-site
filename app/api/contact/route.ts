@@ -60,6 +60,26 @@ export async function POST(request: Request) {
 
   const { firstName, lastName } = splitName(name);
 
+  // Debug: log request summary and env presence (not values)
+  try {
+    console.log("[contact] request", {
+      name,
+      email,
+      subscribe,
+      env: {
+        resendKey: Boolean(process.env.RESEND_API_KEY),
+        resendFrom: Boolean(process.env.RESEND_FROM_EMAIL),
+        contactRecipient: Boolean(process.env.CONTACT_NOTIFICATION_EMAIL),
+        hubspotToken: Boolean(process.env.HUBSPOT_PRIVATE_APP_TOKEN),
+        mailchimpKey: Boolean(process.env.MAILCHIMP_API_KEY),
+        mailchimpAudience: Boolean(process.env.MAILCHIMP_AUDIENCE_ID),
+        mailchimpDc: Boolean(
+          process.env.MAILCHIMP_DC || process.env.MAILCHIMP_API_KEY
+        ),
+      },
+    });
+  } catch {}
+
   try {
     const properties: Record<string, string> = {
       email,
@@ -77,11 +97,15 @@ export async function POST(request: Request) {
       }
     }
 
+    console.log("[contact][hubspot-contact] upsert attempt");
     await upsertContact(properties);
+    console.log("[contact][hubspot-contact] upsert success");
 
+    console.log("[contact][note] create attempt");
     const contactId = await getContactIdByEmail(email);
     const noteBody = `About page contact form submission:\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
     await createContactNote({ contactId, body: noteBody });
+    console.log("[contact][note] create success");
   } catch (error) {
     console.error("[contact][hubspot]", error);
     return NextResponse.json(
@@ -94,11 +118,13 @@ export async function POST(request: Request) {
 
   if (subscribe) {
     try {
+      console.log("[contact][mailchimp] attempt");
       await upsertMailchimpSubscriber({
         email,
         firstName,
         lastName,
       });
+      console.log("[contact][mailchimp] success");
     } catch (error) {
       console.error("[contact][mailchimp]", error);
       outcomes.push(
@@ -108,7 +134,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendContactNotificationEmail({ name, email, message });
+    console.log("[contact][notify] attempt");
+    const notifyDirect = process.env.NOTIFY_VIA_RESEND === "true";
+    if (notifyDirect) {
+      await sendContactNotificationEmail({ name, email, message });
+      console.log("[contact][notify] success");
+    } else {
+      console.log(
+        "[contact][notify] skipped (NOTIFY_VIA_RESEND not enabled)"
+      );
+    }
   } catch (error) {
     console.error("[contact][notify]", error);
     outcomes.push(
