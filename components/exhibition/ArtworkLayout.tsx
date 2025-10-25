@@ -212,6 +212,9 @@ export default function ArtworkLayout({
       medium || dimensionsLabel || additionalInfoHtml
     );
 
+    // Show the standalone price in the meta list whenever a price label is
+    // available (original behaviour).
+
     return (
       <div className={`w-full ${className}`.trim()}>
         {buttonsNode}

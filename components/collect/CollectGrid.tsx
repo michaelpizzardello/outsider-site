@@ -430,8 +430,21 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                 artwork.price &&
                 Number.isFinite(Number(artwork.price.amount)) &&
                 Number(artwork.price.amount) > 0;
+              const status = (artwork.status || "").trim().toLowerCase();
+              const forceEnquire =
+                status === "enquire" ||
+                status === "enquiry" ||
+                status === "reserved" ||
+                status === "poa" ||
+                status === "price on request" ||
+                status === "price_on_request" ||
+                status === "on hold" ||
+                status === "on_hold";
               const canPurchase =
-                hasPrice && artwork.available && Boolean(artwork.variantId);
+                hasPrice &&
+                artwork.available &&
+                Boolean(artwork.variantId) &&
+                !forceEnquire;
               const image = artwork.image;
               const naturalAspect =
                 image?.width && image?.height && image.height > 0

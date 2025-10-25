@@ -46,7 +46,18 @@ const ARTWORK_QUERY = /* GraphQL */ `
       additionalInfo: metafield(namespace: $ns, key: "additional_info") { value type }
       additional: metafield(namespace: $ns, key: "additional") { value type }
       notes: metafield(namespace: $ns, key: "notes") { value type }
-      status: metafield(namespace: $ns, key: "status") { value }
+      status: metafield(namespace: $ns, key: "status") {
+        value
+        type
+        reference {
+          __typename
+          ... on Metaobject {
+            handle
+            type
+            fields { key value }
+          }
+        }
+      }
       sold: metafield(namespace: $ns, key: "sold") { value }
       artistMeta: metafield(namespace: $ns, key: $artistKey) {
         value
@@ -156,6 +167,27 @@ function metafieldString(mf?: MaybeMetafield | null): string | undefined {
   return trimmed.length ? trimmed : undefined;
 }
 
+// Extract a human label from a metafield that could be a string or a reference to a metaobject.
+function metafieldStringLoose(mf?: MaybeMetafield | null): string | undefined {
+  const direct = metafieldString(mf);
+  if (direct) return direct;
+  const ref = mf?.reference;
+  if (ref?.__typename === "Metaobject") {
+    const byKey = (key: string) =>
+      ref.fields?.find((f) => f?.key?.toLowerCase() === key)?.value?.trim();
+    return (
+      byKey("value") ||
+      byKey("status") ||
+      byKey("label") ||
+      byKey("name") ||
+      byKey("title") ||
+      ref.handle ||
+      undefined
+    );
+  }
+  return undefined;
+}
+
 // Convert metafield values into HTML, accounting for rich_text payloads and
 // falling back to simple paragraph-wrapped text when necessary.
 function metafieldHtml(mf?: MaybeMetafield | null): string | undefined {
@@ -212,14 +244,22 @@ function getArtistName(meta?: MaybeMetafield | null): string | undefined {
 
 function deriveCommerceState(product: ArtworkQuery["product"]) {
   const price = product?.priceRange?.minVariantPrice;
-  const status = metafieldString(product?.status)?.toLowerCase();
+  const status = metafieldStringLoose(product?.status)?.toLowerCase();
   const soldFlag = metafieldString(product?.sold)?.toLowerCase();
+  const forceEnquire =
+    status === "enquire" ||
+    status === "enquiry" ||
+    status === "reserved" ||
+    status === "poa" ||
+    status === "price on request" ||
+    status === "price_on_request" ||
+    status === "on hold" ||
+    status === "on_hold";
   const isSold =
     soldFlag === "true" ||
     soldFlag === "1" ||
     soldFlag === "yes" ||
     status === "sold" ||
-    status === "reserved" ||
     product?.availableForSale === false;
 
   const amount = price ? Number(price.amount) : NaN;
@@ -239,7 +279,8 @@ function deriveCommerceState(product: ArtworkQuery["product"]) {
       product?.availableForSale &&
       variantAvailable &&
       publishedOnline &&
-      hasPrice
+      hasPrice &&
+      !forceEnquire
   );
 
   const priceLabel = (() => {

@@ -22,7 +22,15 @@ type ProductNode = {
   featuredImage?: { url: string; width?: number; height?: number; altText?: string | null } | null;
   priceRange?: { minVariantPrice?: Money | null } | null;
   year?: { value?: string | null } | null;
-  status?: { value?: string | null } | null;
+  status?: {
+    value?: string | null;
+    reference?: {
+      __typename: string;
+      handle?: string | null;
+      type?: string | null;
+      fields?: Array<{ key?: string | null; value?: string | null } | null> | null;
+    } | null;
+  } | null;
   artistMeta?: {
     reference?: {
       __typename: string;
@@ -65,7 +73,18 @@ const QUERY = /* GraphQL */ `
         featuredImage { url width height altText }
         priceRange { minVariantPrice { amount currencyCode } }
         year: metafield(namespace: $ns, key: "year") { value }
-        status: metafield(namespace: $ns, key: "status") { value }
+        status: metafield(namespace: $ns, key: "status") {
+          value
+          type
+          reference {
+            __typename
+            ... on Metaobject {
+              handle
+              type
+              fields { key value }
+            }
+          }
+        }
         artistMeta: metafield(namespace: $ns, key: $artistKey) {
           reference {
             __typename
@@ -99,7 +118,7 @@ function priceLabel(p: {
   availableForSale: boolean;
 }): string {
   const s = (p.status || "").trim().toLowerCase();
-  const isSold = s === "sold" || s === "reserved" || p.availableForSale === false;
+  const isSold = s === "sold" || p.availableForSale === false;
   if (isSold) return "Sold";
   if (p.price) {
     const amount = Number(p.price.amount);
@@ -257,10 +276,20 @@ export default async function FeaturedWorks({
     const isPublishedOnline = Boolean(product.onlineStoreUrl);
     const priceText = priceLabel({
       price,
-      status: product.status?.value,
+      status: statusString(product),
       availableForSale: product.availableForSale,
     });
     const isSoldLabel = priceText.trim().toLowerCase() === "sold";
+    const statusLc = (statusString(product) || "").trim().toLowerCase();
+    const isEnquire =
+      statusLc === "enquire" ||
+      statusLc === "enquiry" ||
+      statusLc === "reserved" ||
+      statusLc === "poa" ||
+      statusLc === "price on request" ||
+      statusLc === "price_on_request" ||
+      statusLc === "on hold" ||
+      statusLc === "on_hold";
     const displayPriceLabel = isSoldLabel ? "" : priceText;
     return {
       id: product.id,
@@ -275,7 +304,8 @@ export default async function FeaturedWorks({
           hasPrice &&
           isPublishedOnline &&
           variantAvailable &&
-          !isSoldLabel
+          !isSoldLabel &&
+          !isEnquire
       ),
       variantId: (primaryVariant?.id as string | undefined) ?? null,
       featureImage: product.featuredImage
@@ -298,6 +328,19 @@ export default async function FeaturedWorks({
   const availableRows = buildRows(availableArtworks);
   const soldRows = buildRows(soldArtworks);
 
+  // Compute a consistent desktop aspect from the Available set so the
+  // Featured grid uses the same row height on desktop, reducing visual
+  // whitespace differences between sections.
+  function uniformAspectFrom(list: typeof availableArtworks) {
+    const factors = list
+      .map((a) => a.heightFactor)
+      .filter((v): v is number => typeof v === "number" && v > 0);
+    if (!factors.length) return undefined;
+    const maxFactor = Math.max(...factors);
+    return maxFactor > 0 ? 1 / maxFactor : undefined;
+  }
+  const availableDesktopAspect = uniformAspectFrom(availableArtworks);
+
   if (!availableArtworks.length && !soldArtworks.length) return null;
 
   return (
@@ -308,6 +351,7 @@ export default async function FeaturedWorks({
           exhibitionHandle={exhibitionHandle}
           artworks={availableArtworks}
           rows={availableRows}
+          forcedDesktopAspect={availableDesktopAspect}
           showActions
         />
       )}
@@ -317,9 +361,30 @@ export default async function FeaturedWorks({
           exhibitionHandle={exhibitionHandle}
           artworks={soldArtworks}
           rows={soldRows}
+          // Use the same desktop aspect as Available Works when possible
+          forcedDesktopAspect={availableDesktopAspect ?? uniformAspectFrom(soldArtworks)}
           showActions={false}
         />
       )}
     </>
   );
+}
+function statusString(n: ProductNode): string | undefined {
+  const direct = n.status?.value?.trim();
+  if (direct) return direct;
+  const ref = n.status?.reference;
+  if (ref && ref.__typename === "Metaobject") {
+    const byKey = (k: string) =>
+      ref.fields?.find((f) => f?.key?.toLowerCase() === k)?.value?.trim();
+    return (
+      byKey("value") ||
+      byKey("status") ||
+      byKey("label") ||
+      byKey("name") ||
+      byKey("title") ||
+      ref.handle ||
+      undefined
+    );
+  }
+  return undefined;
 }

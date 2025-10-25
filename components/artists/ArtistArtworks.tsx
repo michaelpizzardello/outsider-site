@@ -24,7 +24,15 @@ type ProductNode = {
   } | null;
   priceRange?: { minVariantPrice?: Money | null } | null;
   year?: { value?: string | null } | null;
-  status?: { value?: string | null } | null;
+  status?: {
+    value?: string | null;
+    reference?: {
+      __typename: string;
+      handle?: string | null;
+      type?: string | null;
+      fields?: Array<{ key?: string | null; value?: string | null } | null> | null;
+    } | null;
+  } | null;
   artistMeta?: {
     value?: string | null;
     reference?: {
@@ -110,7 +118,18 @@ const QUERY = /* GraphQL */ `
           }
         }
         year: metafield(namespace: $ns, key: "year") { value }
-        status: metafield(namespace: $ns, key: "status") { value }
+        status: metafield(namespace: $ns, key: "status") {
+          value
+          type
+          reference {
+            __typename
+            ... on Metaobject {
+              handle
+              type
+              fields { key value }
+            }
+          }
+        }
         artistMeta: metafield(namespace: $ns, key: $artistKey) {
           value
           reference {
@@ -152,6 +171,31 @@ const QUERY = /* GraphQL */ `
 
 // Helpers -------------------------------------------------------------------
 
+function normalize(v?: string | null): string {
+  return (v || "").trim();
+}
+
+function statusString(node: ProductNode): string | undefined {
+  const direct = normalize(node.status?.value);
+  if (direct) return direct;
+  const ref = node.status?.reference;
+  if (ref && ref.__typename === "Metaobject") {
+    // Try common field keys then fall back to handle
+    const fields = ref.fields || [];
+    const byKey = (k: string) =>
+      fields.find((f) => f?.key?.toLowerCase() === k)?.value || undefined;
+    const fromField =
+      byKey("value") ||
+      byKey("status") ||
+      byKey("label") ||
+      byKey("name") ||
+      byKey("title");
+    if (fromField) return fromField;
+    if (ref.handle) return ref.handle;
+  }
+  return undefined;
+}
+
 function priceLabel({
   price,
   status,
@@ -162,10 +206,7 @@ function priceLabel({
   availableForSale: boolean;
 }): string {
   const normalizedStatus = (status || "").trim().toLowerCase();
-  const isSold =
-    normalizedStatus === "sold" ||
-    normalizedStatus === "reserved" ||
-    availableForSale === false;
+  const isSold = normalizedStatus === "sold" || availableForSale === false;
   if (isSold) return "Sold";
   if (price) {
     const amount = Number(price.amount);
@@ -233,12 +274,23 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
 
   const artworks: ArtworkPayload[] = filtered.map((product) => {
     const price = product.priceRange?.minVariantPrice ?? undefined;
+    const statusValue = statusString(product);
     const priceText = priceLabel({
       price,
-      status: product.status?.value,
+      status: statusValue,
       availableForSale: product.availableForSale,
     });
     const isSold = priceText.trim().toLowerCase() === "sold";
+    const statusLc = (statusValue || "").trim().toLowerCase();
+    const isEnquire =
+      statusLc === "enquire" ||
+      statusLc === "enquiry" ||
+      statusLc === "reserved" ||
+      statusLc === "poa" ||
+      statusLc === "price on request" ||
+      statusLc === "price_on_request" ||
+      statusLc === "on hold" ||
+      statusLc === "on_hold";
     const displayPriceLabel = isSold ? "" : priceText;
     const amount = price ? Number(price.amount) : NaN;
     const hasPrice = Number.isFinite(amount) && amount > 0;
@@ -266,7 +318,8 @@ export default async function ArtistArtworks({ artistHandle, artistName }: Props
           hasPrice &&
           isPublishedOnline &&
           variantAvailable &&
-          !isSold
+          !isSold &&
+          !isEnquire
       ),
       variantId: (primaryVariant?.id as string | undefined) ?? null,
       featureImage: product.featuredImage ?? undefined,

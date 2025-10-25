@@ -38,6 +38,12 @@ type Props = {
   artworks: ArtworkPayload[];
   rows: LayoutRow[];
   showActions?: boolean;
+  /**
+   * Optional desktop aspect ratio override. If provided, all cards will
+   * use this aspect on desktop breakpoints for consistent row heights.
+   * Falls back to a uniform aspect computed from the provided artworks.
+   */
+  forcedDesktopAspect?: number;
 };
 
 type RenderOptions = {
@@ -182,6 +188,7 @@ export default function FeaturedWorksClient({
   artworks,
   rows: _rows,
   showActions = true,
+  forcedDesktopAspect,
 }: Props) {
   const [enquiryArtwork, setEnquiryArtwork] = React.useState<ArtworkPayload | null>(null);
   const [addingId, setAddingId] = React.useState<string | null>(null);
@@ -195,6 +202,11 @@ export default function FeaturedWorksClient({
     const maxFactor = Math.max(...factors);
     return maxFactor > 0 ? 1 / maxFactor : undefined;
   }, [artworks]);
+  // Prefer explicit override, else compute uniform from this list
+  const desktopAspect =
+    typeof forcedDesktopAspect === "number" && forcedDesktopAspect > 0
+      ? forcedDesktopAspect
+      : uniformAspect;
   const closeEnquiry = () => setEnquiryArtwork(null);
   const handlePurchase = React.useCallback(
     async (artwork: ArtworkPayload) => {
@@ -230,7 +242,7 @@ export default function FeaturedWorksClient({
                 exhibitionHandle={exhibitionHandle}
                 options={{
                   span: "third",
-                  forcedAspectRatio: uniformAspect,
+                  forcedAspectRatio: desktopAspect,
                   sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
                   centerImage: true,
                 }}

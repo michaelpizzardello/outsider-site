@@ -281,7 +281,13 @@ export default function ArtistArtworksClient({
   return (
     <>
       {renderSection("Available Works", availableArtworks, availableAspect, true)}
-      {renderSection("Featured Works", soldArtworks, soldAspect, false)}
+      {renderSection(
+        "Featured Works",
+        soldArtworks,
+        // Match the desktop aspect to Available Works when possible
+        availableAspect ?? soldAspect,
+        false
+      )}
       <ArtworkEnquiryModal
         open={Boolean(enquiryArtwork)}
         onClose={closeEnquiry}

@@ -59,7 +59,7 @@ type ProductNode = {
   mediumField?: { value?: string | null } | null;
   dimensionsField?: { value?: string | null } | null;
   soldField?: { value?: string | null } | null;
-  statusField?: { value?: string | null } | null;
+  statusField?: { value?: string | null; reference?: MetaobjectReference } | null;
   widthField?: { value?: string | null } | null;
   heightField?: { value?: string | null } | null;
   depthField?: { value?: string | null } | null;
@@ -143,7 +143,18 @@ const QUERY = /* GraphQL */ `
         mediumField: metafield(namespace: "custom", key: "medium") { value }
         dimensionsField: metafield(namespace: "custom", key: "dimensions") { value }
         soldField: metafield(namespace: "custom", key: "sold") { value }
-        statusField: metafield(namespace: "custom", key: "status") { value }
+        statusField: metafield(namespace: "custom", key: "status") {
+          value
+          type
+          reference {
+            __typename
+            ... on Metaobject {
+              handle
+              type
+              fields { key value }
+            }
+          }
+        }
         widthField: metafield(namespace: "custom", key: "width") { value }
         heightField: metafield(namespace: "custom", key: "height") { value }
         depthField: metafield(namespace: "custom", key: "depth") { value }
@@ -224,7 +235,8 @@ function formatDimensionsCm(
 function mapProduct(node: ProductNode): CollectArtwork {
   const variant = pickVariant(node.variants?.nodes ?? []);
   const soldFlag = parseBoolean(node.soldField?.value);
-  const status = norm(node.statusField?.value);
+  const status = statusFromMeta(node.statusField);
+  const statusLc = (status || "").toLowerCase();
   const primaryExhibition =
     node.exhibitions?.reference?.__typename === "Metaobject"
       ? norm(node.exhibitions.reference.handle)
@@ -233,7 +245,12 @@ function mapProduct(node: ProductNode): CollectArtwork {
     node.exhibitions?.references?.nodes?.find(
       (ref) => ref?.__typename === "Metaobject" && ref?.handle
     )?.handle ?? null;
-  const available = (variant?.availableForSale ?? node.availableForSale) && !soldFlag && status?.toLowerCase() !== "sold";
+  // Show in Collect when not sold. Items marked as
+  // "reserved" or "enquire" remain visible but are not directly purchasable (handled in UI).
+  const available =
+    (variant?.availableForSale ?? node.availableForSale) &&
+    !soldFlag &&
+    statusLc !== "sold";
   const widthCm = metafieldNumber(node.widthField);
   const heightCm = metafieldNumber(node.heightField);
   const depthCm = metafieldNumber(node.depthField);
@@ -317,4 +334,22 @@ export default async function CollectPage() {
       </div>
     </main>
   );
+}
+function statusFromMeta(field?: { value?: string | null; reference?: MetaobjectReference } | null): string | null {
+  const s = norm(field?.value);
+  if (s) return s;
+  const ref = field?.reference;
+  if (ref && ref.__typename === "Metaobject") {
+    const byKey = (k: string) =>
+      ref.fields?.find((f) => f?.key?.toLowerCase() === k)?.value?.trim() || null;
+    return (
+      byKey("value") ||
+      byKey("status") ||
+      byKey("label") ||
+      byKey("name") ||
+      byKey("title") ||
+      norm(ref.handle)
+    );
+  }
+  return null;
 }
