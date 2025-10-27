@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
+import * as Slider from "@radix-ui/react-slider";
 
 import type { CollectArtwork } from "@/app/collect/page";
 import { useCart } from "@/components/cart/CartContext";
@@ -13,7 +14,6 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type Props = {
   artworks: CollectArtwork[];
-  mediums: string[];
   artists: string[];
 };
 
@@ -53,6 +53,72 @@ function getSizeValue(artwork: CollectArtwork) {
   return values[0] * values[1];
 }
 
+function getPriceAmount(artwork: CollectArtwork): number | null {
+  const amount = Number(artwork.price?.amount ?? NaN);
+  return Number.isFinite(amount) ? amount : null;
+}
+
+function parseDimensionValues(input?: string | null): number[] {
+  if (!input) return [];
+  const matches = input.match(/[\d.,]+/g);
+  if (!matches) return [];
+  return matches
+    .map((token) => Number(token.replace(/,/g, "")))
+    .filter((value) => Number.isFinite(value));
+}
+
+function getLargestDimensionMeters(artwork: CollectArtwork): number | null {
+  const values: number[] = [];
+  const pushCm = (value: number | null) => {
+    if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+      values.push(value);
+    }
+  };
+  pushCm(artwork.widthCm ?? null);
+  pushCm(artwork.heightCm ?? null);
+  pushCm(artwork.depthCm ?? null);
+  if (!values.length && artwork.dimensions) {
+    values.push(...parseDimensionValues(artwork.dimensions));
+  }
+  if (!values.length) return null;
+  const maxCm = Math.max(...values);
+  return maxCm > 0 ? maxCm / 100 : null;
+}
+
+const SIZE_OPTIONS = ["Less than 1m", "1–2m", "More than 1m"] as const;
+
+type SizeFilterOption = (typeof SIZE_OPTIONS)[number];
+
+function matchesSizeBucket(largestMeters: number | null, buckets: SizeFilterOption[]) {
+  if (!buckets.length) return true;
+  if (largestMeters === null) return false;
+  return buckets.some((bucket) => {
+    switch (bucket) {
+      case "Less than 1m":
+        return largestMeters < 1;
+      case "1–2m":
+        return largestMeters >= 1 && largestMeters <= 2;
+      case "More than 1m":
+        return largestMeters > 2;
+      default:
+        return false;
+    }
+  });
+}
+
+function computePriceStep(min: number, max: number) {
+  const span = Math.max(max - min, 1);
+  const rawStep = span / 100;
+  if (rawStep <= 10) return 10;
+  if (rawStep <= 25) return 25;
+  if (rawStep <= 50) return 50;
+  if (rawStep <= 100) return 100;
+  if (rawStep <= 250) return 250;
+  if (rawStep <= 500) return 500;
+  if (rawStep <= 1000) return 1000;
+  return Math.ceil(rawStep / 1000) * 1000;
+}
+
 type FilterCheckboxGroupProps = {
   id: string;
   label: string;
@@ -63,6 +129,13 @@ type FilterCheckboxGroupProps = {
 
 type IconProps = {
   className?: string;
+};
+
+type PriceStats = {
+  min: number;
+  max: number;
+  hasPrice: boolean;
+  currencyCode: string | null;
 };
 
 function FilterIcon({ className = "h-4 w-4" }: IconProps) {
@@ -156,11 +229,108 @@ function FilterCheckboxGroup({
   );
 }
 
-export default function CollectGrid({ artworks, mediums, artists }: Props) {
+type PriceSliderProps = {
+  min: number;
+  max: number;
+  value: [number, number];
+  onChange: (value: [number, number]) => void;
+  currencyCode?: string | null;
+  disabled?: boolean;
+};
+
+function PriceSlider({
+  min,
+  max,
+  value,
+  onChange,
+  currencyCode,
+  disabled = false,
+}: PriceSliderProps) {
+  if (!Number.isFinite(min) || !Number.isFinite(max) || disabled) {
+    return (
+      <section className="space-y-3" aria-disabled="true">
+        <div className="flex items-end justify-between">
+          <span className="text-sm font-semibold text-neutral-800">Price</span>
+          <span className="text-xs text-neutral-500">No price data</span>
+        </div>
+        <div className="h-2 w-full rounded-full bg-neutral-200" aria-hidden="true" />
+      </section>
+    );
+  }
+
+  const [currentMin, currentMax] = value;
+  const formattedMin = formatCurrency(currentMin, currencyCode ?? "GBP");
+  const formattedMax = formatCurrency(currentMax, currencyCode ?? "GBP");
+
+  if (min >= max) {
+    return (
+      <section className="space-y-3">
+        <div className="flex items-end justify-between">
+          <span className="text-sm font-semibold text-neutral-800">Price</span>
+          <span className="text-xs text-neutral-500">{formattedMin}</span>
+        </div>
+        <p className="text-xs text-neutral-500">
+          All available works with listed prices share this price point.
+        </p>
+      </section>
+    );
+  }
+
+  const step = computePriceStep(min, max);
+
+  function handleValueChange(next: number[]) {
+    if (next.length < 2) return;
+    const [nextMin, nextMax] = next;
+    const clampedMin = Math.min(Math.max(nextMin, min), max);
+    const clampedMax = Math.max(Math.min(nextMax, max), min);
+    onChange([
+      Math.min(clampedMin, clampedMax),
+      Math.max(clampedMin, clampedMax),
+    ]);
+  }
+
+  return (
+    <section aria-labelledby="price-slider-label" className="space-y-3">
+      <div className="flex items-end justify-between">
+        <span id="price-slider-label" className="text-sm font-semibold text-neutral-800">
+          Price
+        </span>
+        <span className="text-xs text-neutral-500">
+          {formattedMin} – {formattedMax}
+        </span>
+      </div>
+      <div className="space-y-4">
+        <Slider.Root
+          value={[currentMin, currentMax]}
+          min={min}
+          max={max}
+          step={step}
+          onValueChange={handleValueChange}
+          aria-labelledby="price-slider-label"
+          className="relative flex h-8 w-full items-center"
+        >
+          <Slider.Track className="relative h-0.5 w-full rounded bg-neutral-200">
+            <Slider.Range className="absolute h-full rounded bg-neutral-900" />
+          </Slider.Track>
+          <Slider.Thumb
+            className="block h-4 w-4 rounded-full border border-white bg-neutral-900 shadow-md transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+            aria-label="Minimum price"
+          />
+          <Slider.Thumb
+            className="block h-4 w-4 rounded-full border border-white bg-neutral-900 shadow-md transition focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+            aria-label="Maximum price"
+          />
+        </Slider.Root>
+      </div>
+    </section>
+  );
+}
+
+export default function CollectGrid({ artworks, artists }: Props) {
   const { addLine, openCart } = useCart();
   const [search, setSearch] = useState("");
-  const [selectedMediums, setSelectedMediums] = useState<string[]>([]);
   const [selectedArtists, setSelectedArtists] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<SizeFilterOption[]>([]);
   const [sortBy, setSortBy] = useState<SortKey>("recent");
   const [enquiryArtwork, setEnquiryArtwork] = useState<CollectArtwork | null>(
     null
@@ -168,6 +338,63 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [showMobileFilterButton, setShowMobileFilterButton] = useState(false);
+
+  const sizeLookup = useMemo(() => new Set<string>(SIZE_OPTIONS), []);
+
+  const handleSizeChange = useCallback(
+    (next: string[]) => {
+      const filtered = next.filter((value): value is SizeFilterOption =>
+        sizeLookup.has(value)
+      );
+      setSelectedSizes(filtered);
+    },
+    [sizeLookup]
+  );
+
+  const priceStats = useMemo<PriceStats>(() => {
+    const priceEntries = artworks
+      .map((artwork) => {
+        const amount = getPriceAmount(artwork);
+        return amount === null
+          ? null
+          : {
+              amount,
+              currencyCode: artwork.price?.currencyCode ?? null,
+            };
+      })
+      .filter((entry): entry is { amount: number; currencyCode: string | null } => Boolean(entry));
+    if (!priceEntries.length) {
+      return { min: 0, max: 0, hasPrice: false, currencyCode: null };
+    }
+    let min = Number.POSITIVE_INFINITY;
+    let max = Number.NEGATIVE_INFINITY;
+    for (const entry of priceEntries) {
+      if (entry.amount < min) min = entry.amount;
+      if (entry.amount > max) max = entry.amount;
+    }
+    const currencyCode = priceEntries.find((entry) => entry.currencyCode)?.currencyCode ?? null;
+    return {
+      min,
+      max,
+      hasPrice: Number.isFinite(min) && Number.isFinite(max),
+      currencyCode,
+    };
+  }, [artworks]);
+
+  const [priceRange, setPriceRange] = useState<[number, number]>(() => [
+    priceStats.min,
+    priceStats.max,
+  ]);
+
+  useEffect(() => {
+    if (!priceStats.hasPrice) return;
+    setPriceRange((prev) => {
+      if (prev[0] === priceStats.min && prev[1] === priceStats.max) {
+        return prev;
+      }
+      return [priceStats.min, priceStats.max];
+    });
+  }, [priceStats.hasPrice, priceStats.max, priceStats.min]);
 
   useEffect(() => {
     if (isDesktop) {
@@ -196,23 +423,29 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
     };
   }, [mobileFiltersOpen]);
 
+  const priceFilterActive =
+    priceStats.hasPrice &&
+    (priceRange[0] > priceStats.min || priceRange[1] < priceStats.max);
+
   const filtered = useMemo(() => {
-    const mediumFilters = selectedMediums.map((value) => value.toLowerCase());
     const artistFilters = selectedArtists.map((value) => value.toLowerCase());
+    const searchValue = search.trim().toLowerCase();
     return artworks.filter((artwork) => {
-      if (mediumFilters.length) {
-        const mediumValue = artwork.medium?.toLowerCase() ?? "";
-        const matchesMedium = mediumFilters.some((filter) =>
-          mediumValue.includes(filter)
-        );
-        if (!matchesMedium) return false;
-      }
       if (artistFilters.length) {
         const artistValue = (artwork.artist ?? "").toLowerCase();
         const matchesArtist = artistFilters.includes(artistValue);
         if (!matchesArtist) return false;
       }
-      if (search.trim()) {
+      if (selectedSizes.length) {
+        const largestMeters = getLargestDimensionMeters(artwork);
+        if (!matchesSizeBucket(largestMeters, selectedSizes)) return false;
+      }
+      if (priceFilterActive) {
+        const amount = getPriceAmount(artwork);
+        if (amount === null) return false;
+        if (amount < priceRange[0] || amount > priceRange[1]) return false;
+      }
+      if (searchValue) {
         const haystack = [
           artwork.title,
           artwork.artist,
@@ -222,11 +455,18 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
           .filter(Boolean)
           .join(" ")
           .toLowerCase();
-        if (!haystack.includes(search.trim().toLowerCase())) return false;
+        if (!haystack.includes(searchValue)) return false;
       }
       return true;
     });
-  }, [artworks, search, selectedArtists, selectedMediums]);
+  }, [
+    artworks,
+    search,
+    selectedArtists,
+    selectedSizes,
+    priceFilterActive,
+    priceRange,
+  ]);
 
   const sorted = useMemo(() => {
     const next = [...filtered];
@@ -302,17 +542,21 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
   }
 
   const appliedFilterCount =
-    selectedMediums.length +
     selectedArtists.length +
+    selectedSizes.length +
+    (priceFilterActive ? 1 : 0) +
     (search.trim() ? 1 : 0) +
     (sortBy !== "recent" ? 1 : 0);
   const hasActiveFilters = appliedFilterCount > 0;
 
   function resetFilters() {
-    setSelectedMediums([]);
     setSelectedArtists([]);
+    setSelectedSizes([]);
     setSearch("");
     setSortBy("recent");
+    if (priceStats.hasPrice) {
+      setPriceRange([priceStats.min, priceStats.max]);
+    }
   }
 
   return (
@@ -346,12 +590,20 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                 </select>
               </label>
             </div>
+            <PriceSlider
+              min={priceStats.min}
+              max={priceStats.max}
+              value={priceRange}
+              onChange={setPriceRange}
+              currencyCode={priceStats.currencyCode}
+              disabled={!priceStats.hasPrice}
+            />
             <FilterCheckboxGroup
-              id="desktop-mediums"
-              label="Medium"
-              options={mediums}
-              selected={selectedMediums}
-              onChange={setSelectedMediums}
+              id="desktop-sizes"
+              label="Size"
+              options={SIZE_OPTIONS.slice()}
+              selected={selectedSizes}
+              onChange={handleSizeChange}
             />
             <FilterCheckboxGroup
               id="desktop-artists"
@@ -642,12 +894,20 @@ export default function CollectGrid({ artworks, mediums, artists }: Props) {
                   <option value="artist">Artist (A–Z)</option>
                 </select>
               </label>
+              <PriceSlider
+                min={priceStats.min}
+                max={priceStats.max}
+                value={priceRange}
+                onChange={setPriceRange}
+                currencyCode={priceStats.currencyCode}
+                disabled={!priceStats.hasPrice}
+              />
               <FilterCheckboxGroup
-                id="mobile-mediums"
-                label="Medium"
-                options={mediums}
-                selected={selectedMediums}
-                onChange={setSelectedMediums}
+                id="mobile-sizes"
+                label="Size"
+                options={SIZE_OPTIONS.slice()}
+                selected={selectedSizes}
+                onChange={handleSizeChange}
               />
               <FilterCheckboxGroup
                 id="mobile-artists"

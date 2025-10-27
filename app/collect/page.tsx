@@ -290,15 +290,6 @@ export default async function CollectPage() {
         !isDraftStatus(artwork.status)
     );
 
-  const mediums = Array.from(
-    new Set(
-      artworks
-        .map((artwork) => artwork.medium)
-        .filter((value): value is string => Boolean(value))
-        .map((value) => value.trim())
-    )
-  ).sort((a, b) => a.localeCompare(b));
-
   const artists = Array.from(
     new Set(
       artworks
@@ -328,7 +319,7 @@ export default async function CollectPage() {
       >
         <section className="pt-10 pb-16 sm:pt-14 sm:pb-20">
           <Container className="max-w-5xl">
-            <CollectGrid artworks={artworks} mediums={mediums} artists={artists} />
+            <CollectGrid artworks={artworks} artists={artists} />
           </Container>
         </section>
       </div>
