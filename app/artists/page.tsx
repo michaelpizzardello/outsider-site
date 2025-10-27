@@ -97,38 +97,53 @@ const QUERY = /* GraphQL */ `
 // -----------------------------------------------------------------------------
 
 /**
- * Determine the best available cover image for an artist.
- * Priority order:
- *   1. MediaImage reference (ideal: includes alt text)
- *   2. GenericFile preview image (Shopify renders this for many uploads)
- *   3. GenericFile direct URL (no alt text available)
- *   4. Raw string value when it looks like an HTTP URL
+ * Locate the first field whose key matches any of the provided values (case insensitive).
  */
-function coverFromFields(fields: Field[]) {
-  const field = fields.find((f) => f.key === "coverimage");
+function fieldByKeys(fields: Field[], keys: string[]) {
+  const lower = keys.map((key) => key.toLowerCase());
+  return fields.find((field) => lower.includes(field.key.toLowerCase()));
+}
+
+type ImageResult = { url: string | null; alt: string | null };
+
+function imageFromField(field?: Field | null): ImageResult {
   if (!field) return { url: null, alt: null };
 
   const ref = field.reference;
 
-  if (ref?.__typename === "MediaImage" && "image" in ref) {
-    const image = ref.image;
-    if (image?.url) {
-      return { url: image.url, alt: image.altText ?? null };
-    }
+  if (ref?.__typename === "MediaImage" && "image" in ref && ref.image?.url) {
+    return { url: ref.image.url, alt: ref.image.altText ?? null };
   }
 
   if (ref?.__typename === "GenericFile") {
-    if (ref.previewImage?.url) {
-      return { url: ref.previewImage.url, alt: null };
-    }
-    if (ref.url) {
-      return { url: ref.url, alt: null };
-    }
+    if (ref.previewImage?.url) return { url: ref.previewImage.url, alt: null };
+    if (ref.url) return { url: ref.url, alt: null };
   }
 
   if (typeof field.value === "string" && field.value.startsWith("http")) {
     return { url: field.value, alt: null };
   }
+
+  return { url: null, alt: null };
+}
+
+/**
+ * Determine the best available grid image for an artist.
+ * Priority order:
+ *   1. Thumbnail metafield when present
+ *   2. Cover image metafields
+ * Each candidate applies the same internal reference priority:
+ *   - MediaImage reference (ideal: includes alt text)
+ *   - GenericFile preview image
+ *   - GenericFile direct URL
+ *   - Raw string that looks like an HTTP URL
+ */
+function coverFromFields(fields: Field[]) {
+  const thumbnail = imageFromField(fieldByKeys(fields, ["thumbnail", "thumb", "grid_image"]));
+  if (thumbnail.url) return thumbnail;
+
+  const cover = imageFromField(fieldByKeys(fields, ["coverimage", "cover_image", "cover"]));
+  if (cover.url) return cover;
 
   return { url: null, alt: null };
 }

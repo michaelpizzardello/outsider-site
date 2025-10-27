@@ -75,6 +75,7 @@ export type CollectArtwork = {
   title: string;
   exhibitionHandle: string | null;
   artist: string | null;
+  artistSortKey: string | null;
   year: string | null;
   medium: string | null;
   dimensions: string | null;
@@ -210,6 +211,23 @@ function getArtistName(node: ProductNode): string | null {
   return norm(node.vendor);
 }
 
+function getArtistSortKey(node: ProductNode, artistName: string | null): string | null {
+  const fromMeta = metaobjectFieldLookup(node.artistField?.reference, [
+    "sortKey",
+    "sort_key",
+    "sort-key",
+    "sortkey",
+    "lastname",
+    "last_name",
+    "lastName",
+  ]);
+  if (fromMeta) return fromMeta.toLowerCase();
+  if (!artistName) return null;
+  const parts = artistName.split(/\s+/).filter(Boolean);
+  if (!parts.length) return artistName.toLowerCase();
+  return parts[parts.length - 1].toLowerCase();
+}
+
 function metafieldNumber(field: { value?: string | null } | null | undefined) {
   const value = norm(field?.value);
   if (!value) return null;
@@ -251,6 +269,8 @@ function mapProduct(node: ProductNode): CollectArtwork {
     (variant?.availableForSale ?? node.availableForSale) &&
     !soldFlag &&
     statusLc !== "sold";
+  const artist = getArtistName(node);
+  const artistSortKey = getArtistSortKey(node, artist);
   const widthCm = metafieldNumber(node.widthField);
   const heightCm = metafieldNumber(node.heightField);
   const depthCm = metafieldNumber(node.depthField);
@@ -261,7 +281,8 @@ function mapProduct(node: ProductNode): CollectArtwork {
     handle: node.handle,
     title: node.title,
     exhibitionHandle: primaryExhibition || norm(secondaryExhibition),
-    artist: getArtistName(node),
+    artist,
+    artistSortKey,
     year: norm(node.yearField?.value),
     medium: norm(node.mediumField?.value),
     dimensions: dimensionsLabel,
@@ -290,14 +311,28 @@ export default async function CollectPage() {
         !isDraftStatus(artwork.status)
     );
 
-  const artists = Array.from(
-    new Set(
-      artworks
-        .map((artwork) => artwork.artist)
-        .filter((value): value is string => Boolean(value))
-        .map((value) => value.trim())
-    )
-  ).sort((a, b) => a.localeCompare(b));
+  const artistMap = new Map<string, string>();
+  for (const artwork of artworks) {
+    const name = artwork.artist?.trim();
+    if (!name) continue;
+    const lowerName = name.toLowerCase();
+    const sortKey = artwork.artistSortKey?.trim().toLowerCase();
+    const candidate = sortKey && sortKey.length ? sortKey : lowerName;
+    const existing = artistMap.get(name);
+    if (!existing) {
+      artistMap.set(name, candidate);
+    } else if (existing === lowerName && candidate !== lowerName) {
+      artistMap.set(name, candidate);
+    }
+  }
+
+  const artists = Array.from(artistMap.entries())
+    .sort((a, b) => {
+      const aKey = a[1] || a[0].toLowerCase();
+      const bKey = b[1] || b[0].toLowerCase();
+      return aKey.localeCompare(bKey);
+    })
+    .map(([name]) => name);
 
   return (
     <main className="text-neutral-900" style={{ paddingTop: "var(--header-h, 76px)" }}>

@@ -5,6 +5,7 @@ import ArtistHero from "@/components/artists/ArtistHero";
 import ArtistBioSection from "@/components/artists/ArtistBioSection";
 import ArtistArtworks from "@/components/artists/ArtistArtworks";
 import ArtistExhibitions from "@/components/artists/ArtistExhibitions";
+import InstallationViews from "@/components/exhibition/InstallationViews";
 import type { PortraitVideoSource } from "@/components/media/PortraitVideoPlayer";
 import { shopifyFetch } from "@/lib/shopify";
 import { extractLongCopy } from "@/lib/extractLongCopy";
@@ -36,7 +37,13 @@ type FieldRef =
     }
   | { __typename: string };
 
-type Field = { key: string; type: string; value: string; reference: FieldRef | null };
+type Field = {
+  key: string;
+  type: string;
+  value: string;
+  reference: FieldRef | null;
+  references?: { nodes?: Array<FieldRef | null> | null } | Array<FieldRef | null> | null;
+};
 
 type CoverImage = {
   url: string;
@@ -73,6 +80,22 @@ const QUERY = /* GraphQL */ `
           ... on Video {
             sources { url mimeType }
             previewImage { url width height altText }
+          }
+        }
+        references(first: 50) {
+          nodes {
+            __typename
+            ... on MediaImage {
+              image { url width height altText }
+            }
+            ... on GenericFile {
+              url
+              previewImage { url }
+            }
+            ... on Video {
+              sources { url mimeType }
+              previewImage { url width height altText }
+            }
           }
         }
       }
@@ -151,6 +174,36 @@ function imageFromField(field?: Field): CoverImage | null {
   return null;
 }
 
+function imageFromReference(ref?: FieldRef | null): CoverImage | null {
+  if (!ref) return null;
+
+  if (ref.__typename === "MediaImage" && ref.image?.url) {
+    return {
+      url: ref.image.url,
+      width: typeof ref.image.width === "number" ? ref.image.width : undefined,
+      height: typeof ref.image.height === "number" ? ref.image.height : undefined,
+      alt: ref.image.altText ?? undefined,
+    };
+  }
+
+  if (ref.__typename === "GenericFile") {
+    if (ref.url) return { url: ref.url };
+    if (ref.previewImage?.url) return { url: ref.previewImage.url };
+  }
+
+  if (ref.__typename === "Video" && ref.previewImage?.url) {
+    return {
+      url: ref.previewImage.url,
+      width: typeof ref.previewImage.width === "number" ? ref.previewImage.width : undefined,
+      height:
+        typeof ref.previewImage.height === "number" ? ref.previewImage.height : undefined,
+      alt: ref.previewImage.altText ?? undefined,
+    };
+  }
+
+  return null;
+}
+
 function isProbablyVideo(url: string) {
   return /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(url);
 }
@@ -224,6 +277,31 @@ function coverFromFields(fields: Field[]): CoverImage | null {
   return null;
 }
 
+function collectCarouselImages(fields: Field[]): CoverImage[] {
+  const carouselField = fieldByKeys(fields, ["carousel", "carousel_images", "image_carousel"]);
+  if (!carouselField) return [];
+
+  const referencesAny = carouselField.references as
+    | { nodes?: Array<FieldRef | null> | null }
+    | Array<FieldRef | null>
+    | null
+    | undefined;
+
+  const referenceNodes: Array<FieldRef | null> = Array.isArray(referencesAny)
+    ? referencesAny
+    : Array.isArray(referencesAny?.nodes)
+    ? referencesAny.nodes ?? []
+    : [];
+
+  const fromRefs = referenceNodes
+    .map((ref) => imageFromReference(ref ?? undefined))
+    .filter((img): img is CoverImage => Boolean(img));
+  if (fromRefs.length) return fromRefs;
+
+  const single = imageFromField(carouselField);
+  return single ? [single] : [];
+}
+
 export default async function ArtistPage({ params }: { params: { handle: string } }) {
   const data = await shopifyFetch<ByHandleQuery>(QUERY, { handle: params.handle });
   const mo = data.metaobject;
@@ -253,6 +331,7 @@ export default async function ArtistPage({ params }: { params: { handle: string 
   const longBioHtml =
     fieldToHtml(fieldByKeys(mo.fields, ["long_bio", "longbio", "bio_long"])) ??
     fallbackBioHtml(mo.fields);
+  const carouselImages = collectCarouselImages(mo.fields);
 
   return (
     <main
@@ -271,6 +350,9 @@ export default async function ArtistPage({ params }: { params: { handle: string 
         portraitVideo={portraitVideo}
         artistName={name}
       />
+      {carouselImages.length ? (
+        <InstallationViews images={carouselImages} showTitle={false} />
+      ) : null}
       <ArtistArtworks artistHandle={mo.handle} artistName={name} />
       <ArtistExhibitions artistHandle={mo.handle} artistName={name} />
     </main>

@@ -52,17 +52,33 @@ type ProductNode = {
 };
 
 type QueryResult = {
-  products: { nodes: ProductNode[] } | null;
+  products:
+    | {
+        nodes: Array<ProductNode | null>;
+        pageInfo: { hasNextPage: boolean; endCursor?: string | null };
+      }
+    | null;
 };
 
 const QUERY = /* GraphQL */ `
   query FeaturedWorks(
-    $first: Int = 80
+    $first: Int = 200
+    $after: String
     $ns: String = "custom"
     $exKey: String = "exhibitions"
     $artistKey: String = "artist"
   ) {
-    products(first: $first, query: "status:active") {
+    products(
+      first: $first
+      after: $after
+      sortKey: UPDATED_AT
+      reverse: true
+      query: "status:active"
+    ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       nodes {
         id
         handle
@@ -176,13 +192,35 @@ export default async function FeaturedWorks({
   fallbackArtist,
 }: Props) {
   // Fetch a light list of products and filter client-side by reference
-  const data = await shopifyFetch<QueryResult>(QUERY, {
-    first: 80,
-    ns: "custom",
-    exKey: "exhibitions",
-    artistKey: "artist",
-  });
-  const all = data?.products?.nodes ?? [];
+  const pageSize = 200;
+  const all: ProductNode[] = [];
+  const seen = new Set<string>();
+  let after: string | null = null;
+
+  while (true) {
+    const data = await shopifyFetch<QueryResult>(QUERY, {
+      first: pageSize,
+      after,
+      ns: "custom",
+      exKey: "exhibitions",
+      artistKey: "artist",
+    });
+    const page = data?.products;
+    if (!page) break;
+
+    for (const node of page.nodes ?? []) {
+      if (!node?.id) continue;
+      if (seen.has(node.id)) continue;
+      seen.add(node.id);
+      all.push(node);
+    }
+
+    if (!page.pageInfo?.hasNextPage) break;
+    const nextCursor = page.pageInfo.endCursor;
+    if (!nextCursor) break;
+    after = nextCursor;
+  }
+
   const nodes = all
     .filter((p) => productMatchesExhibition(p, exhibitionHandle))
     .filter((p) => !isDraftStatus(p.status?.value));

@@ -174,22 +174,16 @@ function FilterCheckboxGroup({
   }
 
   const hasSelection = selected.length > 0;
-  const selectionLabel = hasSelection
-    ? `${selected.length} selected`
-    : "All available";
 
   return (
     <section aria-labelledby={`${id}-label`} className="space-y-3">
       <div className="flex items-end justify-between gap-4">
-        <div>
-          <span
-            id={`${id}-label`}
-            className="text-sm font-semibold text-neutral-800"
-          >
-            {label}
-          </span>
-          <p className="mt-1 text-xs text-neutral-500">{selectionLabel}</p>
-        </div>
+        <span
+          id={`${id}-label`}
+          className="text-sm font-semibold text-neutral-800"
+        >
+          {label}
+        </span>
         {hasSelection ? (
           <button
             type="button"
@@ -476,11 +470,11 @@ export default function CollectGrid({ artworks, artists }: Props) {
         break;
       case "artist":
         next.sort((a, b) => {
-          const aName = (a.artist ?? "").toLowerCase();
-          const bName = (b.artist ?? "").toLowerCase();
-          if (aName && bName) return aName.localeCompare(bName);
-          if (aName) return -1;
-          if (bName) return 1;
+          const aKey = (a.artistSortKey ?? a.artist ?? "").toLowerCase();
+          const bKey = (b.artistSortKey ?? b.artist ?? "").toLowerCase();
+          if (aKey && bKey) return aKey.localeCompare(bKey);
+          if (aKey) return -1;
+          if (bKey) return 1;
           return 0;
         });
         break;
@@ -589,29 +583,29 @@ export default function CollectGrid({ artworks, artists }: Props) {
                   <option value="artist">Artist (A–Z)</option>
                 </select>
               </label>
+              <FilterCheckboxGroup
+                id="desktop-artists"
+                label="Artist"
+                options={artists}
+                selected={selectedArtists}
+                onChange={setSelectedArtists}
+              />
+              <PriceSlider
+                min={priceStats.min}
+                max={priceStats.max}
+                value={priceRange}
+                onChange={setPriceRange}
+                currencyCode={priceStats.currencyCode}
+                disabled={!priceStats.hasPrice}
+              />
+              <FilterCheckboxGroup
+                id="desktop-sizes"
+                label="Size"
+                options={SIZE_OPTIONS.slice()}
+                selected={selectedSizes}
+                onChange={handleSizeChange}
+              />
             </div>
-            <PriceSlider
-              min={priceStats.min}
-              max={priceStats.max}
-              value={priceRange}
-              onChange={setPriceRange}
-              currencyCode={priceStats.currencyCode}
-              disabled={!priceStats.hasPrice}
-            />
-            <FilterCheckboxGroup
-              id="desktop-sizes"
-              label="Size"
-              options={SIZE_OPTIONS.slice()}
-              selected={selectedSizes}
-              onChange={handleSizeChange}
-            />
-            <FilterCheckboxGroup
-              id="desktop-artists"
-              label="Artist"
-              options={artists}
-              selected={selectedArtists}
-              onChange={setSelectedArtists}
-            />
             <button
               type="button"
               onClick={resetFilters}
@@ -894,6 +888,13 @@ export default function CollectGrid({ artworks, artists }: Props) {
                   <option value="artist">Artist (A–Z)</option>
                 </select>
               </label>
+              <FilterCheckboxGroup
+                id="mobile-artists"
+                label="Artist"
+                options={artists}
+                selected={selectedArtists}
+                onChange={setSelectedArtists}
+              />
               <PriceSlider
                 min={priceStats.min}
                 max={priceStats.max}
@@ -908,13 +909,6 @@ export default function CollectGrid({ artworks, artists }: Props) {
                 options={SIZE_OPTIONS.slice()}
                 selected={selectedSizes}
                 onChange={handleSizeChange}
-              />
-              <FilterCheckboxGroup
-                id="mobile-artists"
-                label="Artist"
-                options={artists}
-                selected={selectedArtists}
-                onChange={setSelectedArtists}
               />
             </div>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">

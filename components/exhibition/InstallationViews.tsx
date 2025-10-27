@@ -11,9 +11,11 @@ type Img = { url: string; width?: number; height?: number; alt?: string };
 export default function InstallationViews({
   images,
   title = "Installation Views",
+  showTitle = true,
 }: {
   images: Img[];
   title?: string;
+  showTitle?: boolean;
 }) {
   const emblaOptions: EmblaOptionsType = React.useMemo(
     () => ({ loop: true, align: "center", skipSnaps: false }),
@@ -91,11 +93,13 @@ export default function InstallationViews({
 
   return (
     <section className="w-full border-t border-neutral-200 pt-8 pb-16 md:pt-10 md:pb-20">
-      <Container>
-        <div className="pt-6 md:pt-8">
-          <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
-        </div>
-      </Container>
+      {showTitle ? (
+        <Container>
+          <div className="pt-6 md:pt-8">
+            <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
+          </div>
+        </Container>
+      ) : null}
 
       {/* Full-bleed carousel wrapper without causing page overflow */}
       <div className="relative w-full overflow-x-hidden mt-6">
