@@ -455,7 +455,8 @@ export async function generateMetadata({
         canonical: `/artworks/${slug}`,
       },
       openGraph: {
-        type: "product",
+        // Next.js 15 limits Open Graph types; fall back to the generic website type.
+        type: "website",
         title: seoTitle,
         description: descriptionText,
         url: getAbsoluteUrl(`/artworks/${slug}`),
