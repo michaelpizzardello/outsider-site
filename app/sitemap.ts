@@ -4,6 +4,9 @@ import { shopifyFetch } from "@/lib/shopify";
 import { siteConfig, getAbsoluteUrl } from "@/lib/siteConfig";
 import { isDraftStatus } from "@/lib/isDraftStatus";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
 type MetaobjectField = {
   key: string;
   value?: string | null;
