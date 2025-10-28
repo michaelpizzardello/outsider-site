@@ -44,86 +44,101 @@ function fieldValue(fields: MetaobjectField[], key: string) {
 }
 
 async function fetchExhibitionUrls() {
-  const data = await shopifyFetch<ExhibitionsQuery>(
-    /* GraphQL */ `
-      query SitemapExhibitions($first: Int = 250) {
-        metaobjects(type: "exhibitions", first: $first, reverse: true) {
-          nodes {
-            handle
-            updatedAt
-            fields {
-              key
-              value
+  try {
+    const data = await shopifyFetch<ExhibitionsQuery>(
+      /* GraphQL */ `
+        query SitemapExhibitions($first: Int = 250) {
+          metaobjects(type: "exhibitions", first: $first, reverse: true) {
+            nodes {
+              handle
+              updatedAt
+              fields {
+                key
+                value
+              }
             }
           }
         }
-      }
-    `,
-    { first: 250 }
-  );
+      `,
+      { first: 250 }
+    );
 
-  const nodes = data.metaobjects?.nodes ?? [];
+    const nodes = data.metaobjects?.nodes ?? [];
 
-  return nodes
-    .filter((node) => !isDraftStatus(fieldValue(node.fields, "status") ?? undefined))
-    .map((node) => ({
-      url: getAbsoluteUrl(`/exhibitions/${node.handle}`),
-      lastModified: node.updatedAt ? new Date(node.updatedAt) : undefined,
-    }));
+    return nodes
+      .filter((node) => !isDraftStatus(fieldValue(node.fields, "status") ?? undefined))
+      .map((node) => ({
+        url: getAbsoluteUrl(`/exhibitions/${node.handle}`),
+        lastModified: node.updatedAt ? new Date(node.updatedAt) : undefined,
+      }));
+  } catch (error) {
+    console.error("[sitemap] failed to fetch exhibitions", error);
+    return [];
+  }
 }
 
 async function fetchArtistUrls() {
-  const data = await shopifyFetch<ArtistsQuery>(
-    /* GraphQL */ `
-      query SitemapArtists($first: Int = 250) {
-        metaobjects(type: "artist", first: $first, reverse: true) {
-          nodes {
-            handle
-            updatedAt
+  try {
+    const data = await shopifyFetch<ArtistsQuery>(
+      /* GraphQL */ `
+        query SitemapArtists($first: Int = 250) {
+          metaobjects(type: "artist", first: $first, reverse: true) {
+            nodes {
+              handle
+              updatedAt
+            }
           }
         }
-      }
-    `,
-    { first: 250 }
-  );
+      `,
+      { first: 250 }
+    );
 
-  const nodes = data.metaobjects?.nodes ?? [];
+    const nodes = data.metaobjects?.nodes ?? [];
 
-  return nodes.map((node) => ({
-    url: getAbsoluteUrl(`/artists/${node.handle}`),
-    lastModified: node.updatedAt ? new Date(node.updatedAt) : undefined,
-  }));
+    return nodes.map((node) => ({
+      url: getAbsoluteUrl(`/artists/${node.handle}`),
+      lastModified: node.updatedAt ? new Date(node.updatedAt) : undefined,
+    }));
+  } catch (error) {
+    console.error("[sitemap] failed to fetch artists", error);
+    return [];
+  }
 }
 
 async function fetchArtworkUrls() {
-  const data = await shopifyFetch<ProductsQuery>(
-    /* GraphQL */ `
-      query SitemapProducts($first: Int = 250) {
-        products(
-          first: $first
-          sortKey: UPDATED_AT
-          reverse: true
-          query: "status:active"
-        ) {
-          nodes {
-            handle
-            updatedAt
-            status
+  try {
+    const data = await shopifyFetch<ProductsQuery>(
+      /* GraphQL */ `
+        query SitemapProducts($first: Int = 250) {
+          products(
+            first: $first
+            sortKey: UPDATED_AT
+            reverse: true
+            query: "status:active"
+          ) {
+            nodes {
+              handle
+              updatedAt
+              status
+            }
           }
         }
-      }
-    `,
-    { first: 250 }
-  );
+      `,
+      { first: 250 }
+    );
 
-  const nodes = data.products?.nodes ?? [];
+    const nodes = data.products?.nodes ?? [];
 
-  return nodes
-    .filter((node) => (node.status ?? "").toLowerCase() === "active")
-    .map((node) => ({
-      url: getAbsoluteUrl(`/artworks/${node.handle}`),
-      lastModified: node.updatedAt ? new Date(node.updatedAt) : undefined,
-    }));
+    return nodes
+      .filter((node) => (node.status ?? "").toLowerCase() === "active")
+      .map((node) => ({
+        url: getAbsoluteUrl(`/artworks/${node.handle}`),
+        lastModified: node.updatedAt ? new Date(node.updatedAt) : undefined,
+      }));
+  } catch (error) {
+    console.error("[sitemap] failed to fetch artworks", error);
+    return [];
+  }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -137,11 +152,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/stockroom`, changeFrequency: "daily", priority: 0.8 },
   ];
 
-  const [exhibitions, artists, artworks] = await Promise.all([
-    fetchExhibitionUrls(),
-    fetchArtistUrls(),
-    fetchArtworkUrls(),
-  ]);
+  try {
+    const [exhibitions, artists, artworks] = await Promise.all([
+      fetchExhibitionUrls(),
+      fetchArtistUrls(),
+      fetchArtworkUrls(),
+    ]);
 
-  return [...staticUrls, ...exhibitions, ...artists, ...artworks];
+    return [...staticUrls, ...exhibitions, ...artists, ...artworks];
+  } catch (error) {
+    console.error("[sitemap] unexpected error", error);
+    return staticUrls;
+  }
 }
