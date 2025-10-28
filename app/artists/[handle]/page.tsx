@@ -1,4 +1,5 @@
 // app/artists/[handle]/page.tsx
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import ArtistHero from "@/components/artists/ArtistHero";
@@ -7,10 +8,12 @@ import ArtistArtworks from "@/components/artists/ArtistArtworks";
 import ArtistExhibitions from "@/components/artists/ArtistExhibitions";
 import InstallationViews from "@/components/exhibition/InstallationViews";
 import type { PortraitVideoSource } from "@/components/media/PortraitVideoPlayer";
+import ArtistJsonLd from "@/components/seo/ArtistJsonLd";
 import { shopifyFetch } from "@/lib/shopify";
 import { extractLongCopy } from "@/lib/extractLongCopy";
 import { toHtml } from "@/lib/richtext";
 import { isDraftStatus } from "@/lib/isDraftStatus";
+import { siteConfig, getAbsoluteUrl } from "@/lib/siteConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -58,12 +61,15 @@ type ExtractLongCopyField = {
   value: unknown;
 };
 
-type ByHandleQuery = { metaobject: { handle: string; fields: Field[] } | null };
+type ByHandleQuery = {
+  metaobject: { handle: string; fields: Field[]; updatedAt?: string | null } | null;
+};
 
 const QUERY = /* GraphQL */ `
   query ArtistByHandle($handle: String!) {
     metaobject(handle: { type: "artist", handle: $handle }) {
       handle
+      updatedAt
       fields {
         key
         type
@@ -137,6 +143,10 @@ function fieldToHtml(field?: Field): string | null {
   }
 
   return multilineToHtml(trimmed);
+}
+
+function stripHtml(input: string): string {
+  return input.replace(/<\/?[^>]+(>|$)/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function fallbackBioHtml(fields: Field[]): string | null {
@@ -302,6 +312,97 @@ function collectCarouselImages(fields: Field[]): CoverImage[] {
   return single ? [single] : [];
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: { handle: string };
+}): Promise<Metadata> {
+  const handle = params.handle;
+
+  try {
+    const data = await shopifyFetch<ByHandleQuery>(QUERY, { handle });
+    const mo = data.metaobject;
+    if (!mo) {
+      return { title: "Artist | Outsider Gallery" };
+    }
+
+    const statusField = mo.fields.find(
+      (field) => field.key.toLowerCase() === "status"
+    );
+    const statusValue =
+      typeof statusField?.value === "string" ? statusField.value : undefined;
+    if (isDraftStatus(statusValue)) {
+      return { title: "Artist | Outsider Gallery" };
+    }
+
+    const valueMap = Object.fromEntries(
+      mo.fields.map((field) => [field.key, field.value])
+    );
+    const name =
+      (valueMap.name as string) ||
+      (valueMap.title as string) ||
+      mo.handle.replace(/[-_]/g, " ");
+
+    const cover = coverFromFields(mo.fields);
+    const shortBioHtml = fieldToHtml(
+      fieldByKeys(mo.fields, ["short_bio", "shortbio", "bio_short"])
+    );
+    const longBioHtml =
+      fieldToHtml(fieldByKeys(mo.fields, ["long_bio", "bio_long"])) ??
+      fallbackBioHtml(mo.fields);
+    const bioText = shortBioHtml
+      ? stripHtml(shortBioHtml)
+      : longBioHtml
+      ? stripHtml(longBioHtml)
+      : `Discover ${name} at Outsider Gallery, a contemporary art gallery in Surry Hills, Sydney.`;
+
+    const imageUrl = cover?.url;
+
+    return {
+      title: `${name} | Outsider Gallery`,
+      description: bioText,
+      alternates: {
+        canonical: `/artists/${mo.handle}`,
+      },
+      openGraph: {
+        type: "profile",
+        title: `${name} | Outsider Gallery`,
+        description: bioText,
+        url: getAbsoluteUrl(`/artists/${mo.handle}`),
+        siteName: siteConfig.name,
+        images: imageUrl
+          ? [
+              {
+                url: imageUrl.startsWith("http")
+                  ? imageUrl
+                  : getAbsoluteUrl(imageUrl),
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${name} | Outsider Gallery`,
+        description: bioText,
+        images: imageUrl
+          ? [
+              imageUrl.startsWith("http") ? imageUrl : getAbsoluteUrl(imageUrl),
+            ]
+          : undefined,
+      },
+      other: {
+        "last-modified": mo.updatedAt ?? undefined,
+      },
+    };
+  } catch (error) {
+    console.error("[artists/[handle]] generateMetadata error", {
+      handle,
+      error,
+    });
+    return { title: "Artist | Outsider Gallery" };
+  }
+}
+
 export default async function ArtistPage({ params }: { params: { handle: string } }) {
   const data = await shopifyFetch<ByHandleQuery>(QUERY, { handle: params.handle });
   const mo = data.metaobject;
@@ -338,6 +439,14 @@ export default async function ArtistPage({ params }: { params: { handle: string 
       className="bg-white text-neutral-900"
       style={{ paddingTop: "var(--header-h, 76px)" }}
     >
+      <ArtistJsonLd
+        handle={mo.handle}
+        name={name}
+        bio={shortBioHtml ?? longBioHtml}
+        nationality={nationality ?? null}
+        birthYear={birthYear ?? null}
+        imageUrl={cover?.url ?? null}
+      />
       <ArtistHero
         name={name}
         nationality={nationality}

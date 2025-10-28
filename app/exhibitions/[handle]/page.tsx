@@ -20,6 +20,7 @@
 // -----------------------------------------------------------------------------
 
 import "server-only";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import CurrentExhibitionHero from "@/components/exhibitions/CurrentExhibitionHero";
@@ -28,6 +29,7 @@ import InstallationViews from "@/components/exhibition/InstallationViews";
 import FeaturedWorks from "@/components/exhibition/FeaturedWorks";
 import AboutArtistWithPortrait from "@/components/exhibition/AboutArtistWithPortrait";
 import type { PortraitVideoSource } from "@/components/media/PortraitVideoPlayer";
+import ExhibitionJsonLd from "@/components/seo/ExhibitionJsonLd";
 
 import { shopifyFetch } from "@/lib/shopify";
 import type { ExhibitionCard } from "@/lib/exhibitions";
@@ -35,6 +37,8 @@ import { heroLabels, type PickHeroLabel } from "@/lib/labels";
 import { isGroupShow } from "@/lib/exhibitions";
 import { extractLongCopy } from "@/lib/extractLongCopy"; // ← helper that picks/normalises long text
 import { isDraftStatus } from "@/lib/isDraftStatus";
+import { siteConfig, getAbsoluteUrl } from "@/lib/siteConfig";
+import { formatDates } from "@/lib/formatDates";
 
 export const revalidate = 60;
 export const dynamic = "force-static";
@@ -158,6 +162,37 @@ const QUERY = /* GraphQL */ `
   }
 `;
 
+const EXHIBITION_METADATA_QUERY = /* GraphQL */ `
+  query ExhibitionMetadata($handle: MetaobjectHandleInput!) {
+    metaobject(handle: $handle) {
+      handle
+      updatedAt
+      fields {
+        key
+        type
+        value
+        reference {
+          __typename
+          ... on MediaImage {
+            image {
+              url
+              width
+              height
+              altText
+            }
+          }
+          ... on GenericFile {
+            url
+            previewImage {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // --------------------------- Types matching the query --------------------------
 type FieldRef =
   | {
@@ -217,6 +252,100 @@ type Product = {
   sold?: { value?: string | null } | null;
   priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } | null } | null;
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { handle: string };
+}): Promise<Metadata> {
+  const handle = params.handle;
+
+  try {
+    const data = await shopifyFetch<{
+      metaobject: (Node & { updatedAt?: string | null }) | null;
+    }>(EXHIBITION_METADATA_QUERY, {
+      handle: { type: "exhibitions", handle },
+    });
+
+    const node = data.metaobject;
+    if (!node) {
+      return { title: "Exhibition | Outsider Gallery" };
+    }
+
+    const card = toCard(node);
+    if (!card || isDraftStatus(card.status)) {
+      return { title: "Exhibition | Outsider Gallery" };
+    }
+
+    const dateRange = formatDates(card.start, card.end);
+    const titleParts = [
+      card.artist?.trim() || null,
+      card.title?.trim() &&
+      card.title.trim() !== card.artist?.trim()
+        ? card.title.trim()
+        : null,
+    ].filter(Boolean) as string[];
+
+    const seoTitle =
+      titleParts.length > 0
+        ? `${titleParts.join(": ")} | Outsider Gallery`
+        : `${card.title ?? "Exhibition"} | Outsider Gallery`;
+
+    const baseDescription =
+      card.summary?.trim() ||
+      [
+        `Discover ${card.title ?? "this exhibition"} at Outsider Gallery in Surry Hills, Sydney.`,
+        dateRange ? `On view ${dateRange}.` : null,
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+    const imageUrl = card.hero?.url;
+
+    return {
+      title: seoTitle,
+      description: baseDescription,
+      alternates: {
+        canonical: `/exhibitions/${card.handle}`,
+      },
+      openGraph: {
+        type: "article",
+        title: seoTitle,
+        description: baseDescription,
+        url: getAbsoluteUrl(`/exhibitions/${card.handle}`),
+        siteName: siteConfig.name,
+        images: imageUrl
+          ? [
+              {
+                url: imageUrl.startsWith("http")
+                  ? imageUrl
+                  : getAbsoluteUrl(imageUrl),
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: seoTitle,
+        description: baseDescription,
+        images: imageUrl
+          ? [
+              imageUrl.startsWith("http") ? imageUrl : getAbsoluteUrl(imageUrl),
+            ]
+          : undefined,
+      },
+      other: {
+        "last-modified": node.updatedAt ?? undefined,
+      },
+    };
+  } catch (error) {
+    console.error("[exhibitions/[handle]] generateMetadata error", {
+      handle,
+      error,
+    });
+    return { title: "Exhibition | Outsider Gallery" };
+  }
+}
 
 // ---------------------- Safe readers for metaobject fields --------------------
 /** Returns the first non-empty string value among the provided keys. */
@@ -1144,6 +1273,15 @@ export default async function ExhibitionPage({
   // 4) Render page blocks
   return (
     <>
+      <ExhibitionJsonLd
+        handle={ex.handle}
+        title={ex.title ?? "Exhibition"}
+        artist={ex.artist ?? null}
+        description={ex.summary ?? null}
+        startDate={ex.start ?? undefined}
+        endDate={ex.end ?? undefined}
+        imageUrl={ex.hero?.url ?? ex.banner?.url ?? null}
+      />
       <CurrentExhibitionHero
         ex={ex}
         topLabel={top}

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -5,6 +6,22 @@ import Container from "@/components/layout/Container";
 import PageSubheader from "@/components/layout/PageSubheader";
 import { shopifyFetch } from "@/lib/shopify";
 import { isDraftStatus } from "@/lib/isDraftStatus";
+import { siteConfig } from "@/lib/siteConfig";
+
+export const metadata: Metadata = {
+  title: "Artists | Outsider Gallery",
+  description:
+    "Meet the emerging and established Australian and international artists represented by Outsider Gallery, a contemporary art gallery in Sydney’s Surry Hills.",
+  openGraph: {
+    title: "Artists | Outsider Gallery",
+    description:
+      "Browse the Outsider Gallery artist roster featuring fearless, distinctive practices shaping the Sydney art scene.",
+    url: `${siteConfig.siteUrl.replace(/\/+$/, "")}/artists`,
+  },
+  alternates: {
+    canonical: "/artists",
+  },
+};
 
 /**
  * Artists index route renders a grid of artist cards sourced from Shopify metaobjects.

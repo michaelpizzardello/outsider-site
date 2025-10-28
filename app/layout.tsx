@@ -9,8 +9,45 @@ import CartDrawer from "@/components/cart/CartDrawer";
 import Header from "@/components/layout/Header";
 import SiteFooter from "@/components/layout/SiteFooter";
 import TopLoader from "@/components/layout/TopLoader";
+import OrganizationJsonLd from "@/components/seo/OrganizationJsonLd";
+import { siteConfig } from "@/lib/siteConfig";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.siteUrl),
+  title: {
+    default: "Outsider Gallery | Contemporary Art Gallery in Sydney | Surry Hills",
+    template: "%s | Outsider Gallery",
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_AU",
+    url: siteConfig.siteUrl,
+    siteName: siteConfig.name,
+    title: "Outsider Gallery | Contemporary Art Gallery in Sydney | Surry Hills",
+    description: siteConfig.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@outsidergallery_",
+    creator: "@outsidergallery_",
+    title: "Outsider Gallery | Contemporary Art Gallery in Sydney | Surry Hills",
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/logo-black.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+  },
   viewport: {
     width: "device-width",
     initialScale: 1,
@@ -26,6 +63,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sofiaPro.className} antialiased bg-white text-black`}>
+        <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        <OrganizationJsonLd />
         <CartProvider>
           <TopLoader />
           <Header />

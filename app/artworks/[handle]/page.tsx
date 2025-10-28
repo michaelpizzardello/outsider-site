@@ -1,11 +1,14 @@
 import "server-only";
 
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { shopifyFetch } from "@/lib/shopify";
 import { toHtml } from "@/lib/richtext";
 import ArtworkLayout from "@/components/exhibition/ArtworkLayout";
 import { formatCurrency } from "@/lib/formatCurrency";
+import ArtworkJsonLd from "@/components/seo/ArtworkJsonLd";
+import { siteConfig, getAbsoluteUrl } from "@/lib/siteConfig";
 
 // Static revalidation keeps artwork detail pages fresh without SSR on every hit.
 export const revalidate = 120;
@@ -88,6 +91,70 @@ const ARTWORK_QUERY = /* GraphQL */ `
   }
 `;
 
+const ARTWORK_METADATA_QUERY = /* GraphQL */ `
+  query ArtworkMetadata(
+    $handle: String!
+    $ns: String = "custom"
+    $artistKey: String = "artist"
+  ) {
+    product(handle: $handle) {
+      handle
+      title
+      description
+      descriptionHtml
+      updatedAt
+      availableForSale
+      featuredImage {
+        url
+        width
+        height
+        altText
+      }
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      status: metafield(namespace: $ns, key: "status") {
+        value
+      }
+      sold: metafield(namespace: $ns, key: "sold") {
+        value
+      }
+      medium: metafield(namespace: $ns, key: "medium") {
+        value
+      }
+      dimensions: metafield(namespace: $ns, key: "dimensions") {
+        value
+      }
+      widthCm: metafield(namespace: $ns, key: "width") {
+        value
+      }
+      heightCm: metafield(namespace: $ns, key: "height") {
+        value
+      }
+      depthCm: metafield(namespace: $ns, key: "depth") {
+        value
+      }
+      year: metafield(namespace: $ns, key: "year") {
+        value
+      }
+      artistMeta: metafield(namespace: $ns, key: $artistKey) {
+        value
+        reference {
+          ... on Metaobject {
+            fields {
+              key
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Helper type for metaobject references returned inside metafields.
 type MaybeMetaobject = {
   __typename: string;
@@ -143,6 +210,28 @@ type ArtworkQuery = {
       reference?: MaybeMetaobject | null;
       references?: { nodes?: MaybeMetaobject[] | null } | null;
     } | null;
+  } | null;
+};
+
+type ArtworkMetadataQuery = {
+  product: {
+    handle: string;
+    title: string;
+    description?: string | null;
+    descriptionHtml?: string | null;
+    updatedAt?: string | null;
+    availableForSale: boolean;
+    featuredImage?: ImageNode | null;
+    priceRange?: { minVariantPrice?: { amount: string; currencyCode: string } | null } | null;
+    status?: MaybeMetafield | null;
+    sold?: MaybeMetafield | null;
+    medium?: MaybeMetafield | null;
+    dimensions?: MaybeMetafield | null;
+    widthCm?: MaybeMetafield | null;
+    heightCm?: MaybeMetafield | null;
+    depthCm?: MaybeMetafield | null;
+    year?: MaybeMetafield | null;
+    artistMeta?: MaybeMetafield | null;
   } | null;
 };
 
@@ -207,6 +296,11 @@ function metafieldNumber(mf?: MaybeMetafield | null): number | undefined {
   if (!raw) return undefined;
   const num = Number(raw);
   return Number.isFinite(num) ? num : undefined;
+}
+
+function stripHtml(input?: string | null): string | undefined {
+  if (!input) return undefined;
+  return input.replace(/<\/?[^>]+(>|$)/g, " ").replace(/\s+/g, " ").trim() || undefined;
 }
 
 // Combine dimension values (cm) into a readable label such as "40 x 60 x 5 cm".
@@ -293,7 +387,113 @@ function deriveCommerceState(product: ArtworkQuery["product"]) {
     priceLabel,
     canPurchase,
     variantId,
+    price:
+      hasPrice && price
+        ? { amount: price.amount, currencyCode: price.currencyCode }
+        : null,
+    isSold,
+    availability: isSold ? "SoldOut" : canPurchase ? "InStock" : "OutOfStock",
   };
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { handle: string; artworkHandle?: string };
+}): Promise<Metadata> {
+  const slug = params.artworkHandle && params.artworkHandle.length > 0 ? params.artworkHandle : params.handle;
+  if (!slug) {
+    return { title: "Artwork | Outsider Gallery" };
+  }
+
+  try {
+    const data = await shopifyFetch<ArtworkMetadataQuery>(ARTWORK_METADATA_QUERY, {
+      handle: slug,
+      ns: "custom",
+      artistKey: "artist",
+    });
+
+    const product = data.product;
+    if (!product) {
+      return { title: "Artwork | Outsider Gallery" };
+    }
+
+    const artistName = getArtistName(product.artistMeta);
+    const baseTitle = product.title || slug;
+    const seoTitle = artistName
+      ? `${baseTitle} — ${artistName} | Outsider Gallery`
+      : `${baseTitle} | Outsider Gallery`;
+
+    const descriptionText =
+      stripHtml(product.descriptionHtml) ??
+      stripHtml(product.description) ??
+      (artistName
+        ? `Discover ${baseTitle} by ${artistName} at Outsider Gallery in Surry Hills, Sydney.`
+        : `Discover ${baseTitle} at Outsider Gallery in Surry Hills, Sydney.`);
+
+    const imageUrl = product.featuredImage?.url ?? null;
+    const price = product.priceRange?.minVariantPrice ?? null;
+
+    const status = metafieldStringLoose(product.status)?.toLowerCase();
+    const soldFlag = metafieldString(product.sold)?.toLowerCase();
+    const isSold =
+      soldFlag === "true" ||
+      soldFlag === "1" ||
+      soldFlag === "yes" ||
+      status === "sold" ||
+      product.availableForSale === false;
+    const availability = isSold
+      ? "SoldOut"
+      : product.availableForSale
+      ? "InStock"
+      : "OutOfStock";
+
+    return {
+      title: seoTitle,
+      description: descriptionText,
+      alternates: {
+        canonical: `/artworks/${slug}`,
+      },
+      openGraph: {
+        type: "product",
+        title: seoTitle,
+        description: descriptionText,
+        url: getAbsoluteUrl(`/artworks/${slug}`),
+        siteName: siteConfig.name,
+        images: imageUrl
+          ? [
+              {
+                url: imageUrl.startsWith("http")
+                  ? imageUrl
+                  : getAbsoluteUrl(imageUrl),
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: seoTitle,
+        description: descriptionText,
+        images: imageUrl
+          ? [
+              imageUrl.startsWith("http") ? imageUrl : getAbsoluteUrl(imageUrl),
+            ]
+          : undefined,
+      },
+      other: {
+        "last-modified": product.updatedAt ?? undefined,
+        availability,
+        priceAmount: price?.amount,
+        priceCurrency: price?.currencyCode,
+      },
+    };
+  } catch (error) {
+    console.error("[artworks/[handle]] generateMetadata error", {
+      slug,
+      error,
+    });
+    return { title: "Artwork | Outsider Gallery" };
+  }
 }
 
 // Server component entry point for the artwork detail view.
@@ -339,7 +539,13 @@ export default async function ArtworkPage({
     metafieldHtml(product.notes);
 
   // Commerce state used for pricing labels and purchase CTA logic.
-  const { priceLabel, canPurchase, variantId } = deriveCommerceState(product);
+  const {
+    priceLabel,
+    canPurchase,
+    variantId,
+    price: priceData,
+    availability,
+  } = deriveCommerceState(product);
 
   // Prepare the media gallery, ensuring the featured image leads the carousel.
   const images = product.images?.nodes?.filter((img): img is ImageNode => Boolean(img?.url)) ?? [];
@@ -354,22 +560,41 @@ export default async function ArtworkPage({
   const depthCm = metafieldNumber(product.depthCm);
   const dimensionsLabel =
     formatDimensionsCm(widthCm, heightCm, depthCm) ?? metafieldString(product.dimensions);
+  const descriptionText = stripHtml(
+    captionHtml ?? product.descriptionHtml ?? product.description
+  );
 
   // Pass the cleaned data to the client layout component which renders the full UI.
   return (
-    <ArtworkLayout
-      exhibitionHandle={exhibitionHandle ?? undefined}
-      title={product.title}
-      gallery={gallery}
-      artist={artist}
-      year={year}
-      priceLabel={priceLabel}
-      captionHtml={captionHtml}
-      medium={medium}
-      dimensionsLabel={dimensionsLabel}
-      additionalInfoHtml={additionalInfoHtml}
-      canPurchase={canPurchase}
-      variantId={variantId}
-    />
+    <>
+      <ArtworkJsonLd
+        handle={product.handle}
+        title={product.title}
+        artist={artist ?? null}
+        description={descriptionText ?? null}
+        medium={medium ?? null}
+        imageUrl={heroImage?.url ?? null}
+        priceAmount={priceData?.amount ?? null}
+        priceCurrency={priceData?.currencyCode ?? null}
+        availability={availability}
+        widthCm={widthCm ?? null}
+        heightCm={heightCm ?? null}
+        depthCm={depthCm ?? null}
+      />
+      <ArtworkLayout
+        exhibitionHandle={exhibitionHandle ?? undefined}
+        title={product.title}
+        gallery={gallery}
+        artist={artist}
+        year={year}
+        priceLabel={priceLabel}
+        captionHtml={captionHtml}
+        medium={medium}
+        dimensionsLabel={dimensionsLabel}
+        additionalInfoHtml={additionalInfoHtml}
+        canPurchase={canPurchase}
+        variantId={variantId}
+      />
+    </>
   );
 }

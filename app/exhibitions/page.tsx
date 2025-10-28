@@ -18,6 +18,7 @@
 ──────────────────────────────────────────────────────────────────────────────*/
 
 import "server-only";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
@@ -36,6 +37,7 @@ import PageSubheader from "@/components/layout/PageSubheader";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import ExhibitionFeatureWhiteCube from "@/components/exhibitions/ExhibitionFeatureWhiteCube";
 import { ArrowCtaInline } from "@/components/ui/ArrowCta";
+import { siteConfig } from "@/lib/siteConfig";
 
 // ISR cadence
 export const revalidate = 60;
@@ -43,9 +45,19 @@ export const revalidate = 60;
 export const dynamic = "force-static";
 
 // Route metadata
-export const metadata = {
-  title: "Exhibitions — Outsider Gallery",
-  description: "Current, upcoming, and past exhibitions at Outsider Gallery.",
+export const metadata: Metadata = {
+  title: "Exhibitions | Outsider Gallery",
+  description:
+    "Explore current, upcoming, and past exhibitions at Outsider Gallery, the Sydney contemporary art gallery in Surry Hills championing fearless Australian and international artists.",
+  openGraph: {
+    title: "Exhibitions | Outsider Gallery",
+    description:
+      "Discover the curated exhibition program at Outsider Gallery in Surry Hills, featuring emerging and established artists from Sydney and beyond.",
+    url: `${siteConfig.siteUrl.replace(/\/+$/, "")}/exhibitions`,
+  },
+  alternates: {
+    canonical: "/exhibitions",
+  },
 };
 
 /*─────────────────────────────────────────────────────────────────────────────

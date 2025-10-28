@@ -1,12 +1,29 @@
 import "server-only";
+import type { Metadata } from "next";
 
 import Container from "@/components/layout/Container";
 import StockroomGrid from "@/components/stockroom/StockroomGrid";
 import { shopifyFetch } from "@/lib/shopify";
 import PageSubheader from "@/components/layout/PageSubheader";
 import { isDraftStatus } from "@/lib/isDraftStatus";
+import { siteConfig } from "@/lib/siteConfig";
 
 export const revalidate = 120;
+
+export const metadata: Metadata = {
+  title: "Stockroom | Outsider Gallery",
+  description:
+    "Collectible contemporary artworks available from Outsider Gallery’s stockroom in Surry Hills, Sydney, featuring emerging and established artists.",
+  openGraph: {
+    title: "Stockroom | Outsider Gallery",
+    description:
+      "Discover available works from Outsider Gallery’s curated roster of Australian and international artists.",
+    url: `${siteConfig.siteUrl.replace(/\/+$/, "")}/stockroom`,
+  },
+  alternates: {
+    canonical: "/stockroom",
+  },
+};
 
 type Money = { amount: string; currencyCode: string };
 

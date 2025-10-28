@@ -1,13 +1,28 @@
 import "server-only";
+import type { Metadata } from "next";
 import Image from "next/image";
 import type { ComponentPropsWithoutRef } from "react";
-
-import { Phone } from "lucide-react";
 
 import Container from "@/components/layout/Container";
 import { shopifyFetch } from "@/lib/shopify";
 import { toHtml } from "@/lib/richtext";
 import ContactForm from "@/components/contact/ContactForm";
+import { siteConfig } from "@/lib/siteConfig";
+
+export const metadata: Metadata = {
+  title: "About Outsider Gallery",
+  description:
+    "Learn about Outsider Gallery, a Sydney contemporary art gallery in Surry Hills presenting curated exhibitions, artist talks, and collectible works from emerging and established artists.",
+  openGraph: {
+    title: "About Outsider Gallery",
+    description:
+      "Outsider Gallery champions fearless contemporary art in Sydney’s Surry Hills, spotlighting emerging and established Australian and international artists.",
+    url: `${siteConfig.siteUrl.replace(/\/+$/, "")}/about`,
+  },
+  alternates: {
+    canonical: "/about",
+  },
+};
 
 export const revalidate = 300;
 

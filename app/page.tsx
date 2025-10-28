@@ -1,5 +1,6 @@
 // app/page.tsx
 import "server-only";
+import type { Metadata } from "next";
 
 import CurrentExhibitionHero from "@/components/exhibitions/CurrentExhibitionHero";
 import UpcomingShows from "@/components/exhibitions/UpcomingShows";
@@ -13,8 +14,23 @@ import {
 } from "@/lib/exhibitions";
 import { pickHero } from "@/lib/pickHero";
 import { heroLabels } from "@/lib/labels";
+import { siteConfig } from "@/lib/siteConfig";
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "Outsider Gallery | Contemporary Art Gallery in Sydney | Surry Hills",
+  description: siteConfig.description,
+  openGraph: {
+    title: "Outsider Gallery | Contemporary Art Gallery in Sydney | Surry Hills",
+    description: siteConfig.description,
+    url: siteConfig.siteUrl,
+  },
+  twitter: {
+    title: "Outsider Gallery | Contemporary Art Gallery in Sydney | Surry Hills",
+    description: siteConfig.description,
+  },
+};
 
 export default async function HomePage() {
   // 1) Fetch exhibitions (server-side)
