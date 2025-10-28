@@ -1,7 +1,7 @@
 import "server-only";
 
 import Container from "@/components/layout/Container";
-import CollectGrid from "@/components/collect/CollectGrid";
+import StockroomGrid from "@/components/stockroom/StockroomGrid";
 import { shopifyFetch } from "@/lib/shopify";
 import PageSubheader from "@/components/layout/PageSubheader";
 import { isDraftStatus } from "@/lib/isDraftStatus";
@@ -69,7 +69,7 @@ type QueryResult = {
   products: { nodes: ProductNode[] } | null;
 };
 
-export type CollectArtwork = {
+export type StockroomArtwork = {
   id: string;
   handle: string;
   title: string;
@@ -92,7 +92,7 @@ export type CollectArtwork = {
 };
 
 const QUERY = /* GraphQL */ `
-  query CollectProducts($first: Int = 60) {
+  query StockroomProducts($first: Int = 60) {
     products(first: $first, sortKey: UPDATED_AT, reverse: true, query: "status:active") {
       nodes {
         id
@@ -250,7 +250,7 @@ function formatDimensionsCm(
   return `${parts.join(" x ")} cm`;
 }
 
-function mapProduct(node: ProductNode): CollectArtwork {
+function mapProduct(node: ProductNode): StockroomArtwork {
   const variant = pickVariant(node.variants?.nodes ?? []);
   const soldFlag = parseBoolean(node.soldField?.value);
   const status = statusFromMeta(node.statusField);
@@ -263,7 +263,7 @@ function mapProduct(node: ProductNode): CollectArtwork {
     node.exhibitions?.references?.nodes?.find(
       (ref) => ref?.__typename === "Metaobject" && ref?.handle
     )?.handle ?? null;
-  // Show in Collect when not sold. Items marked as
+  // Show in Stockroom when not sold. Items marked as
   // "reserved" or "enquire" remain visible but are not directly purchasable (handled in UI).
   const available =
     (variant?.availableForSale ?? node.availableForSale) &&
@@ -299,7 +299,7 @@ function mapProduct(node: ProductNode): CollectArtwork {
   };
 }
 
-export default async function CollectPage() {
+export default async function StockroomPage() {
   const data = await shopifyFetch<QueryResult>(QUERY, { first: 80 });
   const nodes = data.products?.nodes ?? [];
   const artworks = nodes
@@ -337,7 +337,7 @@ export default async function CollectPage() {
   return (
     <main className="text-neutral-900" style={{ paddingTop: "var(--header-h, 76px)" }}>
       <PageSubheader
-        title="Collect"
+        title="Stockroom"
         description={
           <>
             <p>Contemporary works available directly from Outsider Gallery.</p>
@@ -354,7 +354,7 @@ export default async function CollectPage() {
       >
         <section className="pt-10 pb-16 sm:pt-14 sm:pb-20">
           <Container className="max-w-5xl">
-            <CollectGrid artworks={artworks} artists={artists} />
+            <StockroomGrid artworks={artworks} artists={artists} />
           </Container>
         </section>
       </div>

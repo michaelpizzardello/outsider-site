@@ -9,6 +9,7 @@ import CloseArtworkButton from "@/components/exhibition/CloseArtworkButton";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 import { useCart } from "@/components/cart/CartContext";
+import { shopifyImageLoader } from "@/lib/shopifyImage";
 
 // Client-side shell that displays the artwork hero, metadata rail, and enquiry modal.
 
@@ -51,7 +52,7 @@ export default function ArtworkLayout({
   canPurchase,
   variantId,
 }: Props) {
-  const fallbackHref = exhibitionHandle ? `/exhibitions/${exhibitionHandle}` : "/collect";
+  const fallbackHref = exhibitionHandle ? `/exhibitions/${exhibitionHandle}` : "/stockroom";
 
   // Track currently selected slide; used by both carousel and desktop hero image.
   const [activeIndex, setActiveIndex] = useState(0);
@@ -317,8 +318,9 @@ export default function ArtworkLayout({
                         <Image
                           src={img.url}
                           alt={img.altText || title}
+                          loader={shopifyImageLoader}
                           fill
-                          sizes="100vw"
+                          sizes="(max-width: 1023px) 100vw"
                           className="object-contain"
                           priority={idx === 0}
                         />
@@ -352,6 +354,7 @@ export default function ArtworkLayout({
             key={activeImage.url}
             src={activeImage.url}
             alt={activeImage.altText || title}
+            loader={shopifyImageLoader}
             width={activeImage.width ?? 2000}
             height={activeImage.height ?? 2000}
             sizes="(min-width: 1280px) 60vw, (min-width:1024px) 58vw, 100vw"
@@ -403,6 +406,7 @@ export default function ArtworkLayout({
                     <Image
                       src={img.url}
                       alt={img.altText || `${title} thumbnail`}
+                      loader={shopifyImageLoader}
                       fill
                       sizes="120px"
                       className="object-cover"

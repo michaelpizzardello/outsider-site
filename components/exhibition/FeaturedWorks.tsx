@@ -366,19 +366,6 @@ export default async function FeaturedWorks({
   const availableRows = buildRows(availableArtworks);
   const soldRows = buildRows(soldArtworks);
 
-  // Compute a consistent desktop aspect from the Available set so the
-  // Featured grid uses the same row height on desktop, reducing visual
-  // whitespace differences between sections.
-  function uniformAspectFrom(list: typeof availableArtworks) {
-    const factors = list
-      .map((a) => a.heightFactor)
-      .filter((v): v is number => typeof v === "number" && v > 0);
-    if (!factors.length) return undefined;
-    const maxFactor = Math.max(...factors);
-    return maxFactor > 0 ? 1 / maxFactor : undefined;
-  }
-  const availableDesktopAspect = uniformAspectFrom(availableArtworks);
-
   if (!availableArtworks.length && !soldArtworks.length) return null;
 
   return (
@@ -389,7 +376,6 @@ export default async function FeaturedWorks({
           exhibitionHandle={exhibitionHandle}
           artworks={availableArtworks}
           rows={availableRows}
-          forcedDesktopAspect={availableDesktopAspect}
           showActions
         />
       )}
@@ -399,8 +385,6 @@ export default async function FeaturedWorks({
           exhibitionHandle={exhibitionHandle}
           artworks={soldArtworks}
           rows={soldRows}
-          // Use the same desktop aspect as Available Works when possible
-          forcedDesktopAspect={availableDesktopAspect ?? uniformAspectFrom(soldArtworks)}
           showActions={false}
         />
       )}

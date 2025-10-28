@@ -122,7 +122,7 @@ export default function ExhibitionsIndex({
                   <h3 className="mt-4 text-base font-medium leading-snug">
                     <span className="block">{primary}</span>
                     {secondary && (
-                      <span className="block text-neutral-500">
+                      <span className="block text-base font-medium text-neutral-600 sm:text-lg xl:text-xl">
                         {secondary}
                       </span>
                     )}

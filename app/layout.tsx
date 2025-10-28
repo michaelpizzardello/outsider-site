@@ -8,6 +8,7 @@ import CartFloatingButton from "@/components/cart/CartFloatingButton";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Header from "@/components/layout/Header";
 import SiteFooter from "@/components/layout/SiteFooter";
+import TopLoader from "@/components/layout/TopLoader";
 
 export const metadata: Metadata = {
   viewport: {
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${sofiaPro.className} antialiased bg-white text-black`}>
         <CartProvider>
+          <TopLoader />
           <Header />
           {children}
           <SiteFooter />

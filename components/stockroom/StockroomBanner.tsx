@@ -25,7 +25,7 @@ function SearchButton() {
   );
 }
 
-export default function CollectBanner() {
+export default function StockroomBanner() {
   return (
     <section className="border-b border-neutral-200 bg-white">
       <Container className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-end">

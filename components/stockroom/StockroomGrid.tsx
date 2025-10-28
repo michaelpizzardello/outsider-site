@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "r
 import Link from "next/link";
 import * as Slider from "@radix-ui/react-slider";
 
-import type { CollectArtwork } from "@/app/collect/page";
+import type { StockroomArtwork } from "@/app/stockroom/page";
 import { useCart } from "@/components/cart/CartContext";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
@@ -13,13 +13,13 @@ import { formatCurrency } from "@/lib/formatCurrency";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type Props = {
-  artworks: CollectArtwork[];
+  artworks: StockroomArtwork[];
   artists: string[];
 };
 
 type SortKey = "recent" | "price-asc" | "size" | "artist";
 
-function formatMoney(price: CollectArtwork["price"]) {
+function formatMoney(price: StockroomArtwork["price"]) {
   if (!price) return "Price on request";
   const amount = Number(price.amount);
   if (!Number.isFinite(amount) || amount <= 0) return "Price on request";
@@ -27,12 +27,12 @@ function formatMoney(price: CollectArtwork["price"]) {
   return formatted || "Price on request";
 }
 
-function getPriceValue(artwork: CollectArtwork) {
+function getPriceValue(artwork: StockroomArtwork) {
   const amount = Number(artwork.price?.amount ?? NaN);
   return Number.isFinite(amount) ? amount : Number.POSITIVE_INFINITY;
 }
 
-function getSizeValue(artwork: CollectArtwork) {
+function getSizeValue(artwork: StockroomArtwork) {
   const width = artwork.widthCm ?? null;
   const height = artwork.heightCm ?? null;
   const depth = artwork.depthCm ?? null;
@@ -53,7 +53,7 @@ function getSizeValue(artwork: CollectArtwork) {
   return values[0] * values[1];
 }
 
-function getPriceAmount(artwork: CollectArtwork): number | null {
+function getPriceAmount(artwork: StockroomArtwork): number | null {
   const amount = Number(artwork.price?.amount ?? NaN);
   return Number.isFinite(amount) ? amount : null;
 }
@@ -67,7 +67,7 @@ function parseDimensionValues(input?: string | null): number[] {
     .filter((value) => Number.isFinite(value));
 }
 
-function getLargestDimensionMeters(artwork: CollectArtwork): number | null {
+function getLargestDimensionMeters(artwork: StockroomArtwork): number | null {
   const values: number[] = [];
   const pushCm = (value: number | null) => {
     if (typeof value === "number" && Number.isFinite(value) && value > 0) {
@@ -320,13 +320,13 @@ function PriceSlider({
   );
 }
 
-export default function CollectGrid({ artworks, artists }: Props) {
+export default function StockroomGrid({ artworks, artists }: Props) {
   const { addLine, openCart } = useCart();
   const [search, setSearch] = useState("");
   const [selectedArtists, setSelectedArtists] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<SizeFilterOption[]>([]);
   const [sortBy, setSortBy] = useState<SortKey>("recent");
-  const [enquiryArtwork, setEnquiryArtwork] = useState<CollectArtwork | null>(
+  const [enquiryArtwork, setEnquiryArtwork] = useState<StockroomArtwork | null>(
     null
   );
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -527,7 +527,7 @@ export default function CollectGrid({ artworks, artists }: Props) {
     };
   }, [sorted]);
 
-  async function handleAddToCart(artwork: CollectArtwork) {
+  async function handleAddToCart(artwork: StockroomArtwork) {
     if (!artwork.variantId) {
       openCart();
       return;

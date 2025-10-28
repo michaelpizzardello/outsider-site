@@ -9,6 +9,7 @@ import type {
 import Image from "next/image";
 import clsx from "clsx";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
+import { shopifyImageLoader } from "@/lib/shopifyImage";
 
 type ArtworkSummary = {
   title: string;
@@ -181,6 +182,7 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
                     <Image
                       src={artwork.image.url}
                       alt={artwork.image.alt || artwork.title}
+                      loader={shopifyImageLoader}
                       width={560}
                       height={560}
                       className="h-auto w-full object-contain"

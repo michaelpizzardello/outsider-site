@@ -38,12 +38,6 @@ type Props = {
   artworks: ArtworkPayload[];
   rows: LayoutRow[];
   showActions?: boolean;
-  /**
-   * Optional desktop aspect ratio override. If provided, all cards will
-   * use this aspect on desktop breakpoints for consistent row heights.
-   * Falls back to a uniform aspect computed from the provided artworks.
-   */
-  forcedDesktopAspect?: number;
 };
 
 type RenderOptions = {
@@ -92,6 +86,9 @@ function ArtworkCard({
   const aspectStyles: CSSProperties = {};
   if (naturalAspect) {
     aspectStyles["--artwork-aspect-mobile"] = naturalAspect;
+    if (!forcedAspect) {
+      aspectStyles["--artwork-aspect-desktop"] = naturalAspect;
+    }
   }
   if (forcedAspect) {
     aspectStyles["--artwork-aspect-desktop"] = forcedAspect;
@@ -101,16 +98,16 @@ function ArtworkCard({
       ? "aspect-[var(--artwork-aspect-mobile,_4/3)] sm:aspect-[var(--artwork-aspect-desktop,_4/3)]"
       : "aspect-[var(--artwork-aspect-mobile,_4/5)] sm:aspect-[var(--artwork-aspect-desktop,_4/5)]";
   const wrapperClass = `relative w-full overflow-hidden bg-white ${aspectClass}${
-    options.centerImage ? " flex items-center justify-center sm:block" : ""
+    options.centerImage ? " flex items-end justify-center" : ""
   }`;
 
   return (
     <div className="artwork-card flex h-full flex-col">
-      <div>
+      <div className="flex flex-1 items-end">
         <Link
           href={href}
           data-artwork-link="image"
-          className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
         >
           {image ? (
             <div className={wrapperClass} style={Object.keys(aspectStyles).length ? aspectStyles : undefined}>
@@ -118,12 +115,12 @@ function ArtworkCard({
                 src={image.url}
                 alt={image.altText || artwork.title}
                 fill
-                className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.01]"
+                className="object-contain object-center transition duration-300 group-hover:scale-[1.01]"
                 sizes={sizeAttr}
               />
             </div>
           ) : (
-            <div className={`bg-neutral-100 ${aspectClass}`} />
+            <div className={`h-full w-full bg-neutral-100 ${aspectClass}`} />
           )}
         </Link>
       </div>
@@ -188,25 +185,11 @@ export default function FeaturedWorksClient({
   artworks,
   rows: _rows,
   showActions = true,
-  forcedDesktopAspect,
 }: Props) {
   const [enquiryArtwork, setEnquiryArtwork] = React.useState<ArtworkPayload | null>(null);
   const [addingId, setAddingId] = React.useState<string | null>(null);
   const { addLine, openCart } = useCart();
   void _rows;
-  const uniformAspect = React.useMemo(() => {
-    const factors = artworks
-      .map((artwork) => artwork.heightFactor)
-      .filter((value): value is number => typeof value === "number" && value > 0);
-    if (!factors.length) return undefined;
-    const maxFactor = Math.max(...factors);
-    return maxFactor > 0 ? 1 / maxFactor : undefined;
-  }, [artworks]);
-  // Prefer explicit override, else compute uniform from this list
-  const desktopAspect =
-    typeof forcedDesktopAspect === "number" && forcedDesktopAspect > 0
-      ? forcedDesktopAspect
-      : uniformAspect;
   const closeEnquiry = () => setEnquiryArtwork(null);
   const handlePurchase = React.useCallback(
     async (artwork: ArtworkPayload) => {
@@ -234,7 +217,7 @@ export default function FeaturedWorksClient({
             <h2 className="text-2xl font-medium tracking-tight sm:text-3xl lg:text-4xl">{title}</h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-16 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-20 xl:gap-y-24">
             {artworks.map((artwork) => (
               <ArtworkCard
                 key={artwork.id}
@@ -242,7 +225,7 @@ export default function FeaturedWorksClient({
                 exhibitionHandle={exhibitionHandle}
                 options={{
                   span: "third",
-                  forcedAspectRatio: desktopAspect,
+                  forcedAspectRatio: undefined,
                   sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
                   centerImage: true,
                 }}

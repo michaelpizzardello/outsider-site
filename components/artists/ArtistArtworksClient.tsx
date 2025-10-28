@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -81,6 +81,9 @@ function ArtworkCard({
   const aspectStyles: CSSProperties = {};
   if (naturalAspect) {
     aspectStyles["--artwork-aspect-mobile"] = naturalAspect;
+    if (!forcedAspect) {
+      aspectStyles["--artwork-aspect-desktop"] = naturalAspect;
+    }
   }
   if (forcedAspect) {
     aspectStyles["--artwork-aspect-desktop"] = forcedAspect;
@@ -90,7 +93,7 @@ function ArtworkCard({
       ? "aspect-[var(--artwork-aspect-mobile,_4/3)] sm:aspect-[var(--artwork-aspect-desktop,_4/3)]"
       : "aspect-[var(--artwork-aspect-mobile,_4/5)] sm:aspect-[var(--artwork-aspect-desktop,_4/5)]";
   const wrapperClass = `relative w-full overflow-hidden bg-white ${aspectClass}${
-    options.centerImage ? " flex items-center justify-center sm:block" : ""
+    options.centerImage ? " flex items-end justify-center" : ""
   }`;
 
   const media = image ? (
@@ -99,7 +102,7 @@ function ArtworkCard({
         src={image.url}
         alt={image.altText || artwork.title}
         fill
-        className="object-contain object-center sm:object-bottom transition duration-300 group-hover:scale-[1.01]"
+        className="object-contain object-center transition duration-300 group-hover:scale-[1.01]"
         sizes={sizeAttr}
       />
     </div>
@@ -122,17 +125,17 @@ function ArtworkCard({
 
   return (
     <div className="artwork-card flex h-full flex-col">
-      <div>
+      <div className="flex flex-1 items-end">
         {href ? (
           <Link
             href={href}
             data-artwork-link="image"
-            className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+            className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
           >
             {media}
           </Link>
         ) : (
-          <div className="group block">{media}</div>
+          <div className="group block w-full">{media}</div>
         )}
       </div>
 
@@ -198,17 +201,6 @@ function ArtworkCard({
   );
 }
 
-function useUniformAspect(artworks: ArtworkPayload[]) {
-  return useMemo(() => {
-    const factors = artworks
-      .map((artwork) => artwork.heightFactor)
-      .filter((value): value is number => typeof value === "number" && value > 0);
-    if (!factors.length) return undefined;
-    const maxFactor = Math.max(...factors);
-    return maxFactor > 0 ? 1 / maxFactor : undefined;
-  }, [artworks]);
-}
-
 export default function ArtistArtworksClient({
   availableArtworks,
   soldArtworks,
@@ -216,9 +208,6 @@ export default function ArtistArtworksClient({
   const [enquiryArtwork, setEnquiryArtwork] = useState<ArtworkPayload | null>(null);
   const [addingId, setAddingId] = useState<string | null>(null);
   const { addLine, openCart } = useCart();
-
-  const availableAspect = useUniformAspect(availableArtworks);
-  const soldAspect = useUniformAspect(soldArtworks);
 
   const closeEnquiry = () => setEnquiryArtwork(null);
 
@@ -235,12 +224,7 @@ export default function ArtistArtworksClient({
     }
   };
 
-  const renderSection = (
-    title: string,
-    artworks: ArtworkPayload[],
-    forcedAspect?: number,
-    showActions = true
-  ) => {
+  const renderSection = (title: string, artworks: ArtworkPayload[], showActions = true) => {
     if (!artworks.length) return null;
 
     return (
@@ -253,14 +237,14 @@ export default function ArtistArtworksClient({
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-14 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-12 xl:gap-y-14">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-16 lg:grid-cols-3 lg:gap-x-16 lg:gap-y-20 xl:gap-y-24">
               {artworks.map((artwork) => (
                 <ArtworkCard
                   key={artwork.id}
                   artwork={artwork}
                   options={{
                     span: "third",
-                    forcedAspectRatio: forcedAspect,
+                    forcedAspectRatio: undefined,
                     sizeOverride: "(min-width:1024px) 33vw, (min-width:768px) 50vw, 50vw",
                     centerImage: true,
                   }}
@@ -280,14 +264,8 @@ export default function ArtistArtworksClient({
 
   return (
     <>
-      {renderSection("Available Works", availableArtworks, availableAspect, true)}
-      {renderSection(
-        "Featured Works",
-        soldArtworks,
-        // Match the desktop aspect to Available Works when possible
-        availableAspect ?? soldAspect,
-        false
-      )}
+      {renderSection("Available Works", availableArtworks, true)}
+      {renderSection("Featured Works", soldArtworks, false)}
       <ArtworkEnquiryModal
         open={Boolean(enquiryArtwork)}
         onClose={closeEnquiry}
