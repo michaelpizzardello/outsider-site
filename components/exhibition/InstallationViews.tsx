@@ -24,6 +24,30 @@ export default function InstallationViews({
   const [viewportRef, embla] = useEmblaCarousel(emblaOptions);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
+  const maxSlideAspect = React.useMemo(() => {
+    if (!images?.length) return 1;
+
+    return images.reduce((max, img) => {
+      const width =
+        typeof img.width === "number" && img.width > 0 ? img.width : null;
+      const height =
+        typeof img.height === "number" && img.height > 0 ? img.height : null;
+
+      if (!width || !height) return max;
+
+      const aspect = width / height;
+      return Number.isFinite(aspect) && aspect > max ? aspect : max;
+    }, 1);
+  }, [images]);
+
+  const trackStyle = React.useMemo(
+    () =>
+      ({
+        ["--carousel-max-aspect" as any]: `${maxSlideAspect}`,
+      }) as React.CSSProperties,
+    [maxSlideAspect]
+  );
+
   React.useEffect(() => {
     if (!embla) return;
     const onSelect = () => setSelectedIndex(embla.selectedScrollSnap());
@@ -111,37 +135,47 @@ export default function InstallationViews({
           {/* Track */}
           <div
             className="
-              flex items-start
-              gap-1
+              flex items-center
+              gap-3 sm:gap-4
               select-none touch-pan-y
             "
+            style={trackStyle}
           >
-            {images.map((img, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={scrollNext}
-                className="
-                  group relative shrink-0 text-left outline-none
-                  basis-[92vw] sm:basis-[520px] md:basis-[600px] lg:basis-[720px] xl:basis-[940px] 2xl:basis-[1040px]
-                "
-                aria-label="View next installation image"
-              >
-                {/* Image card */}
-                <div className="relative w-full bg-white p-2">
-                  {img.width && img.height ? (
-                    <Image
-                      src={img.url}
-                      alt={img.alt || "Installation view"}
-                      width={img.width}
-                      height={img.height}
-                      sizes="(min-width:1536px) 1040px, (min-width:1280px) 940px, (min-width:1024px) 720px, (min-width:768px) 560px, (min-width:640px) 520px, 320px"
-                      className="w-full h-auto object-contain"
-                      priority={idx === 0}
-                    />
-                  ) : (
-                    <div className="relative w-full">
-                      <div className="aspect-[4/3] w-full" />
+            {images.map((img, idx) => {
+              const width =
+                typeof img.width === "number" && img.width > 0
+                  ? img.width
+                  : null;
+              const height =
+                typeof img.height === "number" && img.height > 0
+                  ? img.height
+                  : null;
+              const fallbackAspect = 4 / 3;
+              const computedAspect =
+                width && height ? width / height : fallbackAspect;
+              const aspect =
+                Number.isFinite(computedAspect) && computedAspect > 0
+                  ? computedAspect
+                  : fallbackAspect;
+
+              const slideStyle = {
+                ["--slide-aspect" as any]: `${aspect}`,
+              } as React.CSSProperties;
+
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={scrollNext}
+                  className="group relative shrink-0 text-left outline-none"
+                  aria-label="View next installation image"
+                >
+                  {/* Image card */}
+                  <div
+                    className="artwork-slider-item relative overflow-hidden bg-white p-2"
+                    style={slideStyle}
+                  >
+                    <div className="artwork-slider-frame relative">
                       <Image
                         src={img.url}
                         alt={img.alt || "Installation view"}
@@ -151,22 +185,22 @@ export default function InstallationViews({
                         priority={idx === 0}
                       />
                     </div>
-                  )}
-                  {/* Subtle overlay on non-selected slides */}
-                  <div
-                    className={`
-                      absolute inset-0 bg-white pointer-events-none
-                      transition-opacity duration-500 ease-out
-                      ${
-                        idx === selectedIndex
-                          ? "opacity-0"
-                          : "opacity-70 group-hover:opacity-50"
-                      }
-                    `}
-                  />
-                </div>
-              </button>
-            ))}
+                    {/* Subtle overlay on non-selected slides */}
+                    <div
+                      className={`
+                        pointer-events-none absolute inset-0 bg-white
+                        transition-opacity duration-500 ease-out
+                        ${
+                          idx === selectedIndex
+                            ? "opacity-0"
+                            : "opacity-70 group-hover:opacity-50"
+                        }
+                      `}
+                    />
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
