@@ -9,7 +9,7 @@ import { toHtml } from "@/lib/richtext";
 import ContactForm from "@/components/contact/ContactForm";
 import { siteConfig } from "@/lib/siteConfig";
 
-// # hello
+// # hello again
 
 export const metadata: Metadata = {
   title: "About Outsider Gallery",
