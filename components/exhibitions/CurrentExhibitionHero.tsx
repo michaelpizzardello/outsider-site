@@ -1,8 +1,11 @@
+"use client";
+
 // components/exhibitions/CurrentExhibitionHero.tsx
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
-import { ExhibitionCard, headingParts } from "@/lib/exhibitions";
+import { headingParts, type ExhibitionCard } from "@/lib/exhibitionsShared";
 import { HERO_LABELS } from "@/lib/labels";
 import { ArrowCtaLink } from "@/components/ui/ArrowCta";
 import HeroScrollArrow from "@/components/exhibitions/HeroScrollArrow";
@@ -25,6 +28,11 @@ export default function CurrentExhibitionHero({
   const title = ex?.title ?? "";
   const artist = ex?.artist?.trim() ?? "";
   const imgAlt = bannerImage?.alt ?? ex?.hero?.alt ?? (title || "Exhibition");
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsImageLoaded(false);
+  }, [imgSrc]);
 
   const dateText = formatDates(ex?.start, ex?.end) || "Details to be announced";
 
@@ -36,7 +44,7 @@ export default function CurrentExhibitionHero({
   });
 
   return (
-    <section className="current-exhibition-hero relative isolate min-h-[100svh] w-full overflow-hidden">
+    <section className="current-exhibition-hero relative isolate min-h-[100svh] w-full overflow-hidden bg-black">
       {imgSrc ? (
         <Image
           src={imgSrc}
@@ -44,10 +52,14 @@ export default function CurrentExhibitionHero({
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center"
+          className={[
+            "object-cover object-center transition-opacity duration-700 ease-out",
+            isImageLoaded ? "opacity-100" : "opacity-0",
+          ].join(" ")}
+          onLoadingComplete={() => setIsImageLoaded(true)}
         />
       ) : (
-        <div className="absolute inset-0 bg-neutral-100" />
+        <div className="absolute inset-0 bg-black" />
       )}
 
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
@@ -116,7 +128,11 @@ export default function CurrentExhibitionHero({
             strokeWidth="1.75"
             aria-hidden="true"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m0 0-5-5m5 5 5-5" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 5v14m0 0-5-5m5 5 5-5"
+            />
           </svg>
         </HeroScrollArrow>
       ) : null}

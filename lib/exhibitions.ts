@@ -3,6 +3,9 @@ import "server-only";
 import { shopifyFetch } from "@/lib/shopify";
 import { isDraftStatus } from "@/lib/isDraftStatus";
 export { formatDates } from "@/lib/formatDates";
+export type { ExhibitionCard } from "@/lib/exhibitionsShared";
+export { isGroupShow, headingParts } from "@/lib/exhibitionsShared";
+import type { ExhibitionCard } from "@/lib/exhibitionsShared";
 
 // ---------------- Types ----------------
 export type FieldRef =
@@ -15,22 +18,6 @@ export type FieldRef =
 
 export type Field = { key: string; type: string; value: unknown; reference: FieldRef | null };
 export type Node = { handle: string; fields: Field[] };
-
-export type ExhibitionCard = {
-  handle: string;
-  title: string;
-  artist?: string;
-  location?: string;
-  openingInfo?: string;
-  start?: Date;
-  end?: Date;
-  hero?: { url: string; width?: number; height?: number; alt?: string };
-  banner?: { url: string; width?: number; height?: number; alt?: string };
-  summary?: string; // normalised from short_text / short-text / etc.
-  isGroup?: boolean; // optional future flag from Shopify if you add one
-  variant?: string; // exhibition template variant (minimal/standard/feature/announcement)
-  status?: string | null;
-};
 
 type HomeQuery = {
   exhibitions: { nodes: Node[] } | null;
@@ -104,56 +91,6 @@ function asDate(v?: string) {
 }
 
 // ----- Title logic centralised -----
-export function isGroupShow(
-  ex: Pick<ExhibitionCard, "artist" | "isGroup" | "variant">
-): boolean {
-  if (ex?.isGroup === true) return true;
-
-  const variant = ex?.variant?.trim().toLowerCase();
-  if (variant && (variant.includes("group") || variant.includes("collective"))) {
-    return true;
-  }
-
-  const artistValue = (ex?.artist ?? "").trim().toLowerCase();
-  if (!artistValue) return false;
-
-  const simpleMatches = [
-    "group exhibition",
-    "group show",
-    "group",
-    "various artists",
-    "multiple artists",
-  ];
-  if (simpleMatches.includes(artistValue)) return true;
-
-  if (
-    artistValue.includes("group exhibition") ||
-    artistValue.includes("group show")
-  )
-    return true;
-
-  const multiArtistSeparators = [", ", " & ", " and ", " / ", "+", "/"];
-  if (
-    multiArtistSeparators.some((sep) => {
-      if (!artistValue.includes(sep)) return false;
-      const parts = artistValue.split(sep).map((part) => part.trim());
-      return parts.filter(Boolean).length >= 2;
-    })
-  )
-    return true;
-
-  return false;
-}
-
-export function headingParts(
-  ex: Pick<ExhibitionCard, "title" | "artist" | "isGroup" | "variant">
-): { primary: string; secondary?: string; isGroup: boolean } {
-  const group = isGroupShow(ex);
-  const primary = group ? (ex.title || ex.artist || "") : (ex.artist || ex.title || "");
-  const secondary = group ? ex.artist : ex.title;
-  return { primary, secondary, isGroup: group };
-}
-
 function mapNode(n: Node): ExhibitionCard {
   return {
     handle: n.handle,

@@ -3,34 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { ExhibitionCard } from "@/lib/exhibitions"; // type-only (erased at build)
+import { headingParts, type ExhibitionCard } from "@/lib/exhibitionsShared";
 import { formatDates } from "@/lib/formatDates"; // safe utility
 import Container from "@/components/layout/Container";
 import clsx from "clsx";
-
-// Local helper to avoid importing runtime from server-only lib
-function headingParts({
-  title,
-  artist,
-  isGroup,
-}: {
-  title: string;
-  artist?: string;
-  isGroup?: boolean;
-}) {
-  const a = (artist ?? "").trim().toLowerCase();
-  const group =
-    !!isGroup ||
-    a === "group exhibition" ||
-    a === "group show" ||
-    a === "group";
-
-  if (group)
-    return { primary: title, secondary: undefined, isGroup: true as const };
-  if (artist)
-    return { primary: artist, secondary: title, isGroup: false as const };
-  return { primary: title, secondary: undefined, isGroup: false as const };
-}
 
 export default function ExhibitionsIndex({
   items,
@@ -104,6 +80,7 @@ export default function ExhibitionsIndex({
               title: ex.title,
               artist: ex.artist,
               isGroup: ex.isGroup,
+              variant: ex.variant,
             });
             return (
               <article key={ex.handle} className="group">

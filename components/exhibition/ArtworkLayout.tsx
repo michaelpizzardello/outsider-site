@@ -9,7 +9,7 @@ import CloseArtworkButton from "@/components/exhibition/CloseArtworkButton";
 import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 import { useCart } from "@/components/cart/CartContext";
-import { shopifyImageLoader } from "@/lib/shopifyImage";
+import { buildShopifyImageSrc, shopifyImageLoader } from "@/lib/shopifyImage";
 
 // Client-side shell that displays the artwork hero, metadata rail, and enquiry modal.
 
@@ -52,7 +52,7 @@ export default function ArtworkLayout({
   canPurchase,
   variantId,
 }: Props) {
-  const fallbackHref = exhibitionHandle ? `/exhibitions/${exhibitionHandle}` : "/stockroom";
+  const fallbackHref = exhibitionHandle ? `/exhibitions/${exhibitionHandle}` : "/collect";
 
   // Track currently selected slide; used by both carousel and desktop hero image.
   const [activeIndex, setActiveIndex] = useState(0);
@@ -89,6 +89,29 @@ export default function ArtworkLayout({
 
   useEffect(() => {
     setActiveIndex(0);
+  }, [gallery]);
+
+  useEffect(() => {
+    if (!gallery?.length) return;
+    if (typeof window === "undefined") return;
+
+    const preloaders = gallery.map((img) => {
+      if (!img?.url) return null;
+      const targetWidth =
+        typeof img.width === "number" && img.width > 0 ? img.width : 2000;
+      const preloader = new window.Image();
+      preloader.src = buildShopifyImageSrc(img.url, {
+        width: Math.min(targetWidth, 2400),
+      });
+      return preloader;
+    });
+
+    return () => {
+      preloaders.forEach((imageEl) => {
+        if (!imageEl) return;
+        imageEl.src = "";
+      });
+    };
   }, [gallery]);
 
   // Initialise Embla carousel instance once and share it across effects.
@@ -321,6 +344,7 @@ export default function ArtworkLayout({
                           loader={shopifyImageLoader}
                           fill
                           sizes="(max-width: 1023px) 100vw"
+                          loading="eager"
                           className="object-contain"
                           priority={idx === 0}
                         />

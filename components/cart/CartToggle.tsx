@@ -30,7 +30,7 @@ export default function CartToggle({ variant = 'banner' }: { variant?: Variant }
       <button
         type="button"
         onClick={openCart}
-        className="relative inline-flex h-10 w-10 items-center justify-center border border-neutral-300 text-sm transition hover:border-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
+        className="relative inline-flex h-10 w-10 cursor-pointer items-center justify-center border border-neutral-300 text-sm transition hover:border-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
         aria-label={label}
       >
         <CartIcon />
@@ -43,7 +43,7 @@ export default function CartToggle({ variant = 'banner' }: { variant?: Variant }
     <button
       type="button"
       onClick={openCart}
-      className="inline-flex items-center gap-2 px-2 py-2 text-sm font-medium text-neutral-900 transition hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+      className="inline-flex cursor-pointer items-center gap-2 px-2 py-2 text-sm font-medium text-neutral-900 transition hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
     >
       <span className="relative flex items-center justify-center">
         <CartIcon />

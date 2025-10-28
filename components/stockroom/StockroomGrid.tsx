@@ -17,7 +17,18 @@ type Props = {
   artists: string[];
 };
 
-type SortKey = "recent" | "price-asc" | "size" | "artist";
+type SortKey = "artist" | "recent" | "price-asc" | "price-desc" | "size-asc" | "size-desc";
+
+const DEFAULT_SORT: SortKey = "artist";
+
+const SORT_OPTIONS: Array<{ value: SortKey; label: string }> = [
+  { value: "artist", label: "Artist (A–Z)" },
+  { value: "price-asc", label: "Price (low to high)" },
+  { value: "price-desc", label: "Price (high to low)" },
+  { value: "size-asc", label: "Size (small to large)" },
+  { value: "size-desc", label: "Size (large to small)" },
+  { value: "recent", label: "Recently added" },
+];
 
 function formatMoney(price: StockroomArtwork["price"]) {
   if (!price) return "Price on request";
@@ -25,11 +36,6 @@ function formatMoney(price: StockroomArtwork["price"]) {
   if (!Number.isFinite(amount) || amount <= 0) return "Price on request";
   const formatted = formatCurrency(amount, price.currencyCode);
   return formatted || "Price on request";
-}
-
-function getPriceValue(artwork: StockroomArtwork) {
-  const amount = Number(artwork.price?.amount ?? NaN);
-  return Number.isFinite(amount) ? amount : Number.POSITIVE_INFINITY;
 }
 
 function getSizeValue(artwork: StockroomArtwork) {
@@ -194,7 +200,7 @@ function FilterCheckboxGroup({
           </button>
         ) : null}
       </div>
-      <div className="max-h-60 overflow-y-auto pr-1">
+      <div className="space-y-2">
         {options.map((option, index) => {
           const checkboxId = `${id}-${index}`;
           const checked = selected.includes(option);
@@ -325,7 +331,7 @@ export default function StockroomGrid({ artworks, artists }: Props) {
   const [search, setSearch] = useState("");
   const [selectedArtists, setSelectedArtists] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<SizeFilterOption[]>([]);
-  const [sortBy, setSortBy] = useState<SortKey>("recent");
+  const [sortBy, setSortBy] = useState<SortKey>(DEFAULT_SORT);
   const [enquiryArtwork, setEnquiryArtwork] = useState<StockroomArtwork | null>(
     null
   );
@@ -465,9 +471,6 @@ export default function StockroomGrid({ artworks, artists }: Props) {
   const sorted = useMemo(() => {
     const next = [...filtered];
     switch (sortBy) {
-      case "price-asc":
-        next.sort((a, b) => getPriceValue(a) - getPriceValue(b));
-        break;
       case "artist":
         next.sort((a, b) => {
           const aKey = (a.artistSortKey ?? a.artist ?? "").toLowerCase();
@@ -478,7 +481,30 @@ export default function StockroomGrid({ artworks, artists }: Props) {
           return 0;
         });
         break;
-      case "size":
+      case "price-asc":
+        next.sort((a, b) => {
+          const aPrice = getPriceAmount(a);
+          const bPrice = getPriceAmount(b);
+          if (aPrice === null && bPrice === null) return 0;
+          if (aPrice === null) return 1;
+          if (bPrice === null) return -1;
+          return aPrice - bPrice;
+        });
+        break;
+      case "price-desc":
+        next.sort((a, b) => {
+          const aPrice = getPriceAmount(a);
+          const bPrice = getPriceAmount(b);
+          if (aPrice === null && bPrice === null) return 0;
+          if (aPrice === null) return 1;
+          if (bPrice === null) return -1;
+          return bPrice - aPrice;
+        });
+        break;
+      case "size-asc":
+        next.sort((a, b) => getSizeValue(a) - getSizeValue(b));
+        break;
+      case "size-desc":
         next.sort((a, b) => getSizeValue(b) - getSizeValue(a));
         break;
       case "recent":
@@ -540,14 +566,14 @@ export default function StockroomGrid({ artworks, artists }: Props) {
     selectedSizes.length +
     (priceFilterActive ? 1 : 0) +
     (search.trim() ? 1 : 0) +
-    (sortBy !== "recent" ? 1 : 0);
+    (sortBy !== DEFAULT_SORT ? 1 : 0);
   const hasActiveFilters = appliedFilterCount > 0;
 
   function resetFilters() {
     setSelectedArtists([]);
     setSelectedSizes([]);
     setSearch("");
-    setSortBy("recent");
+    setSortBy(DEFAULT_SORT);
     if (priceStats.hasPrice) {
       setPriceRange([priceStats.min, priceStats.max]);
     }
@@ -577,10 +603,11 @@ export default function StockroomGrid({ artworks, artists }: Props) {
                   onChange={(event) => setSortBy(event.target.value as SortKey)}
                   className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 focus:border-neutral-900 focus:outline-none"
                 >
-                  <option value="recent">Recently added</option>
-                  <option value="price-asc">Price (low to high)</option>
-                  <option value="size">Size (largest first)</option>
-                  <option value="artist">Artist (A–Z)</option>
+                  {SORT_OPTIONS.map(({ value, label }) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
                 </select>
               </label>
               <FilterCheckboxGroup
@@ -882,10 +909,11 @@ export default function StockroomGrid({ artworks, artists }: Props) {
                   onChange={(event) => setSortBy(event.target.value as SortKey)}
                   className="h-11 w-full border border-neutral-300 bg-white px-3 text-sm text-neutral-800 focus:border-neutral-900 focus:outline-none"
                 >
-                  <option value="recent">Recently added</option>
-                  <option value="price-asc">Price (low to high)</option>
-                  <option value="size">Size (largest first)</option>
-                  <option value="artist">Artist (A–Z)</option>
+                  {SORT_OPTIONS.map(({ value, label }) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
                 </select>
               </label>
               <FilterCheckboxGroup

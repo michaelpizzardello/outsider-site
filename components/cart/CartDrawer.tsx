@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
@@ -73,7 +74,7 @@ export default function CartDrawer() {
         type="button"
         aria-label="Close cart"
         onClick={closeCart}
-        className="flex-1 bg-black/40 backdrop-blur-sm"
+        className="flex-1 cursor-pointer bg-black/40 backdrop-blur-sm"
       />
 
       <aside className="relative flex h-full max-h-screen w-full max-w-lg flex-col bg-white shadow-2xl">
@@ -87,7 +88,7 @@ export default function CartDrawer() {
           <button
             type="button"
             onClick={closeCart}
-            className="text-sm uppercase tracking-[0.18em] text-neutral-500 hover:text-black"
+            className="cursor-pointer text-sm uppercase tracking-[0.18em] text-neutral-500 hover:text-black"
           >
             Close
           </button>
@@ -99,7 +100,7 @@ export default function CartDrawer() {
             <button
               type="button"
               onClick={clearError}
-              className="ml-3 underline"
+              className="ml-3 cursor-pointer underline"
             >
               Dismiss
             </button>
@@ -118,6 +119,7 @@ export default function CartDrawer() {
                 const image = product?.featuredImage;
                 const artist = product?.artist;
                 const title = product?.title || line.merchandiseTitle;
+                const artworkHref = product?.handle ? `/artworks/${product.handle}` : null;
                 const additionalInfoLines = product?.additionalInfo
                   ? product.additionalInfo.split(/\n+/).filter(Boolean)
                   : [];
@@ -134,42 +136,66 @@ export default function CartDrawer() {
                   if (!Number.isFinite(amount)) return "Price on request";
                   return formatCurrency(amount, line.price.currencyCode) || "Price on request";
                 })();
+                const imageElement = image?.url ? (
+                  <Image
+                    src={image.url}
+                    alt={image.altText || product?.title || 'Artwork'}
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                  />
+                ) : null;
+
+                const infoContent = (
+                  <div className="space-y-1.5 text-sm leading-snug text-neutral-700">
+                    {artist ? (
+                      <p className="font-medium text-neutral-900">{artist}</p>
+                    ) : null}
+                    <p className="text-neutral-900">
+                      <span className="italic">{title}</span>
+                      {product?.year ? <span>, {product.year}</span> : null}
+                    </p>
+                    {product?.medium ? <p>{product.medium}</p> : null}
+                    {product?.dimensions ? <p>{product.dimensions}</p> : null}
+                    {additionalInfoLines.map((infoLine, idx) => (
+                      <p key={idx} className="text-neutral-500">
+                        {infoLine}
+                      </p>
+                    ))}
+                    <p className="pt-1 font-medium text-neutral-900">{priceLabel}</p>
+                  </div>
+                );
+
                 return (
                   <li key={line.id} className="py-6">
                     <div className="grid grid-cols-[96px_1fr] gap-4">
-                      <div className="relative h-24 w-24 bg-neutral-100">
-                        {image?.url ? (
-                          <Image
-                            src={image.url}
-                            alt={image.altText || product?.title || 'Artwork'}
-                            fill
-                            sizes="96px"
-                            className="object-cover"
-                          />
-                        ) : null}
-                      </div>
+                      {artworkHref ? (
+                        <Link
+                          href={artworkHref}
+                          className="relative block h-24 w-24 cursor-pointer bg-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
+                          aria-label={`View artwork ${title}`}
+                        >
+                          {imageElement}
+                        </Link>
+                      ) : (
+                        <div className="relative h-24 w-24 bg-neutral-100">{imageElement}</div>
+                      )}
                       <div className="flex flex-col">
-                        <div className="space-y-1.5 text-sm leading-snug text-neutral-700">
-                          {artist ? (
-                            <p className="font-medium text-neutral-900">{artist}</p>
-                          ) : null}
-                          <p className="text-neutral-900">
-                            <span className="italic">{title}</span>
-                            {product?.year ? <span>, {product.year}</span> : null}
-                          </p>
-                          {product?.medium ? <p>{product.medium}</p> : null}
-                          {product?.dimensions ? <p>{product.dimensions}</p> : null}
-                          {additionalInfoLines.map((infoLine, idx) => (
-                            <p key={idx} className="text-neutral-500">
-                              {infoLine}
-                            </p>
-                          ))}
-                          <p className="pt-1 font-medium text-neutral-900">{priceLabel}</p>
-                        </div>
+                        {artworkHref ? (
+                          <Link
+                            href={artworkHref}
+                            className="group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
+                          >
+                            {infoContent}
+                          </Link>
+                        ) : (
+                          infoContent
+                        )}
                         <button
                           type="button"
                           onClick={() => removeLine(line.id)}
-                          className="mt-4 self-start text-xs uppercase tracking-[0.2em] text-neutral-500 underline-offset-4 hover:underline"
+                          className="mt-4 self-start cursor-pointer text-xs uppercase tracking-[0.2em] text-neutral-500 underline-offset-4 hover:underline"
+                          aria-label={`Remove ${title} from cart`}
                         >
                           Remove
                         </button>
@@ -198,7 +224,7 @@ export default function CartDrawer() {
           <div className="mt-4 flex gap-3">
             <button
               type="button"
-              className="flex-1 border border-neutral-300 px-4 py-2 text-sm uppercase tracking-[0.18em] hover:border-neutral-900"
+              className="flex-1 cursor-pointer border border-neutral-300 px-4 py-2 text-sm uppercase tracking-[0.18em] hover:border-neutral-900"
               onClick={closeCart}
             >
               Continue browsing
@@ -208,7 +234,9 @@ export default function CartDrawer() {
               onClick={handleCheckout}
               disabled={empty || checkoutLoading}
               className={`flex-1 px-4 py-2 text-sm uppercase tracking-[0.18em] text-white transition ${
-                empty || checkoutLoading ? 'bg-neutral-400 cursor-not-allowed' : 'bg-neutral-900 hover:bg-black'
+                empty || checkoutLoading
+                  ? 'bg-neutral-400 cursor-not-allowed'
+                  : 'bg-neutral-900 cursor-pointer hover:bg-black'
               }`}
             >
               {checkoutLoading ? 'Processing...' : 'Checkout'}

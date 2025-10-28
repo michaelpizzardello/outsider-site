@@ -85,7 +85,7 @@ export default function Header({
   const headerPaddingDesktop = scrolled ? "py-4 md:py-5" : "py-8 md:py-12";
   const headerPaddingMobile = scrolled ? "py-3" : "py-5";
   const cartButtonClass = clsx(
-    "relative inline-flex h-11 w-11 items-center justify-center transition focus:outline-none focus-visible:ring-2",
+    "relative inline-flex h-11 w-11 cursor-pointer items-center justify-center transition focus:outline-none focus-visible:ring-2",
     solid
       ? "text-neutral-900 hover:text-black focus-visible:ring-neutral-800 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       : "text-white hover:text-white focus-visible:ring-white focus-visible:ring-offset-0"

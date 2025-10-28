@@ -20,7 +20,7 @@ export default function CartFloatingButton() {
       type="button"
       onClick={openCart}
       aria-label={label}
-      className="fixed bottom-6 right-3 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-black/80 text-white shadow-lg backdrop-blur-md transition hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white md:hidden"
+      className="fixed bottom-6 right-3 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-black/80 text-white shadow-lg backdrop-blur-md transition hover:bg-black/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 focus-visible:ring-offset-white md:hidden"
     >
       <span className="relative flex items-center justify-center">
         <CartIcon className="h-7 w-7 text-white" />

@@ -2,7 +2,7 @@ import type { ImageLoader } from "next/image";
 
 const SHOPIFY_CDN_HOSTNAME = "cdn.shopify.com";
 
-const buildShopifyUrl = (src: string) => {
+const toUrl = (src: string) => {
   try {
     return new URL(src);
   } catch {
@@ -11,16 +11,12 @@ const buildShopifyUrl = (src: string) => {
 };
 
 /**
- * Shopify assets accept a `width` query param that lets us request a resized
- * variant directly from the CDN. The default Next.js remote loader downloads
- * the original file first (often 8–10MB) which slows down the carousel.
- *
- * By mapping the widths requested by Next.js onto Shopify `width` parameters
- * we fetch right-sized derivatives in the first place, dramatically reducing
- * transfer sizes and improving perceived loading.
+ * Shopify CDN allows requesting downscaled derivatives by passing `width` and
+ * optional `quality` query parameters. Serving those directly avoids
+ * downloading the multi-megabyte originals that slow down the carousel.
  */
 export const shopifyImageLoader: ImageLoader = ({ src, width, quality }) => {
-  const url = buildShopifyUrl(src);
+  const url = toUrl(src);
   if (!url || url.hostname !== SHOPIFY_CDN_HOSTNAME) {
     return src;
   }
@@ -37,8 +33,8 @@ export const shopifyImageLoader: ImageLoader = ({ src, width, quality }) => {
 };
 
 /**
- * Helper that mirrors the loader logic when we need a fixed-size URL outside
- * of the Next.js loader pipeline (e.g. blur placeholders or meta tags).
+ * Mirrors `shopifyImageLoader` for cases where we need a predictable resized
+ * URL outside of the Next/Image component (e.g. manual preloads).
  */
 export const buildShopifyImageSrc = (
   src: string,
@@ -50,7 +46,7 @@ export const buildShopifyImageSrc = (
     quality?: number;
   } = {}
 ) => {
-  const url = buildShopifyUrl(src);
+  const url = toUrl(src);
   if (!url || url.hostname !== SHOPIFY_CDN_HOSTNAME) {
     return src;
   }
