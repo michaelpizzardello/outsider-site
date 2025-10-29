@@ -3,6 +3,7 @@
 // components/exhibitions/CurrentExhibitionHero.tsx
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import ExhibitionLabel from "@/components/exhibitions/ExhibitionLabel";
 import { formatDates } from "@/lib/formatDates";
 import { headingParts, type ExhibitionCard } from "@/lib/exhibitionsShared";
@@ -29,6 +30,7 @@ export default function CurrentExhibitionHero({
   const artist = ex?.artist?.trim() ?? "";
   const imgAlt = bannerImage?.alt ?? ex?.hero?.alt ?? (title || "Exhibition");
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const exhibitionHref = ex?.handle ? `/exhibitions/${ex.handle}` : "/exhibitions";
 
   useEffect(() => {
     setIsImageLoaded(false);
@@ -73,31 +75,36 @@ export default function CurrentExhibitionHero({
             {topLabel}
           </ExhibitionLabel>
 
-          {/* Artist name/ Header 1 */}
-          <h1
-            className={[
-              "text-display-1 hero-title-mobile leading-tight text-balance md:whitespace-normal",
-              isGroup ? "italic" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
+          <Link
+            href={exhibitionHref}
+            className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/20"
           >
-            {primary}
-          </h1>
-
-          {/* Exhibition Title, H2 */}
-          {secondary ? (
-            <h2
+            {/* Artist name/ Header 1 */}
+            <h1
               className={[
-                "mt-3 text-display-2 text-balance text-white/90",
-                !isGroup ? "italic" : "",
+                "text-display-1 hero-title-mobile leading-tight text-balance md:whitespace-normal",
+                isGroup ? "italic" : "",
               ]
                 .filter(Boolean)
                 .join(" ")}
             >
-              {secondary}
-            </h2>
-          ) : null}
+              {primary}
+            </h1>
+
+            {/* Exhibition Title, H2 */}
+            {secondary ? (
+              <h2
+                className={[
+                  "mt-3 text-display-2 text-balance text-white/90",
+                  !isGroup ? "italic" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {secondary}
+              </h2>
+            ) : null}
+          </Link>
 
           {/* Dates + location */}
           <p className="mt-10 text-display-3 opacity-90 ">{dateText}</p>
@@ -109,6 +116,7 @@ export default function CurrentExhibitionHero({
               label={buttonLabel}
               align="center"
               className="mt-12 hover:opacity-85"
+              underline={false}
             />
           ) : null}
         </div>

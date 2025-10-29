@@ -12,6 +12,7 @@ import TopLoader from "@/components/layout/TopLoader";
 import OrganizationJsonLd from "@/components/seo/OrganizationJsonLd";
 import { siteConfig } from "@/lib/siteConfig";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import FacebookPixel from "@/components/analytics/FacebookPixel";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
@@ -61,6 +62,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${sofiaPro.className} antialiased bg-white text-black`}>
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        <FacebookPixel pixelId="871465931873141" />
         <OrganizationJsonLd />
         <CartProvider>
           <TopLoader />
