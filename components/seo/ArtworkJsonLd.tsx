@@ -1,6 +1,7 @@
 import { getAbsoluteUrl, siteConfig } from "@/lib/siteConfig";
 
 type ArtworkJsonLdProps = {
+  productId: string;
   handle: string;
   title: string;
   artist?: string | null;
@@ -16,6 +17,7 @@ type ArtworkJsonLdProps = {
 };
 
 export default function ArtworkJsonLd({
+  productId,
   handle,
   title,
   artist,
@@ -29,18 +31,28 @@ export default function ArtworkJsonLd({
   heightCm,
   depthCm,
 }: ArtworkJsonLdProps) {
+  const itemUrl = getAbsoluteUrl(`/artworks/${handle}`);
+  const schemaAvailability =
+    availability === "SoldOut" ? "OutOfStock" : availability ?? undefined;
+
   const offers =
     priceAmount && priceCurrency
       ? {
           "@type": "Offer",
           price: priceAmount,
           priceCurrency,
-          availability: availability
-            ? `https://schema.org/${availability}`
+          availability: schemaAvailability
+            ? `https://schema.org/${schemaAvailability}`
             : undefined,
-          url: getAbsoluteUrl(`/artworks/${handle}`),
+          url: itemUrl,
         }
-      : undefined;
+      : schemaAvailability
+        ? {
+            "@type": "Offer",
+            availability: `https://schema.org/${schemaAvailability}`,
+            url: itemUrl,
+          }
+        : undefined;
 
   const size =
     widthCm || heightCm || depthCm
@@ -58,7 +70,9 @@ export default function ArtworkJsonLd({
 
   const payload = {
     "@context": "https://schema.org",
-    "@type": "VisualArtwork",
+    "@type": ["Product", "VisualArtwork"],
+    "@id": `${itemUrl}#product`,
+    productID: productId,
     name: title,
     creator: artist
       ? {
@@ -73,7 +87,7 @@ export default function ArtworkJsonLd({
         ? imageUrl
         : getAbsoluteUrl(imageUrl)
       : undefined,
-    url: getAbsoluteUrl(`/artworks/${handle}`),
+    url: itemUrl,
     offers,
     producer: {
       "@type": "ArtGallery",

@@ -569,6 +569,7 @@ export default async function ArtworkPage({
   return (
     <>
       <ArtworkJsonLd
+        productId={product.id}
         handle={product.handle}
         title={product.title}
         artist={artist ?? null}
