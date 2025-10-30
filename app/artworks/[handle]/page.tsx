@@ -573,8 +573,10 @@ export default async function ArtworkPage({
         handle={product.handle}
         title={product.title}
         artist={artist ?? null}
+        year={year ?? null}
         description={descriptionText ?? null}
         medium={medium ?? null}
+        dimensionsLabel={dimensionsLabel ?? null}
         imageUrl={heroImage?.url ?? null}
         priceAmount={priceData?.amount ?? null}
         priceCurrency={priceData?.currencyCode ?? null}
