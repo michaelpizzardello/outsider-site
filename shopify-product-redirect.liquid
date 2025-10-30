@@ -1,0 +1,11 @@
+<!--
+  Add this snippet to your Shopify Online Store theme to forward every
+  /products/{handle} request to the headless Next.js site.
+  1. In Shopify admin open Online Store → Themes → Edit code.
+  2. Create (or open) templates/product.liquid (or product.json → section).
+  3. Replace its contents with this redirect block.
+-->
+{% assign target = 'https://outsidergallery.au/artworks/' | append: product.handle %}
+<meta http-equiv="refresh" content="0;url={{ target }}">
+<script>window.location.replace('{{ target }}');</script>
+<link rel="canonical" href="{{ target }}">
