@@ -53,7 +53,7 @@ export default function ArtworkLayout({
   artist,
   year,
   priceLabel,
-  captionHtml,
+  captionHtml: _unusedCaptionHtml,
   medium,
   dimensionsLabel,
   additionalInfoHtml,
@@ -225,7 +225,6 @@ export default function ArtworkLayout({
 
   // Booleans drive conditional rendering throughout the template.
   const hasHeading = Boolean(artist || title || year);
-  const hasCaption = Boolean(captionHtml);
   const hasPrice = Boolean(displayPriceLabel);
   const hasMetaList = Boolean(
     medium || dimensionsLabel || additionalInfoHtml || hasPrice
@@ -280,9 +279,8 @@ export default function ArtworkLayout({
       ) : null;
 
     const showDividerAfterButton =
-      showDivider && buttonsNode && (hasCaption || hasMetaList);
-    const captionOffset = showDividerAfterButton ? "mt-6" : "mt-7";
-    const metaOffset = hasCaption ? "mt-4" : captionOffset;
+      showDivider && buttonsNode && hasMetaList;
+    const metaOffset = showDividerAfterButton ? "mt-6" : "mt-7";
     const hasSupportingMeta = Boolean(
       medium || dimensionsLabel || additionalInfoHtml
     );
@@ -296,13 +294,6 @@ export default function ArtworkLayout({
 
         {showDividerAfterButton && (
           <div className="mt-5 mb-5 h-px w-full bg-neutral-300 lg:mt-6 lg:mb-6" />
-        )}
-
-        {hasCaption && (
-          <div
-            className={`artwork-meta-text ${captionOffset} space-y-2 text-neutral-800 [&_p]:artwork-meta-text [&_p]:text-neutral-800`.trim()}
-            dangerouslySetInnerHTML={{ __html: captionHtml! }}
-          />
         )}
 
         {hasMetaList && (
