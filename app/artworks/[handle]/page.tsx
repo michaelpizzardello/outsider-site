@@ -584,6 +584,8 @@ export default async function ArtworkPage({
         depthCm={depthCm ?? null}
       />
       <ArtworkLayout
+        productId={product.id}
+        productHandle={product.handle}
         exhibitionHandle={exhibitionHandle ?? undefined}
         title={product.title}
         gallery={gallery}
@@ -596,6 +598,9 @@ export default async function ArtworkPage({
         additionalInfoHtml={additionalInfoHtml}
         canPurchase={canPurchase}
         variantId={variantId}
+        priceAmount={priceData?.amount ?? null}
+        priceCurrency={priceData?.currencyCode ?? null}
+        availability={availability}
       />
     </>
   );

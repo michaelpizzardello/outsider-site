@@ -10,6 +10,7 @@ import ArtworkEnquiryModal from "@/components/exhibition/ArtworkEnquiryModal";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 import { useCart } from "@/components/cart/CartContext";
 import { buildShopifyImageSrc, shopifyImageLoader } from "@/lib/shopifyImage";
+import { trackPixelEvent } from "@/lib/analytics/pixel";
 
 // Client-side shell that displays the artwork hero, metadata rail, and enquiry modal.
 
@@ -24,6 +25,8 @@ type GalleryImage = {
 
 // UI props received from the server component.
 type Props = {
+  productId: string;
+  productHandle: string;
   exhibitionHandle?: string | null;
   title: string;
   gallery: GalleryImage[];
@@ -36,9 +39,14 @@ type Props = {
   additionalInfoHtml?: string;
   canPurchase?: boolean;
   variantId?: string | null;
+  priceAmount?: string | null;
+  priceCurrency?: string | null;
+  availability?: "InStock" | "OutOfStock" | "SoldOut" | null;
 };
 
 export default function ArtworkLayout({
+  productId,
+  productHandle,
   exhibitionHandle,
   title,
   gallery,
@@ -51,6 +59,9 @@ export default function ArtworkLayout({
   additionalInfoHtml,
   canPurchase,
   variantId,
+  priceAmount,
+  priceCurrency,
+  availability,
 }: Props) {
   const fallbackHref = exhibitionHandle ? `/exhibitions/${exhibitionHandle}` : "/collect";
 
@@ -143,18 +154,58 @@ export default function ArtworkLayout({
   const { addLine, openCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
 
+  const pixelContents = useMemo(() => {
+    if (!productId) return null;
+    const parsedPrice = priceAmount ? Number(priceAmount) : NaN;
+    const priceNumber = Number.isFinite(parsedPrice) ? parsedPrice : undefined;
+    const availabilityLabel =
+      availability === "InStock"
+        ? "in stock"
+        : availability === "OutOfStock"
+          ? "out of stock"
+          : availability === "SoldOut"
+            ? "out of stock"
+            : undefined;
+
+    return {
+      content_ids: [productId],
+      content_type: "product",
+      content_name: title,
+      ...(artist ? { content_category: artist, content_brand: artist } : {}),
+      ...(productHandle ? { content_group_id: productHandle } : {}),
+      value: priceNumber,
+      currency: priceCurrency ?? undefined,
+      availability: availabilityLabel,
+      contents: [
+        {
+          id: productId,
+          quantity: 1,
+          ...(typeof priceNumber === "number" ? { item_price: priceNumber } : {}),
+        },
+      ],
+    };
+  }, [productId, priceAmount, priceCurrency, title, artist, productHandle, availability]);
+
+  useEffect(() => {
+    if (!pixelContents) return;
+    trackPixelEvent("ViewContent", pixelContents);
+  }, [pixelContents]);
+
   const handlePurchase = useCallback(async () => {
     if (!variantId || !canPurchase) return;
     setIsAdding(true);
     try {
       await addLine({ merchandiseId: variantId, quantity: 1 });
       openCart();
+      if (pixelContents) {
+        trackPixelEvent("AddToCart", pixelContents);
+      }
     } catch (error) {
       console.error("[ArtworkLayout] Failed to add artwork to cart", error);
     } finally {
       setIsAdding(false);
     }
-  }, [variantId, canPurchase, addLine, openCart]);
+  }, [variantId, canPurchase, addLine, openCart, pixelContents]);
 
   // Normalise price strings coming from Shopify so the UI shows standard currency labels.
   const normalizePriceLabel = (label: string) => {
@@ -447,12 +498,16 @@ export default function ArtworkLayout({
         open={isEnquireOpen}
         onClose={closeEnquire}
         artwork={{
+          id: productId,
+          handle: productHandle,
           title,
           artist,
           year,
           medium,
           dimensions: dimensionsLabel,
           price: displayPriceLabel,
+          priceAmount: priceAmount ?? null,
+          priceCurrency: priceCurrency ?? null,
           additionalHtml: additionalInfoHtml,
           image: gallery[0]
             ? { url: gallery[0].url, alt: gallery[0].altText || title }

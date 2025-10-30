@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useCart } from '@/components/cart/CartContext';
 import { buildCartPermalink, rewriteCheckoutDomain } from '@/lib/shopifyPermalink';
 import { formatCurrency } from '@/lib/formatCurrency';
+import { trackPixelEvent } from '@/lib/analytics/pixel';
 
 export default function CartDrawer() {
   const {
@@ -46,6 +47,43 @@ export default function CartDrawer() {
       const lines = cart.lines
         .filter((line) => line.merchandiseId && line.quantity > 0)
         .map((line) => ({ variantGid: line.merchandiseId, quantity: line.quantity }));
+      const subtotal = cart.cost?.subtotalAmount;
+      const parsedSubtotal = subtotal ? Number(subtotal.amount) : NaN;
+      const value = Number.isFinite(parsedSubtotal) ? parsedSubtotal : undefined;
+      const checkoutPayload = (() => {
+        const ids = Array.from(
+          new Set(
+            cart.lines
+              .map((line) => line.product?.id || line.merchandiseId)
+              .filter((id): id is string => Boolean(id))
+          )
+        );
+        if (!ids.length) return null;
+        const contents = cart.lines
+          .map((line) => {
+            const id = line.product?.id || line.merchandiseId;
+            if (!id) return null;
+            const parsedPrice = line.price ? Number(line.price.amount) : NaN;
+            const itemPrice = Number.isFinite(parsedPrice) ? parsedPrice : undefined;
+            return {
+              id,
+              quantity: line.quantity,
+              ...(typeof itemPrice === "number" ? { item_price: itemPrice } : {}),
+            };
+          })
+          .filter((entry): entry is { id: string; quantity: number; item_price?: number } =>
+            Boolean(entry)
+          );
+        return {
+          content_ids: ids,
+          content_type: "product" as const,
+          contents,
+          value,
+          currency:
+            typeof value === "number" && subtotal?.currencyCode ? subtotal.currencyCode : undefined,
+          num_items: cart.totalQuantity ?? undefined,
+        };
+      })();
 
       if (!lines.length) {
         setCheckoutLoading(false);
@@ -55,6 +93,9 @@ export default function CartDrawer() {
       const checkoutUrl = cart.checkoutUrl ? rewriteCheckoutDomain(cart.checkoutUrl) : null;
       const url = checkoutUrl || buildCartPermalink(lines);
       if (url) {
+        if (checkoutPayload) {
+          trackPixelEvent("InitiateCheckout", checkoutPayload);
+        }
         window.location.href = url;
         return;
       }

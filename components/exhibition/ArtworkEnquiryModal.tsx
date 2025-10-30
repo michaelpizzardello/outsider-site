@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type {
   FormEvent,
   InputHTMLAttributes,
@@ -10,14 +10,19 @@ import Image from "next/image";
 import clsx from "clsx";
 import OutlineLabelButton from "@/components/ui/OutlineLabelButton";
 import { shopifyImageLoader } from "@/lib/shopifyImage";
+import { trackPixelEvent } from "@/lib/analytics/pixel";
 
 type ArtworkSummary = {
+  id?: string;
+  handle?: string;
   title: string;
   artist?: string;
   year?: string;
   medium?: string;
   dimensions?: string;
   price?: string;
+  priceAmount?: string | null;
+  priceCurrency?: string | null;
   additionalHtml?: string;
   image?: { url: string; alt?: string };
 };
@@ -68,6 +73,40 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
       previouslyFocused?.focus?.();
     };
   }, [open, onClose]);
+
+  const pixelPayload = useMemo(() => {
+    if (!artwork?.id) return null;
+    const parsedPrice = artwork?.priceAmount ? Number(artwork.priceAmount) : NaN;
+    const priceNumber = Number.isFinite(parsedPrice) ? parsedPrice : undefined;
+    const contents = [
+      {
+        id: artwork.id,
+        quantity: 1,
+        ...(typeof priceNumber === "number" ? { item_price: priceNumber } : {}),
+      },
+    ];
+
+    return {
+      content_ids: [artwork.id],
+      content_type: "product" as const,
+      content_name: artwork.title,
+      content_category: artwork.artist ?? undefined,
+      content_brand: artwork.artist ?? undefined,
+      value: priceNumber,
+      currency:
+        typeof priceNumber === "number" && artwork.priceCurrency
+          ? artwork.priceCurrency
+          : undefined,
+      contents,
+    };
+  }, [artwork]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (pixelPayload) {
+      trackPixelEvent("Contact", pixelPayload);
+    }
+  }, [open, pixelPayload]);
 
   if (!open) return null;
 
@@ -133,6 +172,9 @@ export default function ArtworkEnquiryModal({ open, onClose, artwork }: Props) {
       });
       if (!json?.partial) {
         form.reset();
+      }
+      if (pixelPayload) {
+        trackPixelEvent("Lead", pixelPayload);
       }
     } catch (error) {
       console.error("Failed to send enquiry", error);

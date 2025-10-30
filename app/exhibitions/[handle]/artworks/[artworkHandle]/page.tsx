@@ -292,6 +292,12 @@ function deriveCommerceState(product: ArtworkQuery["product"]) {
     priceLabel,
     canPurchase,
     variantId,
+    price:
+      hasPrice && price
+        ? { amount: price.amount, currencyCode: price.currencyCode }
+        : null,
+    isSold,
+    availability: isSold ? "SoldOut" : canPurchase ? "InStock" : "OutOfStock",
   };
 }
 
@@ -333,7 +339,13 @@ export default async function ArtworkPage({
     metafieldHtml(product.notes);
 
   // Commerce state used for pricing labels and purchase CTA logic.
-  const { priceLabel, canPurchase, variantId } = deriveCommerceState(product);
+  const {
+    priceLabel,
+    canPurchase,
+    variantId,
+    price: priceData,
+    availability,
+  } = deriveCommerceState(product);
 
   // Prepare the media gallery, ensuring the featured image leads the carousel.
   const images = product.images?.nodes?.filter((img): img is ImageNode => Boolean(img?.url)) ?? [];
@@ -352,6 +364,8 @@ export default async function ArtworkPage({
   // Pass the cleaned data to the client layout component which renders the full UI.
   return (
     <ArtworkLayout
+      productId={product.id}
+      productHandle={product.handle}
       exhibitionHandle={exhibitionHandle}
       title={product.title}
       gallery={gallery}
@@ -364,6 +378,9 @@ export default async function ArtworkPage({
       additionalInfoHtml={additionalInfoHtml}
       canPurchase={canPurchase}
       variantId={variantId}
+      priceAmount={priceData?.amount ?? null}
+      priceCurrency={priceData?.currencyCode ?? null}
+      availability={availability}
     />
   );
 }
