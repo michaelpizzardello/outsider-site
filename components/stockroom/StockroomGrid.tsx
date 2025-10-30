@@ -868,17 +868,14 @@ export default function StockroomGrid({ artworks, artists }: Props) {
 
       {mobileFiltersOpen ? (
         <div className="fixed inset-0 z-50 flex flex-col bg-black/40 backdrop-blur-sm lg:hidden">
-          <div
-            className="flex-1"
-            onClick={() => setMobileFiltersOpen(false)}
-          />
+          <div className="flex-1" onClick={() => setMobileFiltersOpen(false)} />
           <div
             role="dialog"
             aria-modal="true"
             aria-label="Artwork filters"
-            className="max-h-[85vh] overflow-hidden bg-white p-6 shadow-2xl"
+            className="relative flex w-full max-h-[85vh] flex-col bg-white shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
+            <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
               <h2 className="text-sm font-semibold text-neutral-700">
                 Filters
               </h2>
@@ -890,7 +887,7 @@ export default function StockroomGrid({ artworks, artists }: Props) {
                 Close
               </button>
             </div>
-            <div className="mt-6 max-h-[60vh] space-y-6 overflow-y-auto pr-1">
+            <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6">
               <label className="block">
                 <input
                   type="search"
@@ -939,22 +936,24 @@ export default function StockroomGrid({ artworks, artists }: Props) {
                 onChange={handleSizeChange}
               />
             </div>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={resetFilters}
-                disabled={!hasActiveFilters}
-                className="h-11 border border-neutral-300 px-4 text-sm font-medium text-neutral-600 transition hover:border-neutral-400 hover:text-neutral-900 disabled:opacity-40"
-              >
-                Reset filters
-              </button>
-              <button
-                type="button"
-                onClick={() => setMobileFiltersOpen(false)}
-                className="h-11 bg-neutral-900 px-6 text-sm font-medium text-white transition hover:bg-neutral-800"
-              >
-                Apply filters
-              </button>
+            <div className="border-t border-neutral-200 bg-white px-6 py-6">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  disabled={!hasActiveFilters}
+                  className="h-11 border border-neutral-300 px-4 text-sm font-medium text-neutral-600 transition hover:border-neutral-400 hover:text-neutral-900 disabled:opacity-40"
+                >
+                  Reset filters
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobileFiltersOpen(false)}
+                  className="h-11 bg-neutral-900 px-6 text-sm font-medium text-white transition hover:bg-neutral-800"
+                >
+                  Apply filters
+                </button>
+              </div>
             </div>
           </div>
         </div>
